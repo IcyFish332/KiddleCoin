@@ -8,6 +8,7 @@ public class ParentAccount extends Account {
 
     public ParentAccount(String accountId, String name, String password) {
         super(accountId, name, password);
+        this.accountType = "Parent";
         this.childAccountIds = new HashSet<>();
     }
 

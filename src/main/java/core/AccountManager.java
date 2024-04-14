@@ -8,23 +8,15 @@ import java.util.UUID;
 
 public class AccountManager {
     private DataManager dataManager;
-    private Set<String> childAccountIds; // 存储所有孩子账户的ID集合
-    private Set<String> parentAccountIds; // 存储所有家长账户的ID集合
 
     public AccountManager(DataManager dataManager) {
         this.dataManager = dataManager;
-        this.childAccountIds = new HashSet<>();
-        this.parentAccountIds = new HashSet<>();
-
-        // 从DataManager加载现有账户
-        loadAllAccounts();
     }
 
     // 创建孩子账户的方法
     public ChildAccount createChildAccount(String name, String password) {
         String accountId = UUID.randomUUID().toString();
         ChildAccount newChildAccount = new ChildAccount(accountId, name, password);
-        childAccountIds.add(accountId);
         dataManager.saveAccount(newChildAccount); // 保存新账户
         return newChildAccount;
     }
@@ -33,7 +25,6 @@ public class AccountManager {
     public ParentAccount createParentAccount(String name, String password) {
         String accountId = UUID.randomUUID().toString();
         ParentAccount newParentAccount = new ParentAccount(accountId, name, password);
-        parentAccountIds.add(accountId);
         dataManager.saveAccount(newParentAccount); // 保存新账户
         return newParentAccount;
     }
@@ -64,26 +55,15 @@ public class AccountManager {
         }
     }
 
-    // 加载所有账户
-    private void loadAllAccounts() {
-        for (Account account : dataManager.getAccounts().values()) {
-            if (account instanceof ChildAccount) {
-                childAccountIds.add(account.getAccountId());
-            } else if (account instanceof ParentAccount) {
-                parentAccountIds.add(account.getAccountId());
-            }
-        }
-    }
-
-    // 以下是获取账户、孩子账户列表和家长账户列表的方法
+    // 获取账户
     public Account getAccount(String accountId) {
         return dataManager.getAccount(accountId);
     }
 
+    // 获取所有孩子账户
     public Set<ChildAccount> getChildAccounts() {
         Set<ChildAccount> children = new HashSet<>();
-        for (String childId : childAccountIds) {
-            Account account = dataManager.getAccount(childId);
+        for (Account account : dataManager.getAccounts().values()) {
             if (account instanceof ChildAccount) {
                 children.add((ChildAccount) account);
             }
@@ -91,10 +71,10 @@ public class AccountManager {
         return children;
     }
 
+    // 获取所有家长账户
     public Set<ParentAccount> getParentAccounts() {
         Set<ParentAccount> parents = new HashSet<>();
-        for (String parentId : parentAccountIds) {
-            Account account = dataManager.getAccount(parentId);
+        for (Account account : dataManager.getAccounts().values()) {
             if (account instanceof ParentAccount) {
                 parents.add((ParentAccount) account);
             }
@@ -102,17 +82,24 @@ public class AccountManager {
         return parents;
     }
 
+    // 验证账户凭证
     public boolean validateCredentials(String username, String password) {
         for (Account account : dataManager.getAccounts().values()) {
-            // 这里假设Account对象有方法getUsername()和getPassword()
-            // 并且我们存储的是明文密码
             if (account.getUsername().equals(username) &&
                     account.getPassword().equals(password)) {
-                // 用户名和密码匹配，返回true
                 return true;
             }
         }
-        // 如果没有找到匹配的账户，返回false
+        return false;
+    }
+
+    // 检查用户名是否存在
+    public boolean isUsernameExists(String username) {
+        for (Account account : dataManager.getAccounts().values()) {
+            if (account.getUsername().equals(username)) {
+                return true;
+            }
+        }
         return false;
     }
 }
