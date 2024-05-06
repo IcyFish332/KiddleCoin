@@ -65,6 +65,7 @@ public class HistoryFrame extends JFrame {
         historyTable.getColumnModel().getColumn(4).setPreferredWidth(250);
     }
 
+
     //public static void main(String[] args) {
     //    SwingUtilities.invokeLater(() -> {
     //        HistoryFrame frame = new HistoryFrame("$500");

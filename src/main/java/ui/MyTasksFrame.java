@@ -101,11 +101,11 @@ public class MyTasksFrame extends JFrame {
         tasksTable.getColumnModel().getColumn(4).setPreferredWidth(150);
     }
 
-    public static void main(String[] args) {
-        SwingUtilities.invokeLater(() -> {
-            MyTasksFrame frame = new MyTasksFrame();
-            frame.setVisible(true);
-        });
-    }
+    //public static void main(String[] args) {
+    //    SwingUtilities.invokeLater(() -> {
+    //        MyTasksFrame frame = new MyTasksFrame();
+    //        frame.setVisible(true);
+    //    });
+    //}
 }
 
