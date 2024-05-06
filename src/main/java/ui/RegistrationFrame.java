@@ -128,4 +128,6 @@ public class RegistrationFrame extends JFrame {
 
         dispose();
     }
+
+
 }

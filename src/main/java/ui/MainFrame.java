@@ -137,6 +137,7 @@ public class MainFrame extends JFrame {
         ImageIcon backgroundImage = new ImageIcon("path/to/image.jpg"); // 替换为实际图片路径
         JLabel backgroundLabel = new JLabel(backgroundImage);
         mainPanel.add(backgroundLabel, BorderLayout.NORTH);
+
     }
 
     // 登录按钮的响应方法（需要实现具体的登录逻辑）
@@ -160,10 +161,12 @@ public class MainFrame extends JFrame {
         // 清除输入字段,以便下一次登录尝试
         usernameField.setText("");
         passwordField.setText("");
+
     }
 
     private void openRegistrationFrame() {
         RegistrationFrame registrationFrame = new RegistrationFrame(accountManager);
         registrationFrame.setVisible(true);
     }
+
 }
