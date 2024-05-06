@@ -103,6 +103,7 @@ public class MyGoalsFrame extends JFrame {
         goalsTable.getColumnModel().getColumn(6).setPreferredWidth(150);
     }
 
+
     //public static void main(String[] args) {
     //    SwingUtilities.invokeLater(() -> {
     //        MyGoalsFrame frame = new MyGoalsFrame();
