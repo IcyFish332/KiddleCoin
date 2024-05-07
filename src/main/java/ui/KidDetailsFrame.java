@@ -1,4 +1,5 @@
 package ui;
+import core.AccountManager;
 import javax.swing.*;
 import javax.swing.table.DefaultTableModel;
 import javax.swing.table.TableCellRenderer;
@@ -7,12 +8,14 @@ import java.awt.*;
 
 
 public class KidDetailsFrame extends JFrame {
+    private AccountManager accountManager;
     private DefaultTableModel goalsModel;
     private DefaultTableModel tasksModel;
     private JTable goalsTable;
     private JTable tasksTable;
 
-    public KidDetailsFrame(String name, String totalSavings) {
+    public KidDetailsFrame(AccountManager accountManager,String name, String totalSavings) {
+        this.accountManager = accountManager;
         initComponents(name, totalSavings);
     }
 
@@ -80,7 +83,7 @@ public class KidDetailsFrame extends JFrame {
         manageGoalsButton.setForeground(new Color(255, 105, 180));
         // 确保在用户点击 'See details and manage goals...' 按钮时传递正确的模型
         manageGoalsButton.addActionListener(e -> {
-            ManageGoalsFrame manageGoalsFrame = new ManageGoalsFrame(name, totalSavings, goalsModel);
+            ManageGoalsFrame manageGoalsFrame = new ManageGoalsFrame(accountManager,name, totalSavings, goalsModel);
             manageGoalsFrame.setVisible(true);
         });
 
@@ -114,7 +117,7 @@ public class KidDetailsFrame extends JFrame {
         manageTasksButton.setFont(new Font("Arial", Font.PLAIN, 12));
         manageTasksButton.setForeground(new Color(255, 105, 180));
         manageTasksButton.addActionListener(e -> {
-            ManageTasksFrame manageTasksFrame = new ManageTasksFrame(name, totalSavings, tasksModel);
+            ManageTasksFrame manageTasksFrame = new ManageTasksFrame(accountManager,name, totalSavings, tasksModel);
             manageTasksFrame.setVisible(true);
         });
         tasksPanel.add(manageTasksButton, BorderLayout.SOUTH);
