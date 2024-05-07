@@ -1,16 +1,18 @@
 package ui;
-
+import core.AccountManager;
 import javax.swing.*;
 import javax.swing.table.DefaultTableModel;
 import javax.swing.table.TableCellRenderer;
 import java.awt.*;
 
 public class ManageTasksFrame extends JFrame {
+    private AccountManager accountManager;
     private DefaultTableModel tasksModel;
     private JTable tasksTable;
 
-    public ManageTasksFrame(String name, String totalSavings, DefaultTableModel receivedTasksModel) {
+    public ManageTasksFrame(AccountManager accountManager,String name, String totalSavings, DefaultTableModel receivedTasksModel) {
         super("Manage Kid's Tasks");
+        this.accountManager = accountManager;
         this.tasksModel = receivedTasksModel;  // 使用从 KidDetailsFrame 传递过来的模型
         initComponents(name, totalSavings);
         setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);

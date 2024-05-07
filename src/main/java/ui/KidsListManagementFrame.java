@@ -1,16 +1,18 @@
 package ui;
+import core.AccountManager;
 import javax.swing.*;
 import javax.swing.table.DefaultTableModel;
 import javax.swing.table.TableCellRenderer;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-
 public class KidsListManagementFrame extends JFrame {
+   private static AccountManager accountManager;
     private DefaultTableModel model;
     private JTable table;
 
-    public KidsListManagementFrame() {
+    public KidsListManagementFrame(AccountManager accountManager) {
+        this.accountManager = accountManager;
         initComponents();
     }
 
@@ -128,7 +130,7 @@ public class KidsListManagementFrame extends JFrame {
         }
 
         private void openDetailsFrame(String name, String savings) {
-            KidDetailsFrame detailsFrame = new KidDetailsFrame(name, savings);
+            KidDetailsFrame detailsFrame = new KidDetailsFrame(accountManager,name, savings);
             detailsFrame.setVisible(true);
         }
 
@@ -179,6 +181,7 @@ public class KidsListManagementFrame extends JFrame {
     }
 
     public static void main(String[] args) {
-        new KidsListManagementFrame().setVisible(true);
+
+        new KidsListManagementFrame(accountManager).setVisible(true);
     }
 }

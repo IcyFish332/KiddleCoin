@@ -1,16 +1,19 @@
 package ui;
-
+import core.AccountManager;
 import javax.swing.*;
 import javax.swing.table.DefaultTableModel;
 import javax.swing.table.TableCellRenderer;
 import java.awt.*;
 
 public class ManageGoalsFrame extends JFrame {
+    private AccountManager accountManager;
     private DefaultTableModel goalsModel;
     private JTable goalsTable;
 
-    public ManageGoalsFrame(String name, String totalSavings, DefaultTableModel receivedGoalsModel) {
+    public ManageGoalsFrame(AccountManager accountManager,String name, String totalSavings, DefaultTableModel receivedGoalsModel) {
         super("Manage Kid's Goals");
+        this.accountManager = accountManager;
+
         this.goalsModel = receivedGoalsModel;  // 使用从 KidDetailsFrame 传递过来的模型
         initComponents(name, totalSavings);
         setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
