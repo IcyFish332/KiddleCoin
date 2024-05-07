@@ -61,11 +61,24 @@ public class KidsListManagementFrame extends JFrame {
                 "Savings:", savingsField
         };
 
-        int option = JOptionPane.showConfirmDialog(null, message, "Add Kid Account", JOptionPane.OK_CANCEL_OPTION);
-        if (option == JOptionPane.OK_OPTION) {
-            model.addRow(new Object[]{nameField.getText(), accountField.getText(), savingsField.getText(), ""});
-        }
+        int option;
+        do {
+            option = JOptionPane.showConfirmDialog(null, message, "Add Kid Account", JOptionPane.OK_CANCEL_OPTION, JOptionPane.PLAIN_MESSAGE);
+            if (option == JOptionPane.OK_OPTION) {
+                // 检查所有输入字段是否已填写
+                if (nameField.getText().trim().isEmpty() || accountField.getText().trim().isEmpty() || savingsField.getText().trim().isEmpty()) {
+                    JOptionPane.showMessageDialog(null, "Please fill in all fields.", "Input Error", JOptionPane.ERROR_MESSAGE);
+                } else {
+                    // 如果所有字段都已填写，则添加行并跳出循环
+                    model.addRow(new Object[]{nameField.getText(), accountField.getText(), savingsField.getText(), ""});
+                    break; // 跳出循环
+                }
+            } else {
+                break; // 如果用户选择取消，也跳出循环
+            }
+        } while (option != JOptionPane.CANCEL_OPTION);
     }
+
 
     class OperationsRenderer extends JPanel implements TableCellRenderer {
         JButton detailsButton, editButton, deleteButton;
