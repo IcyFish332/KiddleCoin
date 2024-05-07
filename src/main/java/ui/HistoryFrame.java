@@ -45,7 +45,7 @@ public class HistoryFrame extends JFrame {
         recordsLabel.setBorder(BorderFactory.createEmptyBorder(10, 0, 10, 0));
         recordsPanel.add(recordsLabel, BorderLayout.NORTH);
 
-        String[] columnNames = {"Time", "Type", "Amount", "Balance", "Abstract"};
+        String[] columnNames = {"Time", "Type", "Amount", "Balance"};
         historyModel = new DefaultTableModel(null, columnNames);
         historyTable = new JTable(historyModel);
         historyScrollPane = new JScrollPane(historyTable);
@@ -62,13 +62,13 @@ public class HistoryFrame extends JFrame {
         historyTable.getColumnModel().getColumn(1).setPreferredWidth(100);
         historyTable.getColumnModel().getColumn(2).setPreferredWidth(100);
         historyTable.getColumnModel().getColumn(3).setPreferredWidth(100);
-        historyTable.getColumnModel().getColumn(4).setPreferredWidth(250);
+        //historyTable.getColumnModel().getColumn(4).setPreferredWidth(250);
     }
 
-    //public static void main(String[] args) {
-    //    SwingUtilities.invokeLater(() -> {
-    //        HistoryFrame frame = new HistoryFrame("$500");
-    //        frame.setVisible(true);
-    //    });
-    //}
+    public static void main(String[] args) {
+        SwingUtilities.invokeLater(() -> {
+            HistoryFrame frame = new HistoryFrame("$500");
+            frame.setVisible(true);
+        });
+    }
 }
