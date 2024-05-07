@@ -136,7 +136,7 @@ public class MyAccountFrame extends JFrame {
     }
 
 
-    //public static void main(String[] args) {
-    //    SwingUtilities.invokeLater(() -> new MyAccountFrame("Anna", 1000.0, 500.0).setVisible(true));
-    //}
+    public static void main(String[] args) {
+        SwingUtilities.invokeLater(() -> new MyAccountFrame("Anna", 1000.0, 500.0).setVisible(true));
+    }
 }
