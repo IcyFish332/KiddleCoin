@@ -58,7 +58,7 @@ public class ChildAccount extends Account {
             while (it.hasNext()) {
                 SavingGoal goal = it.next();
                 if (goal.isGoalReached(savings)) {
-                    double rewardAmount = goal.getRewardAmount();
+                    double rewardAmount = goal.getReward();
                     balance += goal.getTargetAmount() + rewardAmount;
                     savings -= goal.getTargetAmount();
                     transactionHistory.add(new TransactionHistory("Goal Reached", goal.getTargetAmount(), "Balance"));

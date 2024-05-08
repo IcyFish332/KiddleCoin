@@ -60,6 +60,10 @@ public class AccountManager {
         return dataManager.getAccount(accountId);
     }
 
+    public void saveAccount(Account account) {
+        dataManager.saveAccount(account);
+    }
+
     // 获取所有孩子账户
     public Set<ChildAccount> getChildAccounts() {
         Set<ChildAccount> children = new HashSet<>();
