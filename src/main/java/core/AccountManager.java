@@ -64,6 +64,17 @@ public class AccountManager {
         dataManager.saveAccount(account);
     }
 
+    public Account getAccountByUsername(String username) {
+        for (Account account : dataManager.getAccounts().values()) {
+            if (account.getUsername().equals(username)) {
+                return account;
+            }
+        }
+        // 没有找到匹配的账户时返回 null
+        return null;
+    }
+
+
     // 获取所有孩子账户
     public Set<ChildAccount> getChildAccounts() {
         Set<ChildAccount> children = new HashSet<>();

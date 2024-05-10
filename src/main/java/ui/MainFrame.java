@@ -1,6 +1,8 @@
 package ui;
 
+import core.Account;
 import core.AccountManager;
+import core.ChildAccount;
 import ui.RegistrationFrame;
 
 import javax.swing.*;
@@ -152,6 +154,8 @@ public class MainFrame extends JFrame {
         if (isValid) {
             // 登录成功,转到主视图
             JOptionPane.showMessageDialog(this, "Login successful.");
+            openUserCenterFrame(accountManager, username);
+            dispose();
             // 转到其他视图的代码...
         } else {
             // 登录失败,显示错误消息
@@ -167,6 +171,16 @@ public class MainFrame extends JFrame {
     private void openRegistrationFrame() {
         RegistrationFrame registrationFrame = new RegistrationFrame(accountManager);
         registrationFrame.setVisible(true);
+    }
+
+    private void openUserCenterFrame(AccountManager accountManager, String username) {
+        Account account = accountManager.getAccountByUsername(username);
+        if(account.getAccountType().equals("Kid")){
+            KidUserCenterFrame kidUserCenterFrame = new KidUserCenterFrame(accountManager, (ChildAccount)account);
+            kidUserCenterFrame.setVisible(true);
+        }
+
+
     }
 
 }

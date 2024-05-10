@@ -10,6 +10,12 @@ public class ParentUserCenterFrame extends JFrame {
         setLocationRelativeTo(null);
         setLayout(new BorderLayout(10, 10));
 
+        JPanel mainPanel = new JPanel(new BorderLayout());
+
+        SideBarPanelForParents sidebarPanel = new SideBarPanelForParents();
+
+        JPanel contentPanel = new JPanel(new BorderLayout());
+
         // Upper Panel for user information display
         JPanel upperPanel = new JPanel(new GridLayout(3, 2, 20, 5));
         upperPanel.add(new JLabel("User Name:"));
@@ -52,14 +58,35 @@ public class ParentUserCenterFrame extends JFrame {
 
         lowerPanel.add(fieldsPanel, BorderLayout.CENTER);
 
-        // Adding panels to the frame
-        add(upperPanel, BorderLayout.NORTH);
-        add(lowerPanel, BorderLayout.CENTER);
+        contentPanel.add(upperPanel, BorderLayout.NORTH);
+        contentPanel.add(lowerPanel, BorderLayout.CENTER);
+
+        mainPanel.add(sidebarPanel, BorderLayout.WEST);
+        mainPanel.add(contentPanel, BorderLayout.CENTER);
+
+        add(mainPanel);
 
         setVisible(true);
     }
 
     public static void main(String[] args) {
         SwingUtilities.invokeLater(ParentUserCenterFrame::new);
+    }
+
+    public class SideBarPanelForParents extends JPanel {
+        public SideBarPanelForParents() {
+            setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
+            Dimension maxBtnSize = new Dimension(150, 30);
+
+            JButton button1 = new JButton("选项1");
+            button1.setMaximumSize(maxBtnSize);
+            button1.setPreferredSize(maxBtnSize);
+            add(button1);
+
+            JButton button2 = new JButton("选项2");
+            button2.setMaximumSize(maxBtnSize);
+            button2.setPreferredSize(maxBtnSize);
+            add(button2);
+        }
     }
 }
