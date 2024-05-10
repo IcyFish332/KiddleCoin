@@ -74,7 +74,6 @@ public class AccountManager {
         return null;
     }
 
-
     // 获取所有孩子账户
     public Set<ChildAccount> getChildAccounts() {
         Set<ChildAccount> children = new HashSet<>();
