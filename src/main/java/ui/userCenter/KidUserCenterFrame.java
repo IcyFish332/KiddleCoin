@@ -1,6 +1,8 @@
-package ui;
+package ui.userCenter;
 import core.AccountManager;
 import core.ChildAccount;
+import ui.template.BigButton;
+import ui.template.KidPageFrame;
 
 import javax.swing.*;
 import java.awt.*;
@@ -10,14 +12,26 @@ public class KidUserCenterFrame extends KidPageFrame {
     private JPasswordField oldPasswordField;
     private JPasswordField newPasswordField1;
     private JPasswordField newPasswordField2;
+
     public KidUserCenterFrame(AccountManager accountManager, ChildAccount childAccount) {
-        super("User Center"); // 调用父类构造函数,设置标题
-        setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        super("User Center", accountManager, childAccount); // 调用父类构造函数,设置标题
         setLocationRelativeTo(null);
 
         // Lower Panel for user inputs and information label
-        JLabel infoLabel = new JLabel("Information");
-        lowerPanel.add(infoLabel, BorderLayout.NORTH);
+        lowerPanel.setLayout(new GridBagLayout());
+        GridBagConstraints gbc = new GridBagConstraints();
+        gbc.insets = new Insets(10, 10, 10, 10);
+
+        // *** Information Section ***
+        // Lower Panel for user inputs and information label
+        JLabel infoHeading = new JLabel("Information");
+        infoHeading.setFont(new Font("Calibri", Font.BOLD, 18));
+        infoHeading.setForeground(new Color(0xF868B0)); // Red color as shown in the sketch
+        gbc.gridx = 0;
+        gbc.gridy = 0;
+        gbc.anchor = GridBagConstraints.NORTHWEST;
+
+        lowerPanel.add(infoHeading, gbc);
 
         JPanel labelPanel = new JPanel(new GridBagLayout());
         labelPanel.setBackground(Color.WHITE);
@@ -33,54 +47,69 @@ public class KidUserCenterFrame extends KidPageFrame {
         addLabeledComponents(labelPanel, g, "User Name:", childAccount.getUsername());
         addLabeledComponents(labelPanel, g, "ID:", childAccount.getAccountId());
         Set<String> parentAccountIds = childAccount.getParentAccountIds();
+        int count = 1;
         for (String accountID: parentAccountIds) {
-            addLabeledComponents(labelPanel, g, "Parent Account", accountID);
+            addLabeledComponents(labelPanel, g, "Parent Account " + count, accountID);
+            count++;
         }
 
-        lowerPanel.add(labelPanel, BorderLayout.CENTER); // 将labelPanel添加到lowerPanel的中心位置
+        // 将labelPanel添加到lowerPanel的中部
+        gbc.gridy = 1;
+        lowerPanel.add(labelPanel, gbc);
+        //lowerPanel.add(labelPanel, BorderLayout.CENTER); // 将labelPanel添加到lowerPanel的中心位置
+
+        // *** Change Password Section ***
+        // Set up heading for Change Password section
+        JLabel passwordHeading = new JLabel("Change Password");
+        passwordHeading.setFont(new Font("Calibri", Font.BOLD, 16));
+        passwordHeading.setForeground(new Color(0xF868B0)); // Red color for this heading too
+        gbc.anchor = GridBagConstraints.NORTHWEST;
+        gbc.gridy = 2;
+        lowerPanel.add(passwordHeading, gbc);
 
         JPanel fieldsPanel = new JPanel(new GridBagLayout());
         fieldsPanel.setBackground(Color.WHITE);
-        GridBagConstraints gbc = new GridBagConstraints();
-        gbc.fill = GridBagConstraints.HORIZONTAL;
-        gbc.weightx = 1.0;
-        gbc.insets = new Insets(5, 50, 5, 20);
+        GridBagConstraints gb = new GridBagConstraints();
+        gb.fill = GridBagConstraints.HORIZONTAL;
+        gb.weightx = 1.0;
+        gb.insets = new Insets(5, 5, 5, 5);
 
 // Add old password field
-        gbc.gridx = 0;
-        gbc.gridy = 0;
-        fieldsPanel.add(new JLabel("Old Password:"), gbc);
-        gbc.gridx = 1;
+        gb.gridx = 0;
+        gb.gridy = 0;
+        fieldsPanel.add(new JLabel("Old Password:"), gb);
+        gb.gridx = 1;
         oldPasswordField = new JPasswordField(20);
-        fieldsPanel.add(oldPasswordField, gbc);
+        fieldsPanel.add(oldPasswordField, gb);
 
 // Add new password field 1
-        gbc.gridx = 0;
-        gbc.gridy = 1;
-        fieldsPanel.add(new JLabel("New Password:"), gbc);
-        gbc.gridx = 1;
+        gb.gridx = 0;
+        gb.gridy = 1;
+        fieldsPanel.add(new JLabel("New Password:"), gb);
+        gb.gridx = 1;
         newPasswordField1 = new JPasswordField(20);
-        fieldsPanel.add(newPasswordField1, gbc);
+        fieldsPanel.add(newPasswordField1, gb);
 
 // Add new password field 2
-        gbc.gridx = 0;
-        gbc.gridy = 2;
-        fieldsPanel.add(new JLabel("Confirm New Password:"), gbc);
-        gbc.gridx = 1;
+        gb.gridx = 0;
+        gb.gridy = 2;
+        fieldsPanel.add(new JLabel("Confirm New Password:"), gb);
+        gb.gridx = 1;
         newPasswordField2 = new JPasswordField(20);
-        fieldsPanel.add(newPasswordField2, gbc);
+        fieldsPanel.add(newPasswordField2, gb);
+
+        gbc.gridy = 3;
+        lowerPanel.add(fieldsPanel, gbc);
 
 // Buttons
         JPanel buttonPanel = new JPanel();
-        JButton saveButton = new JButton("Save");
+        buttonPanel.setBackground(Color.WHITE);
+        BigButton saveButton = new BigButton("Save");
         saveButton.addActionListener(e -> validateAndChangePassword(accountManager, childAccount));
         buttonPanel.add(saveButton);
-        gbc.gridy = 3;
+        gbc.gridy = 4;
         gbc.gridwidth = 2; // Span across two columns
         fieldsPanel.add(buttonPanel, gbc);
-
-        lowerPanel.add(fieldsPanel, BorderLayout.CENTER);
-
 
         setVisible(true);
     }
@@ -104,14 +133,14 @@ public class KidUserCenterFrame extends KidPageFrame {
         String newPassword1 = new String(newPasswordField1.getPassword());
         String newPassword2 = new String(newPasswordField2.getPassword());
 
-//         验证旧密码是否正确
-        if (!childAccount.getPassword().equals(oldPassword)) {
-            JOptionPane.showMessageDialog(this, "Incorrect old password.", "Error", JOptionPane.ERROR_MESSAGE);
+        if(newPassword1.equals("")){
+            JOptionPane.showMessageDialog(this, "Password can not be empty.", "Error", JOptionPane.ERROR_MESSAGE);
             return;
         }
 
-        if(newPassword1.equals("")){
-            JOptionPane.showMessageDialog(this, "Password can not be empty.", "Error", JOptionPane.ERROR_MESSAGE);
+//         验证旧密码是否正确
+        if (!childAccount.getPassword().equals(oldPassword)) {
+            JOptionPane.showMessageDialog(this, "Incorrect old password.", "Error", JOptionPane.ERROR_MESSAGE);
             return;
         }
 

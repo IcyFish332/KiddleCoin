@@ -1,15 +1,22 @@
-package ui;
+package ui.template;
 import javax.swing.*;
 import java.awt.*;
 
-public class KidPageFrame extends JFrame {
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+
+import core.AccountManager;
+import core.ParentAccount;
+import ui.userCenter.ParentUserCenterFrame;
+
+public class ParentPageFrame extends JFrame {
     protected JLabel titleLabel;
     protected JPanel sidebarPanel;
     protected JPanel contentPanel;
     protected JPanel upperPanel;
     protected JPanel lowerPanel;
 
-    public KidPageFrame(String title) {
+    public ParentPageFrame(String title, AccountManager accountManager, ParentAccount parentAccount) {
 
         setTitle("KiddleCoin");
         setSize(800, 600);
@@ -24,15 +31,21 @@ public class KidPageFrame extends JFrame {
         sidebarPanel.setBackground(Color.WHITE);
         sidebarPanel.setLayout(new BoxLayout(sidebarPanel, BoxLayout.Y_AXIS));
 
+        sidebarPanel.setBorder(BorderFactory.createCompoundBorder(
+                BorderFactory.createEmptyBorder(0, 0, 0, 5), // 设置边距
+                BorderFactory.createMatteBorder(0, 0, 0, 1, new Color(0xFFE0E4)) // 添加底部灰色边框
+        ));
+
         // 创建一个中间面板来容纳图标和按钮面板
         JPanel middlePanel = new JPanel(new BorderLayout(0, 10)); // 垂直间距设为10像素
         middlePanel.setBackground(Color.WHITE);
 
         // 加载图标图像
-        ImageIcon icon = new ImageIcon("/Users/daylightmuse./Downloads/icon_Kid.png");
+        ImageIcon icon = new ImageIcon("src/main/java/ui/template/icon_Parent.png");
         Image image = icon.getImage();
         Image newImage = image.getScaledInstance(30, 30, Image.SCALE_SMOOTH); // 调整图标大小
         icon = new ImageIcon(newImage);
+
         // 创建标签显示图标
         JLabel iconLabel = new JLabel(icon);
         iconLabel.setBorder(BorderFactory.createEmptyBorder(15, 0, 15, 0)); // 设置上边距为20像素、
@@ -46,18 +59,22 @@ public class KidPageFrame extends JFrame {
         buttonPanel.setLayout(new BoxLayout(buttonPanel, BoxLayout.Y_AXIS));
 
         // 添加侧边栏按钮
-        SidebarButton button1 = new SidebarButton("My Account");
+        SidebarButton button1 = new SidebarButton("Kid List");
         buttonPanel.add(button1);
-        SidebarButton button2 = new SidebarButton("Manage My Balance");
+
+        SidebarButton button2 = new SidebarButton("Manage Goals");
         buttonPanel.add(button2);
-        SidebarButton button3 = new SidebarButton("My Goals");
+        SidebarButton button3 = new SidebarButton("Manage Tasks");
         buttonPanel.add(button3);
-        SidebarButton button4 = new SidebarButton("My Tasks");
+        SidebarButton button4 = new SidebarButton("User Center");
         buttonPanel.add(button4);
-        SidebarButton button5 = new SidebarButton("History");
-        buttonPanel.add(button5);
-        SidebarButton button6 = new SidebarButton("User Center");
-        buttonPanel.add(button6);
+        button4.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+                ParentUserCenterFrame parentUserCenterFrame = new ParentUserCenterFrame(accountManager, parentAccount);
+                parentUserCenterFrame.setVisible(true);
+                dispose();
+            }
+        });
 
         middlePanel.add(iconLabel, BorderLayout.NORTH);
         middlePanel.add(buttonPanel, BorderLayout.CENTER);
@@ -70,11 +87,13 @@ public class KidPageFrame extends JFrame {
 
         // 创建上部面板
         upperPanel = new JPanel(new BorderLayout(10, 10));
+        upperPanel.setPreferredSize(new Dimension(500, 130)); // 加大宽高值
         upperPanel.setBackground(Color.WHITE);
         upperPanel.setBorder(BorderFactory.createCompoundBorder(
-                BorderFactory.createEmptyBorder(30, 30, 50, 10), // 设置边距
+                BorderFactory.createEmptyBorder(10, 40, 10, 40), // 设置边距
                 BorderFactory.createMatteBorder(0, 0, 1, 0, Color.LIGHT_GRAY) // 添加底部灰色边框
         ));
+         //Add spacing before the title
 
         //创建标题
         titleLabel = new JLabel(title);
@@ -108,7 +127,7 @@ public class KidPageFrame extends JFrame {
             setPreferredSize(maxBtnSize);
 
             // 设置字体
-            Font buttonFont = new Font("Arial", Font.PLAIN, 14);
+            Font buttonFont = new Font("Calibri", Font.PLAIN, 14);
             setFont(buttonFont);
 
             // 设置按钮样式
