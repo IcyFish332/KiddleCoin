@@ -7,6 +7,8 @@ import java.awt.event.ActionListener;
 
 import core.AccountManager;
 import core.ParentAccount;
+import ui.ManageGoalsFrame;
+import ui.ManageTasksFrame;
 import ui.userCenter.ParentUserCenterFrame;
 
 public class ParentPageFrame extends JFrame {
@@ -61,11 +63,14 @@ public class ParentPageFrame extends JFrame {
         // 添加侧边栏按钮
         SidebarButton button1 = new SidebarButton("Kid List");
         buttonPanel.add(button1);
-
         SidebarButton button2 = new SidebarButton("Manage Goals");
         buttonPanel.add(button2);
+
+
         SidebarButton button3 = new SidebarButton("Manage Tasks");
         buttonPanel.add(button3);
+
+
         SidebarButton button4 = new SidebarButton("User Center");
         buttonPanel.add(button4);
         button4.addActionListener(new ActionListener() {

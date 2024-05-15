@@ -14,6 +14,10 @@ public abstract class Account {
         this.password = password;
     }
 
+    public Account() {
+
+    }
+
 
     // 共通的 getter 和 setter 方法
     public String getAccountId() {

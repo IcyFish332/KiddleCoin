@@ -12,6 +12,10 @@ public class ParentAccount extends Account {
         this.childAccountIds = new HashSet<>();
     }
 
+    public ParentAccount(AccountManager accountManager) {
+        super();
+    }
+
     // 家长账户特有的方法：添加和移除孩子账户
     public void addChildAccount(String accountId) {
         childAccountIds.add(accountId);

@@ -1,8 +1,10 @@
 package ui.userCenter;
+
 import core.AccountManager;
 import core.ParentAccount;
 import ui.template.BigButton;
 import ui.template.ParentPageFrame;
+import ui.ManageTasksFrame;
 
 import javax.swing.*;
 import java.awt.*;
@@ -21,9 +23,6 @@ public class ParentUserCenterFrame extends ParentPageFrame {
         lowerPanel.setLayout(new GridBagLayout());
         GridBagConstraints gbc = new GridBagConstraints();
         gbc.insets = new Insets(10, 10, 10, 10);
-
-//        JLabel infoLabel = new JLabel("Information");
-//        lowerPanel.add(infoLabel, BorderLayout.NORTH);
 
         // *** Information Section ***
         // Set up heading for Information section
@@ -84,7 +83,6 @@ public class ParentUserCenterFrame extends ParentPageFrame {
         gb.gridy = 0;
         JLabel oldPassword = new JLabel("Old Password:");
 
-        //oldPassword.setHorizontalAlignment(SwingConstants.LEFT);
         fieldsPanel.add(oldPassword, gb);
         gb.gridx = 1;
         oldPasswordField = new JPasswordField(20);
@@ -143,7 +141,6 @@ public class ParentUserCenterFrame extends ParentPageFrame {
         String newPassword1 = new String(newPasswordField1.getPassword());
         String newPassword2 = new String(newPasswordField2.getPassword());
 
-//         验证旧密码是否正确
         if (!parentAccount.getPassword().equals(oldPassword)) {
             JOptionPane.showMessageDialog(this, "Incorrect old password.", "Error", JOptionPane.ERROR_MESSAGE);
             return;
@@ -154,18 +151,17 @@ public class ParentUserCenterFrame extends ParentPageFrame {
             return;
         }
 
-        // 验证两次新密码输入是否一致
         if (!newPassword1.equals(newPassword2)) {
             JOptionPane.showMessageDialog(this, "New passwords do not match.", "Error", JOptionPane.ERROR_MESSAGE);
             return;
         }
 
-        // 执行密码修改操作
         parentAccount.setPassword(newPassword2);
         JOptionPane.showMessageDialog(this, "Password changed successfully.", "Success", JOptionPane.INFORMATION_MESSAGE);
 
         accountManager.saveAccount(parentAccount);
     }
+
 
 
 }
