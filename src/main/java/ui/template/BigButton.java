@@ -24,7 +24,7 @@ public class BigButton extends JButton {
             setForegroundColor(new Color(0xF868B0));
         }
         else if(text.equals("Return")){
-            setBackgroundColor(Color.gray);
+            setBackgroundColor(new Color(0xDCDCDC));
             setForegroundColor(Color.BLACK);
         }
         else {
