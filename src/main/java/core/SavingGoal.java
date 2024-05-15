@@ -1,22 +1,24 @@
 package core;
 
 public class SavingGoal {
-    private String goalName;
+    private String name;
+    private String description;
     private double targetAmount;
-    private double rewardAmount;
+    private double reward;
 
-    public SavingGoal(String goalName, double targetAmount) {
-        this.goalName = goalName;
+    public SavingGoal(String Name, String description, double targetAmount, double reward) {
+        this.name = Name;
+        this.description = description;
         this.targetAmount = targetAmount;
-        this.rewardAmount = rewardAmount;
+        this.reward = reward;
     }
 
-    public String getGoalName() {
-        return goalName;
+    public String getName() {
+        return name;
     }
 
-    public void setGoalName(String goalName) {
-        this.goalName = goalName;
+    public void setName(String name) {
+        this.name = name;
     }
 
     public double getTargetAmount() {
@@ -27,14 +29,21 @@ public class SavingGoal {
         this.targetAmount = targetAmount;
     }
 
-    public double getRewardAmount() {
-        return rewardAmount;
+    public double getReward() {
+        return reward;
     }
 
-    public void setRewardAmount(double rewardAmount) {
-        this.rewardAmount = rewardAmount;
+    public void setReward(double reward) {
+        this.reward = reward;
     }
 
+    public String getDescription() {
+        return description;
+    }
+
+    public void setDescription(String description) {
+        this.description = description;
+    }
 
     public boolean isGoalReached(double savings) {
         return savings >= targetAmount;

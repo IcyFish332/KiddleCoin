@@ -1,12 +1,14 @@
 package ui;
 
+import core.Account;
 import core.AccountManager;
-import ui.RegistrationFrame;
+import core.ChildAccount;
+import core.ParentAccount;
+import ui.userCenter.KidUserCenterFrame;
+import ui.userCenter.ParentUserCenterFrame;
 
 import javax.swing.*;
 import java.awt.*;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 
 public class MainFrame extends JFrame {
     private AccountManager accountManager;
@@ -137,6 +139,7 @@ public class MainFrame extends JFrame {
         ImageIcon backgroundImage = new ImageIcon("path/to/image.jpg"); // 替换为实际图片路径
         JLabel backgroundLabel = new JLabel(backgroundImage);
         mainPanel.add(backgroundLabel, BorderLayout.NORTH);
+
     }
 
     // 登录按钮的响应方法（需要实现具体的登录逻辑）
@@ -151,6 +154,8 @@ public class MainFrame extends JFrame {
         if (isValid) {
             // 登录成功,转到主视图
             JOptionPane.showMessageDialog(this, "Login successful.");
+            openUserCenterFrame(accountManager, username);
+            dispose();
             // 转到其他视图的代码...
         } else {
             // 登录失败,显示错误消息
@@ -160,10 +165,25 @@ public class MainFrame extends JFrame {
         // 清除输入字段,以便下一次登录尝试
         usernameField.setText("");
         passwordField.setText("");
+
     }
 
     private void openRegistrationFrame() {
         RegistrationFrame registrationFrame = new RegistrationFrame(accountManager);
         registrationFrame.setVisible(true);
     }
+
+    private void openUserCenterFrame(AccountManager accountManager, String username) {
+        Account account = accountManager.getAccountByUsername(username);
+        if(account.getAccountType().equals("Kid")){
+            KidUserCenterFrame kidUserCenterFrame = new KidUserCenterFrame(accountManager, (ChildAccount)account);
+            kidUserCenterFrame.setVisible(true);
+        }
+        else if(account.getAccountType().equals("Parent")){
+            ParentUserCenterFrame ParentUserCenterFrame = new ParentUserCenterFrame(accountManager, (ParentAccount)account);
+            ParentUserCenterFrame.setVisible(true);
+        }
+
+    }
+
 }
