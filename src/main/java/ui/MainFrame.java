@@ -3,12 +3,12 @@ package ui;
 import core.Account;
 import core.AccountManager;
 import core.ChildAccount;
-import ui.RegistrationFrame;
+import core.ParentAccount;
+import ui.userCenter.KidUserCenterFrame;
+import ui.userCenter.ParentUserCenterFrame;
 
 import javax.swing.*;
 import java.awt.*;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 
 public class MainFrame extends JFrame {
     private AccountManager accountManager;
@@ -179,7 +179,10 @@ public class MainFrame extends JFrame {
             KidUserCenterFrame kidUserCenterFrame = new KidUserCenterFrame(accountManager, (ChildAccount)account);
             kidUserCenterFrame.setVisible(true);
         }
-
+        else if(account.getAccountType().equals("Parent")){
+            ParentUserCenterFrame ParentUserCenterFrame = new ParentUserCenterFrame(accountManager, (ParentAccount)account);
+            ParentUserCenterFrame.setVisible(true);
+        }
 
     }
 
