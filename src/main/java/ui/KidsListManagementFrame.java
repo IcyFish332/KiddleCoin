@@ -6,28 +6,27 @@ import javax.swing.table.TableCellRenderer;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-public class KidsListManagementFrame extends JFrame {
-   private static AccountManager accountManager;
+
+import core.ParentAccount;
+import ui.template.ParentPageFrame;
+import ui.template.BigButton;
+
+public class KidsListManagementFrame extends ParentPageFrame {
+    private  AccountManager accountManager;
+    private ParentAccount parentAccount;
     private DefaultTableModel model;
     private JTable table;
 
-    public KidsListManagementFrame(AccountManager accountManager) {
+    public KidsListManagementFrame(AccountManager accountManager, ParentAccount parentAccount) {
+        super("Kids' List Management", accountManager, parentAccount);
         this.accountManager = accountManager;
+        this.parentAccount = parentAccount;
         initComponents();
     }
 
     private void initComponents() {
-        setTitle("Kids' List Management");
-        setSize(800, 300);
-        setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        getContentPane().setLayout(new BorderLayout());
-
-        // 添加标题
-        JLabel titleLabel = new JLabel("Kids' List Management");
-        titleLabel.setFont(new Font("Arial", Font.BOLD, 24));
-        titleLabel.setForeground(new Color(255, 105, 180)); // 粉色字体
-        titleLabel.setHorizontalAlignment(SwingConstants.CENTER);
-        getContentPane().add(titleLabel, BorderLayout.NORTH);
+        // 初始化组件并定位到 lowerPanel
+        lowerPanel.setLayout(new BorderLayout()); // 设置 lowerPanel 的布局为 BorderLayout
 
         // 表格模型
         String[] columnNames = {"Name", "Account", "Savings", "Operations"};
@@ -45,13 +44,16 @@ public class KidsListManagementFrame extends JFrame {
         table.getColumnModel().getColumn(3).setPreferredWidth(400); // Operations列宽度调整
 
         JScrollPane scrollPane = new JScrollPane(table);
-        getContentPane().add(scrollPane, BorderLayout.CENTER);
+        lowerPanel.add(scrollPane, BorderLayout.CENTER); // 将表格添加到 lowerPanel 的中心
 
         // 添加按钮
         JButton addButton = new JButton("Add");
         addButton.addActionListener(this::addAccountAction);
-        getContentPane().add(addButton, BorderLayout.SOUTH);
+        lowerPanel.add(addButton, BorderLayout.SOUTH); // 将按钮添加到 lowerPanel 的南部
+
+        this.contentPanel.add(lowerPanel, BorderLayout.CENTER); // 将 lowerPanel 添加到 contentPanel
     }
+
 
     private void addAccountAction(ActionEvent e) {
         JTextField nameField = new JTextField();
@@ -83,38 +85,52 @@ public class KidsListManagementFrame extends JFrame {
 
 
     class OperationsRenderer extends JPanel implements TableCellRenderer {
-        JButton detailsButton, editButton, deleteButton;
+        BigButton detailsButton, editButton, deleteButton;
 
         public OperationsRenderer() {
-            setLayout(new FlowLayout(FlowLayout.LEFT, 5, 0));
-            detailsButton = new JButton("For More Details");
-            editButton = new JButton("Edit");
-            deleteButton = new JButton("Delete");
+            setLayout(new BoxLayout(this, BoxLayout.X_AXIS));  // 使用 BoxLayout 管理布局
+            detailsButton = new BigButton("For More Details");
+            editButton = new BigButton("Edit");
+            deleteButton = new BigButton("Delete");
+
             add(detailsButton);
             add(editButton);
             add(deleteButton);
+
+            adjustButtonVisibility(true); // 确保按钮在初始化时都是可见的
         }
 
+        private void adjustButtonVisibility(boolean isVisible) {
+            detailsButton.setVisible(isVisible);
+            editButton.setVisible(isVisible);
+            deleteButton.setVisible(isVisible);
+        }
+
+        @Override
         public Component getTableCellRendererComponent(JTable table, Object value,
                                                        boolean isSelected, boolean hasFocus, int row, int column) {
+            adjustButtonVisibility(true);  // 确保渲染时按钮都可见
             return this;
         }
     }
 
     class OperationsEditor extends DefaultCellEditor {
         protected JPanel panel;
-        protected JButton detailsButton, editButton, deleteButton;
+        protected BigButton detailsButton, editButton, deleteButton;
 
         public OperationsEditor(JCheckBox checkBox) {
             super(checkBox);
-            panel = new JPanel(new FlowLayout(FlowLayout.LEFT, 5, 0));
-            detailsButton = new JButton("For More Details");
-            editButton = new JButton("Edit");
-            deleteButton = new JButton("Delete");
+            panel = new JPanel();
+            panel.setLayout(new BoxLayout(panel, BoxLayout.X_AXIS));  // 使用 BoxLayout
+            detailsButton = new BigButton("For More Details");
+            editButton = new BigButton("Edit");
+            deleteButton = new BigButton("Delete");
 
             panel.add(detailsButton);
             panel.add(editButton);
             panel.add(deleteButton);
+
+            adjustButtonVisibility(true);
 
             // 配置详细信息按钮的监听器
             detailsButton.addActionListener(e -> {
@@ -122,20 +138,28 @@ public class KidsListManagementFrame extends JFrame {
                 if (row >= 0) {
                     String name = model.getValueAt(row, 0).toString();
                     String savings = model.getValueAt(row, 2).toString();
-                    openDetailsFrame(name, savings);
+                    KidDetailsFrame detailsFrame = new KidDetailsFrame(accountManager, parentAccount, name, savings);
+                    detailsFrame.setVisible(true);
                 }
             });
             editButton.addActionListener(e -> editKid());
             deleteButton.addActionListener(e -> deleteKid());
         }
 
-        private void openDetailsFrame(String name, String savings) {
-            KidDetailsFrame detailsFrame = new KidDetailsFrame(accountManager,name, savings);
-            detailsFrame.setVisible(true);
+//        private void openDetailsFrame(String name, String savings) {
+//            KidDetailsFrame detailsFrame = new KidDetailsFrame(accountManager, parentAcccount,name, savings);
+//            detailsFrame.setVisible(true);
+//        }
+
+        private void adjustButtonVisibility(boolean isVisible) {
+            detailsButton.setVisible(isVisible);
+            editButton.setVisible(isVisible);
+            deleteButton.setVisible(isVisible);
         }
 
         public Component getTableCellEditorComponent(JTable table, Object value,
                                                      boolean isSelected, int row, int column) {
+            adjustButtonVisibility(true);  // 确保编辑时按钮都可见
             return panel;
         }
     }
@@ -179,9 +203,11 @@ public class KidsListManagementFrame extends JFrame {
             JOptionPane.showMessageDialog(this, "No account selected!");
         }
     }
-
-    public static void main(String[] args) {
-
-        new KidsListManagementFrame(accountManager).setVisible(true);
-    }
 }
+
+
+//    public static void main(String[] args) {
+//        ParentAccount childAccount = null;
+//        new KidsListManagementFrame(accountManager,childAccount).setVisible(true);
+//    }
+//}

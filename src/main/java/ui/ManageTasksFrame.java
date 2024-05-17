@@ -1,19 +1,25 @@
 package ui;
 import core.AccountManager;
+import core.ParentAccount;
+
 import javax.swing.*;
 import javax.swing.table.DefaultTableModel;
 import javax.swing.table.TableCellRenderer;
 import java.awt.*;
+import ui.template.ParentPageFrame;
+import ui.template.BigButton;
 
-public class ManageTasksFrame extends JFrame {
+public class ManageTasksFrame extends ParentPageFrame {
     private AccountManager accountManager;
+    private ParentAccount parentAccount;
     private DefaultTableModel tasksModel;
     private JTable tasksTable;
 
-    public ManageTasksFrame(AccountManager accountManager,String name, String totalSavings, DefaultTableModel receivedTasksModel) {
-        super("Manage Kid's Tasks");
+    public ManageTasksFrame(AccountManager accountManager, ParentAccount parentAccount, String name, String totalSavings, DefaultTableModel receivedTasksModel) {
+        super("Manage Kid's Tasks", accountManager, parentAccount);
         this.accountManager = accountManager;
-        this.tasksModel = receivedTasksModel;  // 使用从 KidDetailsFrame 传递过来的模型
+        this.parentAccount = parentAccount;
+        this.tasksModel = receivedTasksModel;  // Using the model passed from KidDetailsFrame
         initComponents(name, totalSavings);
         setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
         setSize(800, 600);
@@ -25,88 +31,61 @@ public class ManageTasksFrame extends JFrame {
         setTitle("Manage Kid's Tasks");
         setSize(800, 600);
         setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
-        setLayout(new BorderLayout());
 
-        JPanel mainPanel = new JPanel();
-        mainPanel.setLayout(new BoxLayout(mainPanel, BoxLayout.Y_AXIS));
-        add(mainPanel, BorderLayout.CENTER);
+        lowerPanel.setLayout(new BoxLayout(lowerPanel, BoxLayout.Y_AXIS));  // Set vertical box layout for lowerPanel
 
-        addTitleAndInfoPanel(mainPanel, name, totalSavings);
-        addTasksListPanel(mainPanel);
-        addTasksTable(mainPanel);
-
-        setLocationRelativeTo(null);
-        setVisible(true);
+        addTitleAndInfoPanel(name, totalSavings);
+        addTasksListPanel();
+        addTasksTable();
     }
 
-    private void addTitleAndInfoPanel(JPanel panel, String name, String totalSavings) {
-        JPanel titlePanel = new JPanel(new FlowLayout(FlowLayout.CENTER));
-        JLabel titleLabel = new JLabel("Manage Kid's Tasks");
-        titleLabel.setFont(new Font("Arial", Font.BOLD, 24));
-        titleLabel.setForeground(new Color(255, 105, 180));
-        titleLabel.setBorder(BorderFactory.createEmptyBorder(30, 0, 10, 0));
-        titlePanel.add(titleLabel);
-
+    private void addTitleAndInfoPanel(String name, String totalSavings) {
         JPanel infoPanel = new JPanel();
         infoPanel.setLayout(new BoxLayout(infoPanel, BoxLayout.X_AXIS));
-        infoPanel.setAlignmentX(Component.CENTER_ALIGNMENT);
+        infoPanel.setBorder(BorderFactory.createEmptyBorder(10, 20, 10, 20));
 
-        JLabel nameLabel = new JLabel("Name: ");
+        JLabel nameLabel = new JLabel("Name: " + name);
         nameLabel.setFont(new Font("Arial", Font.PLAIN, 16));
-        JLabel nameValueLabel = new JLabel(name);
-        nameValueLabel.setFont(new Font("Arial", Font.PLAIN, 16));
-
-        JLabel savingsLabel = new JLabel("Total Savings: ");
+        JLabel savingsLabel = new JLabel("Total Savings: " + totalSavings);
         savingsLabel.setFont(new Font("Arial", Font.PLAIN, 16));
-        JLabel savingsValueLabel = new JLabel(totalSavings);
-        savingsValueLabel.setFont(new Font("Arial", Font.PLAIN, 16));
 
-        infoPanel.add(Box.createHorizontalGlue());
         infoPanel.add(nameLabel);
-        infoPanel.add(nameValueLabel);
-        infoPanel.add(Box.createHorizontalStrut(20));
+        infoPanel.add(Box.createHorizontalStrut(20));  // Space between name and savings
         infoPanel.add(savingsLabel);
-        infoPanel.add(savingsValueLabel);
-        infoPanel.add(Box.createHorizontalGlue());
 
-        panel.add(titlePanel);
-        panel.add(infoPanel);
+        lowerPanel.add(infoPanel);  // Add infoPanel to the lowerPanel
     }
 
-    private void addTasksListPanel(JPanel panel) {
+    private void addTasksListPanel() {
         JPanel tasksListPanel = new JPanel();
-        tasksListPanel.setLayout(new BoxLayout(tasksListPanel, BoxLayout.LINE_AXIS));
+        tasksListPanel.setLayout(new BoxLayout(tasksListPanel, BoxLayout.X_AXIS));
         tasksListPanel.setBorder(BorderFactory.createEmptyBorder(10, 0, 10, 0));
 
         JLabel tasksListLabel = new JLabel("Tasks List");
-        tasksListLabel.setFont(new Font("Arial", Font.PLAIN, 16));
+        tasksListLabel.setFont(new Font("Arial", Font.BOLD, 18));
         tasksListLabel.setForeground(new Color(255, 105, 180));
 
-        JButton setTaskButton = new JButton("+ Assign a task");
-        setTaskButton.setFont(new Font("Arial", Font.PLAIN, 12));
-        setTaskButton.setForeground(Color.WHITE);
-        setTaskButton.setBackground(new Color(255, 105, 180));
-        setTaskButton.addActionListener(e -> JOptionPane.showMessageDialog(this, "Assign a task - Not yet implemented"));
+        BigButton setTaskButton = new BigButton("+ Assign a Task");
+        setTaskButton.setFont(new Font("Arial", Font.PLAIN, 14));
+        setTaskButton.addActionListener(e -> JOptionPane.showMessageDialog(this, "Assign a Task - Not yet implemented"));
 
         tasksListPanel.add(tasksListLabel);
         tasksListPanel.add(Box.createHorizontalGlue());
         tasksListPanel.add(setTaskButton);
 
-        panel.add(tasksListPanel);
+        lowerPanel.add(tasksListPanel);  // Add tasksListPanel to the lowerPanel
     }
 
-    private void addTasksTable(JPanel panel) {
+    private void addTasksTable() {
         JPanel tablePanel = new JPanel(new BorderLayout());
         String[] taskColumns = {"Task's Name", "Description", "Award", "Operation"};
         tasksModel = new DefaultTableModel(null, taskColumns);
         tasksTable = new JTable(tasksModel);
         tasksTable.setRowHeight(30);
-        tasksTable.getColumnModel().getColumn(3).setCellRenderer(new KidDetailsFrame.ButtonRenderer());
-        tasksTable.getColumnModel().getColumn(3).setCellEditor(new KidDetailsFrame.ButtonEditor(new JCheckBox(), tasksTable, "goal"));
 
         JScrollPane tasksScrollPane = new JScrollPane(tasksTable);
         tablePanel.add(tasksScrollPane, BorderLayout.CENTER);
 
-        panel.add(tablePanel);
+        lowerPanel.add(tablePanel);  // Add tablePanel to the lowerPanel
     }
 }

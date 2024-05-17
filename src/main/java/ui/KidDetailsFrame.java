@@ -5,25 +5,30 @@ import javax.swing.table.DefaultTableModel;
 import javax.swing.table.TableCellRenderer;
 import java.awt.*;
 
+import core.ParentAccount;
+import ui.template.ParentPageFrame;
+import ui.template.BigButton;
 
-
-public class KidDetailsFrame extends JFrame {
+public class KidDetailsFrame extends ParentPageFrame {
     private AccountManager accountManager;
+    private ParentAccount parentAccount;
     private DefaultTableModel goalsModel;
     private DefaultTableModel tasksModel;
     private JTable goalsTable;
     private JTable tasksTable;
 
-    public KidDetailsFrame(AccountManager accountManager,String name, String totalSavings) {
+    public KidDetailsFrame(AccountManager accountManager, ParentAccount parentAccount, String name, String totalSavings) {
+        super("Details of Kid's Account", accountManager, parentAccount);
         this.accountManager = accountManager;
+        this.parentAccount = parentAccount;
         initComponents(name, totalSavings);
     }
 
     private void initComponents(String name, String totalSavings) {
-        setTitle("Details of Kid's Account");
         setSize(1000, 700);
         setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
-        setLayout(new BoxLayout(getContentPane(), BoxLayout.Y_AXIS));
+
+        lowerPanel.setLayout(new BoxLayout(lowerPanel, BoxLayout.Y_AXIS)); // Set vertical box layout for lowerPanel
 
         addTitleAndInfoPanel(name, totalSavings);
         setupGoalsSection(name, totalSavings);
@@ -32,145 +37,108 @@ public class KidDetailsFrame extends JFrame {
     }
 
     private void addTitleAndInfoPanel(String name, String totalSavings) {
-        JLabel titleLabel = new JLabel("Manage kid's Goals");
-        titleLabel.setFont(new Font("Arial", Font.BOLD, 24));
-        titleLabel.setForeground(new Color(255, 105, 180));
-        titleLabel.setAlignmentX(Component.LEFT_ALIGNMENT);
-        titleLabel.setBorder(BorderFactory.createEmptyBorder(20, 20, 20, 20));
-        add(titleLabel);
-
         JPanel infoPanel = new JPanel();
-        infoPanel.setLayout(new BoxLayout(infoPanel, BoxLayout.X_AXIS));
+        infoPanel.setLayout(new BoxLayout(infoPanel, BoxLayout.X_AXIS)); // Horizontal layout for name and savings
         infoPanel.setBorder(BorderFactory.createEmptyBorder(10, 20, 10, 20));
 
-        JPanel namePanel = new JPanel(new FlowLayout(FlowLayout.LEFT));
-        namePanel.add(new JLabel("Name:"));
-        namePanel.add(new JLabel(name));
+        JLabel nameLabel = new JLabel("Name: " + name);
+        nameLabel.setFont(new Font("Arial", Font.PLAIN, 16));
+        JLabel savingsLabel = new JLabel("Total Savings: " + totalSavings);
+        savingsLabel.setFont(new Font("Arial", Font.PLAIN, 16));
 
-        JPanel savingsPanel = new JPanel(new FlowLayout(FlowLayout.LEFT));
-        savingsPanel.add(new JLabel("Total Savings:"));
-        savingsPanel.add(new JLabel(totalSavings));
+        infoPanel.add(nameLabel);
+        infoPanel.add(Box.createHorizontalGlue()); // This will push the savings label to the right
+        infoPanel.add(savingsLabel);
 
-        infoPanel.add(namePanel);
-        infoPanel.add(Box.createHorizontalGlue());
-        infoPanel.add(savingsPanel);
-
-        add(infoPanel);
+        lowerPanel.add(infoPanel); // Add infoPanel to the lowerPanel
     }
 
     private void setupGoalsSection(String name, String totalSavings) {
-        JPanel goalsPanel = new JPanel();
-        goalsPanel.setLayout(new BorderLayout());
+        JPanel goalsPanel = new JPanel(new BorderLayout());
         JLabel goalsLabel = new JLabel("Goals");
         goalsLabel.setFont(new Font("Arial", Font.BOLD, 18));
         goalsLabel.setForeground(new Color(255, 105, 180));
-        goalsPanel.add(goalsLabel, BorderLayout.NORTH);
 
         String[] goalColumns = {"Goal's Name", "Description", "Money Amount", "Award", "Progress", "Operation"};
         goalsModel = new DefaultTableModel(null, goalColumns);
         goalsTable = new JTable(goalsModel);
-        //goalsModel.addRow(new Object[]{"My Game", "For a computer game", "$30", "$10", "$17", ""});
-
-        goalsTable.setRowHeight(30);
         goalsTable.getColumnModel().getColumn(5).setCellRenderer(new ButtonRenderer());
         goalsTable.getColumnModel().getColumn(5).setCellEditor(new ButtonEditor(new JCheckBox(), goalsTable, "goal"));
+        goalsModel.addRow(new Object[]{"My Game", "For a computer game", "$30", "$10", "$17", ""});
 
         JScrollPane goalsScrollPane = new JScrollPane(goalsTable);
+
+        goalsPanel.add(goalsLabel, BorderLayout.NORTH);
         goalsPanel.add(goalsScrollPane, BorderLayout.CENTER);
 
-        JButton manageGoalsButton = new JButton("See details and manage goals...");
-        manageGoalsButton.setFont(new Font("Arial", Font.PLAIN, 12));
-        manageGoalsButton.setForeground(new Color(255, 105, 180));
-        // 确保在用户点击 'See details and manage goals...' 按钮时传递正确的模型
+        BigButton manageGoalsButton = new BigButton("See details and manage goals...");
+//        manageGoalsButton.setFont(new Font("Arial", Font.PLAIN, 12));
+//        manageGoalsButton.setForeground(new Color(255, 105, 180));
         manageGoalsButton.addActionListener(e -> {
-            ManageGoalsFrame manageGoalsFrame = new ManageGoalsFrame(accountManager,name, totalSavings, goalsModel);
+            ManageGoalsFrame manageGoalsFrame = new ManageGoalsFrame(accountManager, parentAccount, name, totalSavings, goalsModel);
             manageGoalsFrame.setVisible(true);
         });
-
-
         goalsPanel.add(manageGoalsButton, BorderLayout.SOUTH);
 
-        add(goalsPanel);
+        lowerPanel.add(goalsPanel); // Add goalsPanel to the lowerPanel
     }
 
     private void setupTasksSection(String name, String totalSavings) {
-        JPanel tasksPanel = new JPanel();
-        tasksPanel.setLayout(new BorderLayout());
+        JPanel tasksPanel = new JPanel(new BorderLayout());
         JLabel tasksLabel = new JLabel("Tasks");
         tasksLabel.setFont(new Font("Arial", Font.BOLD, 18));
         tasksLabel.setForeground(new Color(255, 105, 180));
-        tasksPanel.add(tasksLabel, BorderLayout.NORTH);
 
         String[] taskColumns = {"Task's Name", "Description", "Award", "Operation"};
         tasksModel = new DefaultTableModel(null, taskColumns);
         tasksTable = new JTable(tasksModel);
-        //tasksModel.addRow(new Object[]{"Plates", "Wash plates once a day", "$30", ""});
-
-        tasksTable.setRowHeight(30);
         tasksTable.getColumnModel().getColumn(3).setCellRenderer(new ButtonRenderer());
         tasksTable.getColumnModel().getColumn(3).setCellEditor(new ButtonEditor(new JCheckBox(), tasksTable, "task"));
 
         JScrollPane tasksScrollPane = new JScrollPane(tasksTable);
+
+        tasksPanel.add(tasksLabel, BorderLayout.NORTH);
         tasksPanel.add(tasksScrollPane, BorderLayout.CENTER);
 
-        JButton manageTasksButton = new JButton("See details and manage tasks...");
-        manageTasksButton.setFont(new Font("Arial", Font.PLAIN, 12));
-        manageTasksButton.setForeground(new Color(255, 105, 180));
+        BigButton manageTasksButton = new BigButton("See details and manage tasks...");
+//        manageTasksButton.setFont(new Font("Arial", Font.PLAIN, 12));
+//        manageTasksButton.setForeground(new Color(255, 105, 180));
         manageTasksButton.addActionListener(e -> {
-            ManageTasksFrame manageTasksFrame = new ManageTasksFrame(accountManager,name, totalSavings, tasksModel);
+            ManageTasksFrame manageTasksFrame = new ManageTasksFrame(accountManager, parentAccount, name, totalSavings, tasksModel);
             manageTasksFrame.setVisible(true);
         });
         tasksPanel.add(manageTasksButton, BorderLayout.SOUTH);
 
-        add(tasksPanel);
+        lowerPanel.add(tasksPanel); // Add tasksPanel to the lowerPanel
     }
 
     private void addBottomButtons() {
-        // 创建包含按钮的面板，使用 GridLayout 以确保按钮均匀分布
-        JPanel buttonPanel = new JPanel(new GridLayout(1, 2, 10, 10)); // 1行2列的网格，水平和垂直间隔为10
-        buttonPanel.setBorder(BorderFactory.createEmptyBorder(20, 20, 20, 20)); // 添加边距
+        JPanel buttonPanel = new JPanel(new GridLayout(1, 2, 10, 10));
+        buttonPanel.setBorder(BorderFactory.createEmptyBorder(20, 20, 20, 20));
 
-        // 创建 "Set a Goal" 按钮，并为其添加事件监听器
-        JButton setGoalButton = new JButton("Set a Goal");
-        setGoalButton.setFont(new Font("Arial", Font.BOLD, 16));
-        setGoalButton.setForeground(new Color(255, 105, 180));
-        setGoalButton.addActionListener(e -> {
-            // TODO: 实现跳转到设置目标的页面
-            JOptionPane.showMessageDialog(this, "This will open the Set a Goal page.");
-        });
-
-        // 创建 "Assign a Task" 按钮，并为其添加事件监听器
-        JButton assignTaskButton = new JButton("Assign a Task");
-        assignTaskButton.setFont(new Font("Arial", Font.BOLD, 16));
-        assignTaskButton.setForeground(new Color(255, 105, 180));
-        assignTaskButton.addActionListener(e -> {
-            // TODO: 实现跳转到分配任务的页面
-            JOptionPane.showMessageDialog(this, "This will open the Assign a Task page.");
-        });
-
-        // 向面板添加按钮，并为每个按钮添加边框以形成视觉上的分隔
-        setGoalButton.setBorder(BorderFactory.createLineBorder(Color.GRAY, 2));
-        assignTaskButton.setBorder(BorderFactory.createLineBorder(Color.GRAY, 2));
-
+        BigButton setGoalButton = new BigButton("Set a Goal");
+//        setGoalButton.setFont(new Font("Arial", Font.BOLD, 16));
+//        setGoalButton.setForeground(new Color(255, 105, 180));
+        setGoalButton.addActionListener(e -> JOptionPane.showMessageDialog(this, "This will open the Set a Goal page."));
         buttonPanel.add(setGoalButton);
+
+        BigButton assignTaskButton = new BigButton("Assign a Task");
+//        assignTaskButton.setFont(new Font("Arial", Font.BOLD, 16));
+//        assignTaskButton.setForeground(new Color(255, 105, 180));
+        assignTaskButton.addActionListener(e -> JOptionPane.showMessageDialog(this, "This will open the Assign a Task page."));
         buttonPanel.add(assignTaskButton);
 
-        add(buttonPanel);
+        lowerPanel.add(buttonPanel); // Add buttonPanel to the lowerPanel
     }
 
 
-
-
-
-
-
-    static class ButtonRenderer extends JPanel implements TableCellRenderer {
-        JButton editButton, moveButton;
+static class ButtonRenderer extends JPanel implements TableCellRenderer {
+        BigButton editButton, moveButton;
 
         public ButtonRenderer() {
             setLayout(new FlowLayout(FlowLayout.LEFT, 5, 0));
-            editButton = new JButton("Edit");
-            moveButton = new JButton("Move");
+            editButton = new BigButton("Edit");
+            moveButton = new BigButton("Move");
             add(editButton);
             add(moveButton);
         }
@@ -184,7 +152,7 @@ public class KidDetailsFrame extends JFrame {
 
     static class ButtonEditor extends DefaultCellEditor {
         protected JPanel panel;
-        protected JButton editButton, moveButton;
+        protected BigButton editButton, moveButton;
         private JTable table;
         private String type;
 
@@ -193,8 +161,8 @@ public class KidDetailsFrame extends JFrame {
             this.table = table;
             this.type = type;
             panel = new JPanel(new FlowLayout(FlowLayout.LEFT, 5, 0));
-            editButton = new JButton("Edit");
-            moveButton = new JButton("Move");
+            editButton = new BigButton("Edit");
+            moveButton = new BigButton("Move");
 
             panel.add(editButton);
             panel.add(moveButton);
@@ -289,8 +257,4 @@ public class KidDetailsFrame extends JFrame {
             return panel;
         }
     }
-
-//    public static void main(String[] args) {
-//        SwingUtilities.invokeLater(() -> new KidDetailsFrame("Lucy", "$500").setVisible(true));
-//    }
 }
