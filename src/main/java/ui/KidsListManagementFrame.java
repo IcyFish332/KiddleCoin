@@ -12,7 +12,7 @@ import ui.template.ParentPageFrame;
 import ui.template.BigButton;
 
 public class KidsListManagementFrame extends ParentPageFrame {
-    private static AccountManager accountManager;
+    private  AccountManager accountManager;
     private ParentAccount parentAccount;
     private DefaultTableModel model;
     private JTable table;
@@ -203,11 +203,12 @@ public class KidsListManagementFrame extends ParentPageFrame {
             JOptionPane.showMessageDialog(this, "No account selected!");
         }
     }
-
-
-
-    public static void main(String[] args) {
-        ParentAccount childAccount = null;
-        new KidsListManagementFrame(accountManager,childAccount).setVisible(true);
-    }
 }
+
+
+
+//    public static void main(String[] args) {
+//        ParentAccount childAccount = null;
+//        new KidsListManagementFrame(accountManager,childAccount).setVisible(true);
+//    }
+//}
