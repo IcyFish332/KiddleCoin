@@ -67,13 +67,17 @@ public class ManageTasksFrame extends ParentPageFrame {
 
         BigButton setTaskButton = new BigButton("+ Assign a Task");
         setTaskButton.setFont(new Font("Arial", Font.PLAIN, 14));
-        setTaskButton.addActionListener(e -> JOptionPane.showMessageDialog(this, "Assign a Task - Not yet implemented"));
+        setTaskButton.addActionListener(e -> openAssignTaskFrame());
 
         tasksListPanel.add(tasksListLabel);
         tasksListPanel.add(Box.createHorizontalGlue());
         tasksListPanel.add(setTaskButton);
 
         lowerPanel.add(tasksListPanel);  // Add tasksListPanel to the lowerPanel
+    }
+    private void openAssignTaskFrame() {
+        openAssignTaskFrame taskFrame = new openAssignTaskFrame(); // 创建 GoalFrame 实例
+        taskFrame.setVisible(true); // 显示 GoalFrame
     }
 
     private void addTasksTable() {

@@ -119,33 +119,46 @@ public class KidDetailsFrame extends ParentPageFrame {
         BigButton setGoalButton = new BigButton("Set a Goal");
 //        setGoalButton.setFont(new Font("Arial", Font.BOLD, 16));
 //        setGoalButton.setForeground(new Color(255, 105, 180));
-        setGoalButton.addActionListener(e -> JOptionPane.showMessageDialog(this, "This will open the Set a Goal page."));
+        setGoalButton.addActionListener(e ->  openSetGoalFrame());
         buttonPanel.add(setGoalButton);
 
         BigButton assignTaskButton = new BigButton("Assign a Task");
 //        assignTaskButton.setFont(new Font("Arial", Font.BOLD, 16));
 //        assignTaskButton.setForeground(new Color(255, 105, 180));
-        assignTaskButton.addActionListener(e -> JOptionPane.showMessageDialog(this, "This will open the Assign a Task page."));
+        assignTaskButton.addActionListener(e -> openAssignTaskFrame());
         buttonPanel.add(assignTaskButton);
 
         lowerPanel.add(buttonPanel); // Add buttonPanel to the lowerPanel
     }
+    private void openSetGoalFrame() {
+        GoalFrame goalFrame = new GoalFrame(); // 创建 GoalFrame 实例
+        goalFrame.setVisible(true); // 显示 GoalFrame
+    }
+    private void openAssignTaskFrame() {
+        openAssignTaskFrame taskFrame = new openAssignTaskFrame(); // 创建 GoalFrame 实例
+        taskFrame.setVisible(true); // 显示 GoalFrame
+    }
 
 
-static class ButtonRenderer extends JPanel implements TableCellRenderer {
+    static class ButtonRenderer extends JPanel implements TableCellRenderer {
         BigButton editButton, moveButton;
 
         public ButtonRenderer() {
-            setLayout(new FlowLayout(FlowLayout.LEFT, 5, 0));
+            setLayout(new BoxLayout(this, BoxLayout.LINE_AXIS)); // Use BoxLayout for horizontal alignment
             editButton = new BigButton("Edit");
             moveButton = new BigButton("Move");
+
             add(editButton);
+            add(Box.createRigidArea(new Dimension(5, 0))); // Add space between buttons
             add(moveButton);
         }
 
         @Override
         public Component getTableCellRendererComponent(JTable table, Object value,
                                                        boolean isSelected, boolean hasFocus, int row, int column) {
+            // Ensure all buttons are visible
+            editButton.setVisible(true);
+            moveButton.setVisible(true);
             return this;
         }
     }
@@ -160,11 +173,13 @@ static class ButtonRenderer extends JPanel implements TableCellRenderer {
             super(checkBox);
             this.table = table;
             this.type = type;
-            panel = new JPanel(new FlowLayout(FlowLayout.LEFT, 5, 0));
+            panel = new JPanel();
+            panel.setLayout(new BoxLayout(panel, BoxLayout.LINE_AXIS)); // Use BoxLayout for horizontal alignment
             editButton = new BigButton("Edit");
             moveButton = new BigButton("Move");
 
             panel.add(editButton);
+            panel.add(Box.createRigidArea(new Dimension(5, 0))); // Add space between buttons
             panel.add(moveButton);
 
             editButton.addActionListener(e -> editItem());

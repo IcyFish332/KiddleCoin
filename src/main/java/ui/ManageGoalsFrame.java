@@ -65,12 +65,15 @@ public class ManageGoalsFrame extends ParentPageFrame {
 
         BigButton setGoalButton = new BigButton("+ Set a Goal");
         setGoalButton.setFont(new Font("Arial", Font.PLAIN, 14));
-        setGoalButton.addActionListener(e -> JOptionPane.showMessageDialog(this, "Set a Goal - Not yet implemented"));
-
+        setGoalButton.addActionListener(e ->  openSetGoalFrame());
         goalsListPanel.add(goalsListLabel, BorderLayout.WEST);
         goalsListPanel.add(setGoalButton, BorderLayout.EAST);
 
         lowerPanel.add(goalsListPanel);
+    }
+    private void openSetGoalFrame() {
+        GoalFrame goalFrame = new GoalFrame(); // 创建 GoalFrame 实例
+        goalFrame.setVisible(true); // 显示 GoalFrame
     }
 
     private void addGoalsTable() {
