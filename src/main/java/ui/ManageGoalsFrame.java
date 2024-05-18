@@ -10,9 +10,9 @@ import javax.swing.table.DefaultTableModel;
 import java.awt.*;
 
 public class ManageGoalsFrame extends ParentPageFrame {
-    private static AccountManager accountManager;
-    private static ParentAccount parentAccount;
-    private DefaultTableModel goalsModel;
+    private  AccountManager accountManager;
+    private  ParentAccount parentAccount;
+    private  DefaultTableModel goalsModel;
     private JTable goalsTable;
     private int currentRowIndex = 0; // 初始化为0，以从第一行开始
 
@@ -75,7 +75,7 @@ public class ManageGoalsFrame extends ParentPageFrame {
 
     private void addGoalsTable() {
         JPanel tablePanel = new JPanel(new BorderLayout());
-        String[] goalColumns = {"Goal's Name", "Description", "Money Amount", "Award", "Progress", "Operation"};
+        String[] goalColumns = {"Goal's Name", "Description", "Target", "Award", "Progress", "Operation"};
         goalsModel = new DefaultTableModel(null, goalColumns);
         goalsTable = new JTable(goalsModel);
         goalsTable.setRowHeight(30);
@@ -87,32 +87,25 @@ public class ManageGoalsFrame extends ParentPageFrame {
     }
 
     private void openSetGoalFrame() {
-        GoalFrame goalFrame = new GoalFrame(accountManager, parentAccount);
+        GoalFrame goalFrame = new GoalFrame(accountManager, parentAccount,this);
         goalFrame.setVisible(true);
     }
 
-    public void updateGoalsName(String goalsName) {
-        updateTableCell(goalsName, 0);
-    }
-
-    public void updateTarget(String target) {
-        updateTableCell(target, 2);
-    }
-
-    public void updateAward(String award) {
-        updateTableCell(award, 3);
-    }
-
-    public void updateDescription(String description) {
-        updateTableCell(description, 1);
-    }
-
-    private void updateTableCell(String value, int column) {
+    public void updateRow(String goalsName, String target, String award, String description) {
         if (currentRowIndex >= goalsModel.getRowCount()) {
             goalsModel.addRow(new Object[]{"", "", "", "", "", ""});
         }
-        goalsModel.setValueAt(value, currentRowIndex, column);
+        goalsModel.setValueAt(goalsName, currentRowIndex, 0);
+        goalsModel.setValueAt(description, currentRowIndex, 1);
+        goalsModel.setValueAt(target, currentRowIndex, 2);
+        goalsModel.setValueAt(award, currentRowIndex, 3);
+        currentRowIndex++; // 更新完整行后递增行索引
     }
+
+
+    //public static void main(String[] args) {
+     //   SwingUtilities.invokeLater(() -> new ManageGoalsFrame(accountManager, parentAccount, "Name", "1000", goalsModel).setVisible(true));
+    //}示例主函数
 
 }
 
