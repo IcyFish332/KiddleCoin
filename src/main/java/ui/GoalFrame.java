@@ -3,7 +3,6 @@ import core.AccountManager;
 import core.ParentAccount;
 import ui.template.BigButton;
 import ui.template.ParentPageFrame;
-import ui.ManageTasksFrame;
 
 import javax.swing.*;
 import javax.swing.table.DefaultTableModel;
@@ -11,18 +10,19 @@ import java.awt.*;
 import java.util.Set;
 
 public class GoalFrame extends ParentPageFrame {
-    private static AccountManager accountManager;
-    private static ParentAccount parentAccount;
-    private static ManageGoalsFrame manageGoalsFrame;
-    private DefaultTableModel goalsModel;
+    private AccountManager accountManager;
+    private ParentAccount parentAccount;
+    private ManageGoalsFrame manageGoalsFrame;
     private JTextField goalnameField;
     private JTextField targetField;
     private JTextField awardField;
     private JTextArea Description;
 
-    public GoalFrame(AccountManager accountManager, ParentAccount parentAccount) {
+    public GoalFrame(AccountManager accountManager, ParentAccount parentAccount, ManageGoalsFrame manageGoalsFrame) {
         super("Set a Goal", accountManager, parentAccount);
-        this.manageGoalsFrame = manageGoalsFrame; // 保存 ManageGoalsFrame 的引用
+        this.manageGoalsFrame = manageGoalsFrame;
+        this.accountManager = accountManager;
+        this.parentAccount = parentAccount;// 保存 ManageGoalsFrame 的引用
         setLocationRelativeTo(null);
 
         // Lower Panel for user inputs and information label
@@ -138,42 +138,19 @@ public class GoalFrame extends ParentPageFrame {
     }
 
 
-
-    // Method to update information
-    // Method to update information
     private void updateInformation() {
         String goalsName = goalnameField.getText();
         String target = targetField.getText();
         String award = awardField.getText();
         String description = Description.getText();
 
-            ManageGoalsFrame newManageGoalsFrame = new ManageGoalsFrame(accountManager, parentAccount, "Name", "Total Savings", goalsModel);
-            newManageGoalsFrame.updateGoalsName(goalsName);
-            newManageGoalsFrame.updateTarget(target);
-            newManageGoalsFrame.updateAward(award);
-            newManageGoalsFrame.updateDescription(description);
-            newManageGoalsFrame.setVisible(true);
-
+        manageGoalsFrame.updateRow(goalsName, target, award, description);
+        manageGoalsFrame.setVisible(true);
 
         dispose();
     }
 
 
-
-
-    private void addLabeledComponents(JPanel panel, GridBagConstraints gbc, String labelText, String valueText) {
-        gbc.gridx = 0; // 标签位于第一列
-        JLabel label = new JLabel(labelText);
-        label.setHorizontalAlignment(SwingConstants.RIGHT); // 标签右对齐
-        panel.add(label, gbc);
-
-        gbc.gridx = 1; // 值位于第二列
-        JLabel value = new JLabel(valueText);
-        value.setHorizontalAlignment(SwingConstants.LEFT); // 值左对齐
-        panel.add(value, gbc);
-
-        gbc.gridy++; // 移动到下一行
-    }
 
     private boolean anyTextFieldIsEmpty() {
         return goalnameField.getText().isEmpty() ||
@@ -197,15 +174,18 @@ public class GoalFrame extends ParentPageFrame {
 
     private void returnToManageGoalsFrame() {
         // 关闭当前的 GoalFrame
+
         dispose();
-
-
     }
 
+    //public static void main(String[] args) {
+      //  SwingUtilities.invokeLater(() -> new GoalFrame(accountManager, parentAccount, "Name", "1000", goalsModel).setVisible(true));
+    //}
+    //}示例主函数
 
-    public static void main(String[] args) {
-        SwingUtilities.invokeLater(() -> new GoalFrame(accountManager, parentAccount).setVisible(true));
-    }
+
+
+
 }
 
 

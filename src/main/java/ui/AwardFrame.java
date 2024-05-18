@@ -11,8 +11,8 @@ import java.awt.*;
 import java.util.Set;
 
 public class AwardFrame extends ParentPageFrame {
-    private AccountManager accountManager;
-    private ParentAccount parentAccount;
+    private  AccountManager accountManager;
+    private  ParentAccount parentAccount;
     private DefaultTableModel goalsModel;
     private JTextField AwardnameField;
     private JTextField AmountField;
@@ -67,10 +67,10 @@ public class AwardFrame extends ParentPageFrame {
         // Add old password field
         gb.gridx = 0;
         gb.gridy = 0;
-        JLabel goalName = new JLabel("Award Name");
+        JLabel AwardName = new JLabel("Award Name");
 
         //oldPassword.setHorizontalAlignment(SwingConstants.LEFT);
-        fieldsPanel.add(goalName, gb);
+        fieldsPanel.add(AwardName, gb);
         gb.gridx = 1;
         AwardnameField = new JTextField(20);
         fieldsPanel.add(AwardnameField, gb);
@@ -78,33 +78,48 @@ public class AwardFrame extends ParentPageFrame {
         // Add new password field 1
         gb.gridx = 0;
         gb.gridy = 1;
-        fieldsPanel.add(new JLabel("Amount"), gb);
+        fieldsPanel.add(new JLabel("Award   $"), gb);
         gb.gridx = 1;
-        AmountField = new JPasswordField(20);
+        AmountField = new JTextField(20);
         fieldsPanel.add(AmountField, gb);
+        lowerPanel.add(fieldsPanel, gbc);
 
         // Buttons
         JPanel buttonPanel = new JPanel();
         buttonPanel.setBackground(Color.WHITE);
         BigButton submitButton = new BigButton("Submit");
-        BigButton returnButton = new BigButton("return");
+        BigButton returnButton = new BigButton("Return");
 
         submitButton.addActionListener(e -> {
             // Validate input fields (pseudo-code)
             if (anyTextFieldIsEmpty()) {
-                // Update information (pseudo-code)
+                showInvalidInfoDialog();
 
             } else {
-                showInvalidInfoDialog();
+                //update code
+                this.dispose();
             }
         });
+
+        returnButton.addActionListener(e -> returnToManageGoalsFrame());
         gbc.gridy = 4;
         gbc.gridwidth = 2; // Span across two columns
+
+        gbc.gridy = 4;
+        buttonPanel.add(submitButton);
+        buttonPanel.add(Box.createRigidArea(new Dimension(50, 0)));
+        buttonPanel.add(returnButton);
+        gbc.gridwidth = 2; // Span across two columns
+
+        lowerPanel.add(buttonPanel, gbc);
+
+        setVisible(true);
 
 
 
 
         lowerPanel.add(buttonPanel, gbc);
+
 
         setVisible(true);
     }
@@ -149,7 +164,15 @@ public class AwardFrame extends ParentPageFrame {
         dialog.setVisible(true);
     }
 
+    private void returnToManageGoalsFrame() {
+        // 关闭当前的 GoalFrame
 
+        dispose();
+    }
+
+//public static void main(String[] args) {
+ //     SwingUtilities.invokeLater(() -> new AwardFrame(accountManager, parentAccount).setVisible(true));
+   // }
 
 }
 

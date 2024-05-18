@@ -10,17 +10,22 @@ import javax.swing.table.DefaultTableModel;
 import java.awt.*;
 import java.util.Set;
 
+
+
 public class AssignmentFrame extends ParentPageFrame {
-    private AccountManager accountManager;
-    private ParentAccount parentAccount;
-    private DefaultTableModel goalsModel;
+    private static AccountManager accountManager;
+    private static ParentAccount parentAccount;
+    private static ManageTasksFrame manageTasksFrame;
     private JTextField targetnameField;
-    private JTextArea taskcontentField;
+    private JTextField taskcontentField;
+
     private JTextField awardField;
     private JTextField deadlineField;
 
-    public AssignmentFrame(AccountManager accountManager, ParentAccount parentAccount) {
+    public AssignmentFrame(AccountManager accountManager, ParentAccount parentAccount,ManageTasksFrame manageTasksFrame) {
         super("Assign a Task", accountManager, parentAccount);
+        this.manageTasksFrame = manageTasksFrame;
+        this.accountManager = accountManager;
         setLocationRelativeTo(null);
 
         // Lower Panel for user inputs and information label
@@ -81,7 +86,7 @@ public class AssignmentFrame extends ParentPageFrame {
         gb.gridy = 1;
         fieldsPanel.add(new JLabel("Task Content"), gb);
         gb.gridx = 1;
-        taskcontentField = new JTextArea(5,20);
+        taskcontentField = new JTextField(20);
         fieldsPanel.add(taskcontentField, gb);
 
         // Add new password field 2
@@ -94,7 +99,7 @@ public class AssignmentFrame extends ParentPageFrame {
 
         gb.gridx = 0;
         gb.gridy = 3;
-        fieldsPanel.add(new JLabel("Description:"), gb);
+        fieldsPanel.add(new JLabel("Deadline:"), gb);
         gb.gridx = 1;
         deadlineField = new JTextField(20);
         fieldsPanel.add(deadlineField, gb);
@@ -106,50 +111,33 @@ public class AssignmentFrame extends ParentPageFrame {
         JPanel buttonPanel = new JPanel();
         buttonPanel.setBackground(Color.WHITE);
         BigButton submitButton = new BigButton("Submit");
-        BigButton returnButton = new BigButton("return");
+        BigButton returnButton= new BigButton("Return");
 
         submitButton.addActionListener(e -> {
             // Validate input fields (pseudo-code)
             if (anyTextFieldIsEmpty()) {
                 // Update information (pseudo-code)
-
-            } else {
                 showInvalidInfoDialog();
+            } else {
+                updateInformation();
+                this.dispose();
             }
         });
+
+        returnButton.addActionListener(e -> returnToManageTasksFrame());
+
         gbc.gridy = 4;
         gbc.gridwidth = 2; // Span across two columns
 
-        returnButton.addActionListener(e -> {
-            // Return to ManageGoalsFrame with appropriate parameters
-            new ManageGoalsFrame(accountManager, parentAccount, "Name", "Total Savings", goalsModel).setVisible(true);
-            this.dispose(); // Close the current frame
-        });
-
+        gbc.gridy = 4;
+        buttonPanel.add(submitButton);
+        buttonPanel.add(Box.createRigidArea(new Dimension(50, 0)));
+        buttonPanel.add(returnButton);
+        gbc.gridwidth = 2; // Span across two columns
 
         lowerPanel.add(buttonPanel, gbc);
 
         setVisible(true);
-    }
-
-
-
-
-    // Method to update information
-
-
-    private void addLabeledComponents(JPanel panel, GridBagConstraints gbc, String labelText, String valueText) {
-        gbc.gridx = 0; // 标签位于第一列
-        JLabel label = new JLabel(labelText);
-        label.setHorizontalAlignment(SwingConstants.RIGHT); // 标签右对齐
-        panel.add(label, gbc);
-
-        gbc.gridx = 1; // 值位于第二列
-        JLabel value = new JLabel(valueText);
-        value.setHorizontalAlignment(SwingConstants.LEFT); // 值左对齐
-        panel.add(value, gbc);
-
-        gbc.gridy++; // 移动到下一行
     }
 
     private boolean anyTextFieldIsEmpty() {
@@ -171,6 +159,29 @@ public class AssignmentFrame extends ParentPageFrame {
         dialog.setLocationRelativeTo(this);
         dialog.setVisible(true);
     }
+
+    private void returnToManageTasksFrame() {
+        // 关闭当前的 GoalFrame
+
+        dispose();
+
+
+    }
+
+    private void updateInformation() {
+        String goalsName = targetnameField.getText();
+        String target = taskcontentField.getText();
+        String award = awardField.getText();
+        String description = deadlineField.getText();
+
+        manageTasksFrame.updateRow(goalsName, target, award, description);
+        manageTasksFrame.setVisible(true);
+
+        dispose();
+    }
+
+
+
 
 
 
