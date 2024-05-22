@@ -4,15 +4,16 @@ import javax.swing.*;
 import javax.swing.table.DefaultTableModel;
 import javax.swing.table.TableCellRenderer;
 import java.awt.*;
+import ui.GoalFrame;
 
 import core.ParentAccount;
 import ui.template.ParentPageFrame;
 import ui.template.BigButton;
 
 public class KidDetailsFrame extends ParentPageFrame {
-    private AccountManager accountManager;
-    private ParentAccount parentAccount;
-    private DefaultTableModel goalsModel;
+    private static AccountManager accountManager;
+    private static ParentAccount parentAccount;
+    private static DefaultTableModel goalsModel;
     private DefaultTableModel tasksModel;
     private JTable goalsTable;
     private JTable tasksTable;
@@ -131,11 +132,11 @@ public class KidDetailsFrame extends ParentPageFrame {
         lowerPanel.add(buttonPanel); // Add buttonPanel to the lowerPanel
     }
     private void openSetGoalFrame() {
-        GoalFrame goalFrame = new GoalFrame(); // 创建 GoalFrame 实例
+        GoalFrame goalFrame = new GoalFrame(accountManager, parentAccount,null); // 创建 GoalFrame 实例
         goalFrame.setVisible(true); // 显示 GoalFrame
     }
     private void openAssignTaskFrame() {
-        openAssignTaskFrame taskFrame = new openAssignTaskFrame(); // 创建 GoalFrame 实例
+        AssignmentFrame taskFrame = new AssignmentFrame(accountManager,parentAccount,null); // 创建 GoalFrame 实例
         taskFrame.setVisible(true); // 显示 GoalFrame
     }
 
@@ -272,4 +273,7 @@ public class KidDetailsFrame extends ParentPageFrame {
             return panel;
         }
     }
-}
+    public static void main(String[] args) {
+      SwingUtilities.invokeLater(() -> new KidsListManagementFrame(accountManager, parentAccount).setVisible(true));
+    }
+    }

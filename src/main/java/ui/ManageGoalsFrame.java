@@ -10,9 +10,9 @@ import javax.swing.table.DefaultTableModel;
 import java.awt.*;
 
 public class ManageGoalsFrame extends ParentPageFrame {
-    private  AccountManager accountManager;
-    private  ParentAccount parentAccount;
-    private  DefaultTableModel goalsModel;
+    private   AccountManager accountManager;
+    private   ParentAccount parentAccount;
+    private   DefaultTableModel goalsModel;
     private JTable goalsTable;
     private int currentRowIndex = 0; // 初始化为0，以从第一行开始
 
@@ -104,7 +104,7 @@ public class ManageGoalsFrame extends ParentPageFrame {
 
 
     //public static void main(String[] args) {
-    //   SwingUtilities.invokeLater(() -> new ManageGoalsFrame(accountManager, parentAccount, "Name", "1000", goalsModel).setVisible(true));
-    //}示例主函数
+     // SwingUtilities.invokeLater(() -> new ManageGoalsFrame(accountManager, parentAccount, "Name", "1000", goalsModel).setVisible(true));
+    //}
 
 }

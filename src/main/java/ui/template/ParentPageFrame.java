@@ -7,6 +7,7 @@ import java.awt.event.ActionListener;
 
 import core.AccountManager;
 import core.ParentAccount;
+import ui.KidDetailsFrame;
 import ui.ManageGoalsFrame;
 import ui.ManageTasksFrame;
 import ui.userCenter.ParentUserCenterFrame;
@@ -63,12 +64,33 @@ public class ParentPageFrame extends JFrame {
         // 添加侧边栏按钮
         SidebarButton button1 = new SidebarButton("Kid List");
         buttonPanel.add(button1);
+        button1.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+                KidDetailsFrame kidDetailsFrame = new KidDetailsFrame(accountManager, parentAccount,"name","1000");
+                kidDetailsFrame.setVisible(true);
+                dispose();
+            }
+        });
         SidebarButton button2 = new SidebarButton("Manage Goals");
         buttonPanel.add(button2);
+        button2.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+                ManageGoalsFrame manageGoalsFrame = new ManageGoalsFrame(accountManager, parentAccount,"name","1000",null);
+                manageGoalsFrame.setVisible(true);
+                dispose();
+            }
+        });
 
 
         SidebarButton button3 = new SidebarButton("Manage Tasks");
         buttonPanel.add(button3);
+        button3.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+                ManageTasksFrame parentUserCenterFrame = new ManageTasksFrame(accountManager, parentAccount,"name","1000",null);
+                parentUserCenterFrame.setVisible(true);
+                dispose();
+            }
+        });
 
 
         SidebarButton button4 = new SidebarButton("User Center");

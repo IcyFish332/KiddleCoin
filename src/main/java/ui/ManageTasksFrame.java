@@ -16,6 +16,7 @@ public class ManageTasksFrame extends ParentPageFrame {
     private JTable tasksTable;
     private int currentRowIndex = 0;
 
+
     public ManageTasksFrame(AccountManager accountManager, ParentAccount parentAccount, String name, String totalSavings, DefaultTableModel receivedTasksModel) {
         super("Manage Kid's Tasks", accountManager, parentAccount);
         this.accountManager = accountManager;
@@ -106,8 +107,5 @@ public class ManageTasksFrame extends ParentPageFrame {
         currentRowIndex++; // 更新完整行后递增行索引
     }
 
-    //public static void main(String[] args) {
-    //    SwingUtilities.invokeLater(() -> new ManageTasksFrame(accountManager,parentAccount,"Name","1011",tasksModel).setVisible(true));
-    //}示例主函数
 
 }
