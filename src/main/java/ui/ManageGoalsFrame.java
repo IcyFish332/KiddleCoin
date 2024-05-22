@@ -1,25 +1,26 @@
 package ui;
+
 import core.AccountManager;
 import core.ParentAccount;
+import ui.template.BigButton;
+import ui.template.ParentPageFrame;
 
 import javax.swing.*;
 import javax.swing.table.DefaultTableModel;
-import javax.swing.table.TableCellRenderer;
 import java.awt.*;
-import ui.template.ParentPageFrame;
-import ui.template.BigButton;
 
 public class ManageGoalsFrame extends ParentPageFrame {
-    private AccountManager accountManager;
-    private ParentAccount parentAccount;
-    private DefaultTableModel goalsModel;
+    private  AccountManager accountManager;
+    private  ParentAccount parentAccount;
+    private  DefaultTableModel goalsModel;
     private JTable goalsTable;
+    private int currentRowIndex = 0; // 初始化为0，以从第一行开始
 
     public ManageGoalsFrame(AccountManager accountManager, ParentAccount parentAccount, String name, String totalSavings, DefaultTableModel receivedGoalsModel) {
         super("Manage Kid's Goals", accountManager, parentAccount);
         this.accountManager = accountManager;
         this.parentAccount = parentAccount;
-        this.goalsModel = receivedGoalsModel; // 使用从 KidDetailsFrame 传递过来的模型
+        this.goalsModel = receivedGoalsModel;
         initComponents(name, totalSavings);
     }
 
@@ -28,7 +29,7 @@ public class ManageGoalsFrame extends ParentPageFrame {
         setSize(800, 600);
         setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
 
-        lowerPanel.setLayout(new BoxLayout(lowerPanel, BoxLayout.Y_AXIS)); // 使用继承的 lowerPanel 并设置垂直布局
+        lowerPanel.setLayout(new BoxLayout(lowerPanel, BoxLayout.Y_AXIS));
 
         addInfoPanel(name, totalSavings);
         addGoalsListPanel();
@@ -48,7 +49,7 @@ public class ManageGoalsFrame extends ParentPageFrame {
         savingsLabel.setFont(new Font("Arial", Font.PLAIN, 16));
 
         infoPanel.add(nameLabel);
-        infoPanel.add(Box.createHorizontalStrut(20)); // Space between name and savings
+        infoPanel.add(Box.createHorizontalStrut(20));
         infoPanel.add(savingsLabel);
 
         lowerPanel.add(infoPanel);
@@ -65,21 +66,17 @@ public class ManageGoalsFrame extends ParentPageFrame {
 
         BigButton setGoalButton = new BigButton("+ Set a Goal");
         setGoalButton.setFont(new Font("Arial", Font.PLAIN, 14));
-        setGoalButton.addActionListener(e ->  openSetGoalFrame());
+        setGoalButton.addActionListener(e -> openSetGoalFrame());
         goalsListPanel.add(goalsListLabel, BorderLayout.WEST);
         goalsListPanel.add(setGoalButton, BorderLayout.EAST);
 
         lowerPanel.add(goalsListPanel);
     }
-    private void openSetGoalFrame() {
-        GoalFrame goalFrame = new GoalFrame(); // 创建 GoalFrame 实例
-        goalFrame.setVisible(true); // 显示 GoalFrame
-    }
 
     private void addGoalsTable() {
         JPanel tablePanel = new JPanel(new BorderLayout());
-        String[] goalColumns = {"Goal's Name", "Description", "Money Amount", "Award", "Progress", "Operation"};
-        goalsModel = new DefaultTableModel(null, goalColumns); // Assuming this is filled elsewhere or passed in
+        String[] goalColumns = {"Goal's Name", "Description", "Target", "Award", "Progress", "Operation"};
+        goalsModel = new DefaultTableModel(null, goalColumns);
         goalsTable = new JTable(goalsModel);
         goalsTable.setRowHeight(30);
 
@@ -88,4 +85,26 @@ public class ManageGoalsFrame extends ParentPageFrame {
 
         lowerPanel.add(tablePanel);
     }
+
+    private void openSetGoalFrame() {
+        GoalFrame goalFrame = new GoalFrame(accountManager, parentAccount,this);
+        goalFrame.setVisible(true);
+    }
+
+    public void updateRow(String goalsName, String target, String award, String description) {
+        if (currentRowIndex >= goalsModel.getRowCount()) {
+            goalsModel.addRow(new Object[]{"", "", "", "", "", ""});
+        }
+        goalsModel.setValueAt(goalsName, currentRowIndex, 0);
+        goalsModel.setValueAt(description, currentRowIndex, 1);
+        goalsModel.setValueAt(target, currentRowIndex, 2);
+        goalsModel.setValueAt(award, currentRowIndex, 3);
+        currentRowIndex++; // 更新完整行后递增行索引
+    }
+
+
+    //public static void main(String[] args) {
+    //   SwingUtilities.invokeLater(() -> new ManageGoalsFrame(accountManager, parentAccount, "Name", "1000", goalsModel).setVisible(true));
+    //}示例主函数
+
 }

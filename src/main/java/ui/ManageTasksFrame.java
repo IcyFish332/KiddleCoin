@@ -10,10 +10,11 @@ import ui.template.ParentPageFrame;
 import ui.template.BigButton;
 
 public class ManageTasksFrame extends ParentPageFrame {
-    private AccountManager accountManager;
-    private ParentAccount parentAccount;
-    private DefaultTableModel tasksModel;
+    private  AccountManager accountManager;
+    private  ParentAccount parentAccount;
+    private  DefaultTableModel tasksModel;
     private JTable tasksTable;
+    private int currentRowIndex = 0;
 
     public ManageTasksFrame(AccountManager accountManager, ParentAccount parentAccount, String name, String totalSavings, DefaultTableModel receivedTasksModel) {
         super("Manage Kid's Tasks", accountManager, parentAccount);
@@ -26,6 +27,7 @@ public class ManageTasksFrame extends ParentPageFrame {
         setLocationRelativeTo(null);
         setVisible(true);
     }
+
 
     private void initComponents(String name, String totalSavings) {
         setTitle("Manage Kid's Tasks");
@@ -67,17 +69,13 @@ public class ManageTasksFrame extends ParentPageFrame {
 
         BigButton setTaskButton = new BigButton("+ Assign a Task");
         setTaskButton.setFont(new Font("Arial", Font.PLAIN, 14));
-        setTaskButton.addActionListener(e -> openAssignTaskFrame());
+        setTaskButton.addActionListener(e -> openSetTaskFrame());
 
         tasksListPanel.add(tasksListLabel);
         tasksListPanel.add(Box.createHorizontalGlue());
         tasksListPanel.add(setTaskButton);
 
         lowerPanel.add(tasksListPanel);  // Add tasksListPanel to the lowerPanel
-    }
-    private void openAssignTaskFrame() {
-        openAssignTaskFrame taskFrame = new openAssignTaskFrame(); // 创建 GoalFrame 实例
-        taskFrame.setVisible(true); // 显示 GoalFrame
     }
 
     private void addTasksTable() {
@@ -92,4 +90,24 @@ public class ManageTasksFrame extends ParentPageFrame {
 
         lowerPanel.add(tablePanel);  // Add tablePanel to the lowerPanel
     }
+    private void openSetTaskFrame() {
+        AssignmentFrame assignmentFrame = new AssignmentFrame(accountManager, parentAccount,this);
+        assignmentFrame.setVisible(true);
+    }
+
+    public void updateRow(String targetname, String taskcontent, String award, String deadline) {
+        if (currentRowIndex >= tasksModel.getRowCount()) {
+            tasksModel.addRow(new Object[]{"", "", "", "", "", ""});
+        }
+        tasksModel.setValueAt(targetname, currentRowIndex, 0);
+        tasksModel.setValueAt(taskcontent, currentRowIndex, 1);
+        tasksModel.setValueAt(award, currentRowIndex, 2);
+        tasksModel.setValueAt(deadline, currentRowIndex, 3);
+        currentRowIndex++; // 更新完整行后递增行索引
+    }
+
+    //public static void main(String[] args) {
+    //    SwingUtilities.invokeLater(() -> new ManageTasksFrame(accountManager,parentAccount,"Name","1011",tasksModel).setVisible(true));
+    //}示例主函数
+
 }
