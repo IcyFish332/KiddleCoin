@@ -13,6 +13,7 @@ import ui.MyGoalsFrame;
 import ui.MyTasksFrame;
 import ui.userCenter.KidUserCenterFrame;
 
+
 public class KidPageFrame extends JFrame {
     protected JLabel titleLabel;
     protected JPanel sidebarPanel;
