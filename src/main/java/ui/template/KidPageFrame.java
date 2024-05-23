@@ -6,6 +6,11 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+
+import ui.HistoryFrame;
+import ui.MyAccountFrame;
+import ui.MyGoalsFrame;
+import ui.MyTasksFrame;
 import ui.userCenter.KidUserCenterFrame;
 
 public class KidPageFrame extends JFrame {
@@ -59,14 +64,57 @@ public class KidPageFrame extends JFrame {
         // 添加侧边栏按钮
         SidebarButton button1 = new SidebarButton("My Account");
         buttonPanel.add(button1);
+        button1.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                MyAccountFrame myAccountFrame = new MyAccountFrame(accountManager, childAccount);
+                myAccountFrame.setVisible(true);
+                dispose();
+            }
+        });
+        middlePanel.add(iconLabel, BorderLayout.NORTH);
+        middlePanel.add(buttonPanel, BorderLayout.CENTER);
+
         SidebarButton button2 = new SidebarButton("Manage My Balance");
         buttonPanel.add(button2);
         SidebarButton button3 = new SidebarButton("My Goals");
         buttonPanel.add(button3);
+        button3.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                MyGoalsFrame myGoalsFrame = new MyGoalsFrame(accountManager, childAccount);
+                myGoalsFrame.setVisible(true);
+                dispose();
+            }
+        });
+        middlePanel.add(iconLabel, BorderLayout.NORTH);
+        middlePanel.add(buttonPanel, BorderLayout.CENTER);
+
         SidebarButton button4 = new SidebarButton("My Tasks");
         buttonPanel.add(button4);
+        button4.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                MyTasksFrame myTasksFrame = new MyTasksFrame(accountManager, childAccount);
+                myTasksFrame.setVisible(true);
+                dispose();
+            }
+        });
+        middlePanel.add(iconLabel, BorderLayout.NORTH);
+        middlePanel.add(buttonPanel, BorderLayout.CENTER);
+
         SidebarButton button5 = new SidebarButton("History");
         buttonPanel.add(button5);
+
+        button5.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                HistoryFrame historyFrame = new HistoryFrame(accountManager, childAccount);
+                historyFrame.setVisible(true);
+                dispose();
+            }
+        });
+
         SidebarButton button6 = new SidebarButton("User Center");
         buttonPanel.add(button6);
 

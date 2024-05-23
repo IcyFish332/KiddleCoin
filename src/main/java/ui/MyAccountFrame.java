@@ -1,89 +1,140 @@
 package ui;
 
+import core.AccountManager;
+import core.ChildAccount;
+import core.SavingGoal;
+import core.Task;
+import ui.template.KidPageFrame;
+
 import javax.swing.*;
+import javax.swing.border.EmptyBorder;
 import javax.swing.table.DefaultTableModel;
 import java.awt.*;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
+import java.util.List;
+import java.util.Vector;
 
-public class MyAccountFrame extends JFrame {
-    private DefaultTableModel goalsModel;
-    private DefaultTableModel tasksModel;
+public class MyAccountFrame extends KidPageFrame {
+    private JLabel totalSavingsLabel;
+    private JLabel currentBalanceLabel;
+    private JTable goalsTable;
+    private JTable tasksTable;
+    private AccountManager accountManager;
+    private ChildAccount childAccount;
 
-    public MyAccountFrame(String username, double totalSavings, double currentBalance) {
-        initComponents(username, totalSavings, currentBalance);
+    public MyAccountFrame(AccountManager accountManager, ChildAccount childAccount) {
+        super("My Account", accountManager, childAccount);
+
+        this.accountManager = accountManager;
+        this.childAccount = childAccount;
+
+        // Add components
+        addComponents();
     }
 
-    private void initComponents(String username, double totalSavings, double currentBalance) {
-        setTitle("KiddleCoin");
-        setSize(800, 600);
-        setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
-        setLocationRelativeTo(null);
-        getContentPane().setBackground(Color.WHITE);
-        setLayout(new BoxLayout(getContentPane(), BoxLayout.Y_AXIS));
+    private void addComponents() {
+        lowerPanel.setLayout(new GridBagLayout());
+        GridBagConstraints gbc = new GridBagConstraints();
 
-        JPanel titlePanel = new JPanel(); // 创建面板用于容纳标题
-        titlePanel.setBackground(Color.WHITE);
-        JLabel titleLabel = new JLabel("My Account");
-        titleLabel.setFont(new Font("Arial", Font.BOLD, 24)); // 设置字体为粗体、字号为24
-        titleLabel.setForeground(new Color(255, 105, 180));
-        titlePanel.add(titleLabel); // 将标题标签添加到面板
-        add(titlePanel, BorderLayout.NORTH);
+        // Add My Total Savings and Current Balance panel
+        JPanel balancePanel = new JPanel(new GridBagLayout());
+        balancePanel.setBackground(new Color(0xFFF0F5));
+        balancePanel.setBorder(new EmptyBorder(10, 10, 10, 10));
+        GridBagConstraints balanceGbc = new GridBagConstraints();
 
-        addUserInfoPanel(username, totalSavings, currentBalance);
-        addGoalsSection();
-        addTasksSection();
-    }
+        JLabel avatarLabel = new JLabel(new ImageIcon("src/main/java/ui/template/icon_Kid.png")); // Placeholder for avatar icon
+        avatarLabel.setPreferredSize(new Dimension(80, 80)); // Adjust size as needed
+        avatarLabel.setOpaque(true);
+        avatarLabel.setBackground(new Color(0xFFE4E1)); // Light pink background for avatar
+        balanceGbc.gridx = 0;
+        balanceGbc.gridy = 0;
+        balanceGbc.gridheight = 2;
+        balanceGbc.insets = new Insets(0, 0, 0, 10);
+        balanceGbc.anchor = GridBagConstraints.NORTHWEST;
+        balancePanel.add(avatarLabel, balanceGbc);
 
-    private void addUserInfoPanel(String username, double totalSavings, double currentBalance) {
-        JPanel userInfoPanel = new JPanel();
-        userInfoPanel.setLayout(new GridLayout(3, 2));
-        userInfoPanel.setBackground(new Color(255, 192, 203));
-        userInfoPanel.add(new JLabel(username));
-        userInfoPanel.add(new JLabel("\n"));
-        userInfoPanel.add(new JLabel("\n"));
-        userInfoPanel.add(new JLabel("\n"));
+        totalSavingsLabel = new JLabel("My Total Savings: ");
+        totalSavingsLabel.setFont(new Font("Arial", Font.BOLD, 14));
+        totalSavingsLabel.setForeground(Color.BLACK);
+        // 获取储蓄值
+        double savings = childAccount.getSavings();
+        totalSavingsLabel.setText(String.format("My Total Savings: %.2f", savings));
+        balanceGbc.gridx = 1;
+        balanceGbc.gridy = 0;
+        balanceGbc.gridheight = 1;
+        balanceGbc.anchor = GridBagConstraints.WEST;
+        balancePanel.add(totalSavingsLabel, balanceGbc);
 
-        userInfoPanel.add(new JLabel("My Total Savings:"));
-        userInfoPanel.add(new JLabel(String.valueOf(totalSavings)));
+        currentBalanceLabel = new JLabel("My Current Balance: ");
+        currentBalanceLabel.setFont(new Font("Arial", Font.BOLD, 14));
+        currentBalanceLabel.setForeground(Color.BLACK);
+        // 获取余额值
+        double balance = childAccount.getBalance();
+        currentBalanceLabel.setText(String.format("My Current Balance: %.2f", balance));
+        balanceGbc.gridy = 1;
+        balancePanel.add(currentBalanceLabel, balanceGbc);
 
-        userInfoPanel.add(new JLabel("My Current Balance:"));
-        userInfoPanel.add(new JLabel(String.valueOf(currentBalance)));
+        gbc.gridx = 0;
+        gbc.gridy = 0;
+        gbc.gridwidth = 2;
+        gbc.insets = new Insets(10, 10, 10, 10);
+        gbc.anchor = GridBagConstraints.NORTHWEST;
+        lowerPanel.add(balancePanel, gbc);
 
+        // Add Deposit and Withdraw buttons
+        JPanel buttonPanel = new JPanel(new GridLayout(2, 1, 10, 10));
+        buttonPanel.setBackground(Color.WHITE);
         JButton depositButton = new JButton("I want to deposit money");
-        depositButton.setFont(new Font("Arial", Font.PLAIN, 16));
-        depositButton.setForeground(new Color(255, 105, 180));
-        depositButton.setBackground(Color.WHITE);
         JButton withdrawButton = new JButton("I want to withdraw money");
-        withdrawButton.setFont(new Font("Arial", Font.PLAIN, 16));
-        withdrawButton.setForeground(new Color(255, 105, 180));
-        withdrawButton.setBackground(Color.WHITE);
+        depositButton.setBackground(new Color(0xFFF0F5));
+        withdrawButton.setBackground(new Color(0xFFF0F5));
+        buttonPanel.add(depositButton);
+        buttonPanel.add(withdrawButton);
 
-        userInfoPanel.add(depositButton);
-        userInfoPanel.add(withdrawButton);
+        gbc.gridx = 2;
+        gbc.gridy = 0;
+        gbc.gridwidth = 1;
+        gbc.insets = new Insets(10, 10, 10, 10);
+        gbc.anchor = GridBagConstraints.NORTHWEST;
+        lowerPanel.add(buttonPanel, gbc);
 
-        add(userInfoPanel);
-    }
+        // Add Go to see my goals title
+        JLabel goalsTitleLabel = new JLabel("Go to see my goals");
+        goalsTitleLabel.setFont(new Font("Arial", Font.BOLD, 16));
+        goalsTitleLabel.setForeground(new Color(0xF868B0));
+        gbc.gridx = 0;
+        gbc.gridy = 1;
+        gbc.gridwidth = 3;
+        gbc.insets = new Insets(20, 10, 10, 10);
+        gbc.anchor = GridBagConstraints.WEST;
+        lowerPanel.add(goalsTitleLabel, gbc);
 
-    private void addGoalsSection() {
-        JPanel goalsPanel = new JPanel();
-        goalsPanel.setLayout(new BorderLayout());
-        goalsPanel.setBackground(Color.WHITE);
+        // 获取储蓄目标数据并填充表格
+        List<SavingGoal> savingGoals = childAccount.getSavingGoals();
+        Vector<String> goalsColumnNames = new Vector<>();
+        goalsColumnNames.add("Goal's Name");
+        goalsColumnNames.add("Description");
+        goalsColumnNames.add("Money Amount");
+        goalsColumnNames.add("Award");
 
-        JLabel goalsLabel = new JLabel("Go to see my goals");
-        goalsLabel.setFont(new Font("Arial", Font.BOLD, 14));
-        goalsLabel.setForeground(new Color(255, 105, 180));
-        goalsPanel.add(goalsLabel, BorderLayout.NORTH);
-
-        String[] goalColumns = {"Goal's Name", "Description", "Money Amount", "Award"};
-        goalsModel = new DefaultTableModel(null, goalColumns);
-        JTable goalsTable = new JTable(goalsModel);
-        goalsTable.setBackground(Color.WHITE);
+        // 使用 DefaultTableModel 直接从 savingGoals 获取数据
+        DefaultTableModel goalsTableModel = new DefaultTableModel(goalsColumnNames, 0);
+        for (SavingGoal goal : savingGoals) {
+            goalsTableModel.addRow(new Object[]{goal.getName(), goal.getDescription(), goal.getTargetAmount(), goal.getReward()});
+        }
+        goalsTable = new JTable(goalsTableModel);
+        goalsTable.setFillsViewportHeight(true);
+        goalsTable.setPreferredScrollableViewportSize(new Dimension(450, 100));
         JScrollPane goalsScrollPane = new JScrollPane(goalsTable);
-        goalsPanel.add(goalsScrollPane, BorderLayout.CENTER);
+        gbc.gridy = 2;
+        gbc.weighty = 1.0;
+        gbc.fill = GridBagConstraints.BOTH;
+        gbc.gridwidth = 2;
+        lowerPanel.add(goalsScrollPane, gbc);
 
-        // Add See More link
-        JLabel seeMoreGoalsLabel = new JLabel("See More...");
+        // Add See More link for goals
+        JLabel seeMoreGoalsLabel = new JLabel("See more...");
         seeMoreGoalsLabel.setFont(new Font("Arial", Font.PLAIN, 14));
         seeMoreGoalsLabel.setForeground(new Color(255, 105, 180));
         seeMoreGoalsLabel.setCursor(new Cursor(Cursor.HAND_CURSOR));
@@ -91,34 +142,52 @@ public class MyAccountFrame extends JFrame {
             @Override
             public void mouseClicked(MouseEvent e) {
                 // Open MyGoalsFrame
-                MyGoalsFrame myGoalsFrame = new MyGoalsFrame();
+                MyGoalsFrame myGoalsFrame = new MyGoalsFrame(accountManager, childAccount);
                 myGoalsFrame.setVisible(true);
+                dispose();
             }
         });
-        goalsPanel.add(seeMoreGoalsLabel, BorderLayout.SOUTH);
+        gbc.gridx = 2;
+        gbc.gridy = 2;
+        gbc.weighty = 0.0;
+        gbc.anchor = GridBagConstraints.NORTHWEST;
+        lowerPanel.add(seeMoreGoalsLabel, gbc);
 
-        add(goalsPanel);
-    }
+        // Add Go to see my tasks title
+        JLabel tasksTitleLabel = new JLabel("Go to see my tasks");
+        tasksTitleLabel.setFont(new Font("Arial", Font.BOLD, 16));
+        tasksTitleLabel.setForeground(new Color(0xF868B0));
+        gbc.gridx = 0;
+        gbc.gridy = 3;
+        gbc.gridwidth = 3;
+        gbc.insets = new Insets(20, 10, 10, 10);
+        gbc.anchor = GridBagConstraints.WEST;
+        lowerPanel.add(tasksTitleLabel, gbc);
 
-    private void addTasksSection() {
-        JPanel tasksPanel = new JPanel();
-        tasksPanel.setLayout(new BorderLayout());
-        tasksPanel.setBackground(Color.WHITE);
+        // 获取任务数据并填充表格
+        List<Task> tasks = childAccount.getTasks();
+        Vector<String> tasksColumnNames = new Vector<>();
+        tasksColumnNames.add("Task's Name");
+        tasksColumnNames.add("Description");
+        tasksColumnNames.add("Award");
 
-        JLabel tasksLabel = new JLabel("Go to see my tasks");
-        tasksLabel.setFont(new Font("Arial", Font.BOLD, 14));
-        tasksLabel.setForeground(new Color(255, 105, 180));
-        tasksPanel.add(tasksLabel, BorderLayout.NORTH);
-
-        String[] taskColumns = {"Task's Name", "Description", "Award"};
-        tasksModel = new DefaultTableModel(null, taskColumns);
-        JTable tasksTable = new JTable(tasksModel);
-        tasksTable.setBackground(Color.WHITE);
+        // 使用 DefaultTableModel 直接从 tasks 获取数据
+        DefaultTableModel tasksTableModel = new DefaultTableModel(tasksColumnNames, 0);
+        for (Task task : tasks) {
+            tasksTableModel.addRow(new Object[]{task.getName(), task.getDescription(), task.getReward()});
+        }
+        tasksTable = new JTable(tasksTableModel);
+        tasksTable.setFillsViewportHeight(true);
+        tasksTable.setPreferredScrollableViewportSize(new Dimension(450, 100));
         JScrollPane tasksScrollPane = new JScrollPane(tasksTable);
-        tasksPanel.add(tasksScrollPane, BorderLayout.CENTER);
+        gbc.gridy = 4;
+        gbc.weighty = 1.0;
+        gbc.fill = GridBagConstraints.BOTH;
+        gbc.gridwidth = 2;
+        lowerPanel.add(tasksScrollPane, gbc);
 
-        // Add See More link
-        JLabel seeMoreTasksLabel = new JLabel("See More...");
+        // Add See More link for tasks
+        JLabel seeMoreTasksLabel = new JLabel("See more...");
         seeMoreTasksLabel.setFont(new Font("Arial", Font.PLAIN, 14));
         seeMoreTasksLabel.setForeground(new Color(255, 105, 180));
         seeMoreTasksLabel.setCursor(new Cursor(Cursor.HAND_CURSOR));
@@ -126,17 +195,19 @@ public class MyAccountFrame extends JFrame {
             @Override
             public void mouseClicked(MouseEvent e) {
                 // Open MyTasksFrame
-                MyTasksFrame myTasksFrame = new MyTasksFrame();
+                MyTasksFrame myTasksFrame = new MyTasksFrame(accountManager, childAccount);
                 myTasksFrame.setVisible(true);
+                dispose();
             }
         });
-        tasksPanel.add(seeMoreTasksLabel, BorderLayout.SOUTH);
+        gbc.gridx = 2;
+        gbc.gridy = 4;
+        gbc.weighty = 0.0;
+        gbc.anchor = GridBagConstraints.NORTHWEST;
+        lowerPanel.add(seeMoreTasksLabel, gbc);
 
-        add(tasksPanel);
-    }
-
-
-    public static void main(String[] args) {
-        SwingUtilities.invokeLater(() -> new MyAccountFrame("Anna", 1000.0, 500.0).setVisible(true));
+        // Adjust frame
+        pack();
+        setLocationRelativeTo(null);
     }
 }
