@@ -76,7 +76,7 @@ public class KidDetailsFrame extends ParentPageFrame {
 //        manageGoalsButton.setFont(new Font("Arial", Font.PLAIN, 12));
 //        manageGoalsButton.setForeground(new Color(255, 105, 180));
         manageGoalsButton.addActionListener(e -> {
-            ManageGoalsFrame manageGoalsFrame = new ManageGoalsFrame(accountManager, parentAccount, name, totalSavings, goalsModel);
+            ManageGoalsFrame manageGoalsFrame = new ManageGoalsFrame(accountManager, parentAccount);
             manageGoalsFrame.setVisible(true);
         });
         goalsPanel.add(manageGoalsButton, BorderLayout.SOUTH);
