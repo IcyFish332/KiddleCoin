@@ -131,12 +131,12 @@ public class KidDetailsFrame extends ParentPageFrame {
     }
 
     private void openSetGoalFrame() {
-        GoalFrame goalFrame = new GoalFrame(accountManager, parentAccount, null); // 创建 GoalFrame 实例
+        GoalFrame goalFrame = new GoalFrame(accountManager, parentAccount,childAccount); // 创建 GoalFrame 实例
         goalFrame.setVisible(true); // 显示 GoalFrame
     }
 
     private void openAssignTaskFrame() {
-        AssignmentFrame taskFrame = new AssignmentFrame(accountManager, parentAccount, null); // 创建 GoalFrame 实例
+        AssignmentFrame taskFrame = new AssignmentFrame(accountManager, parentAccount); // 创建 GoalFrame 实例
         taskFrame.setVisible(true); // 显示 GoalFrame
     }
 

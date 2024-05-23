@@ -121,7 +121,7 @@ public class ParentPageFrame extends JFrame {
                 BorderFactory.createEmptyBorder(10, 40, 10, 40), // 设置边距
                 BorderFactory.createMatteBorder(0, 0, 1, 0, Color.LIGHT_GRAY) // 添加底部灰色边框
         ));
-         //Add spacing before the title
+        //Add spacing before the title
 
         //创建标题
         titleLabel = new JLabel(title);

@@ -1,8 +1,11 @@
 package ui;
 import core.AccountManager;
 import core.ParentAccount;
+import core.ChildAccount;
 import ui.template.BigButton;
 import ui.template.ParentPageFrame;
+import ui.ManageGoalsFrame;
+import core.SavingGoal;
 
 import javax.swing.*;
 import javax.swing.table.DefaultTableModel;
@@ -10,19 +13,19 @@ import java.awt.*;
 import java.util.Set;
 
 public class GoalFrame extends ParentPageFrame {
-    private AccountManager accountManager;
-    private ParentAccount parentAccount;
+    private ChildAccount childAccount;
     private ManageGoalsFrame manageGoalsFrame;
     private JTextField goalnameField;
     private JTextField targetField;
     private JTextField awardField;
     private JTextArea Description;
 
-    public GoalFrame(AccountManager accountManager, ParentAccount parentAccount, ManageGoalsFrame manageGoalsFrame) {
+    private AccountManager accountManager;
+    private ParentAccount parentAccount;
+
+    public GoalFrame(AccountManager accountManager, ParentAccount parentAccount,ChildAccount childAccount) {
         super("Set a Goal", accountManager, parentAccount);
-        this.manageGoalsFrame = manageGoalsFrame;
-        this.accountManager = accountManager;
-        this.parentAccount = parentAccount;// 保存 ManageGoalsFrame 的引用
+        this.childAccount=childAccount;
         setLocationRelativeTo(null);
 
         // Lower Panel for user inputs and information label
@@ -116,12 +119,14 @@ public class GoalFrame extends ParentPageFrame {
                 // Update information (pseudo-code)
                 showInvalidInfoDialog();
             } else {
-                updateInformation();
+                updateInformation(accountManager,parentAccount);
+                ManageGoalsFrame manageGoalsFrame = new ManageGoalsFrame(accountManager, parentAccount);
+                manageGoalsFrame.setVisible(true);
                 this.dispose();
             }
         });
 
-        returnButton.addActionListener(e -> returnToManageGoalsFrame());
+        returnButton.addActionListener(e -> returnToManageGoalsFrame(accountManager, parentAccount));
 
         gbc.gridy = 4;
         gbc.gridwidth = 2; // Span across two columns
@@ -133,21 +138,28 @@ public class GoalFrame extends ParentPageFrame {
         gbc.gridwidth = 2; // Span across two columns
 
         lowerPanel.add(buttonPanel, gbc);
-
+        accountManager.saveAccount(parentAccount);
         setVisible(true);
     }
 
 
-    private void updateInformation() {
+    private void updateInformation(AccountManager accountManager,ParentAccount parentAccount) {
         String goalsName = goalnameField.getText();
-        String target = targetField.getText();
-        String award = awardField.getText();
+        double target = Double.parseDouble(targetField.getText());
+        double award = Double.parseDouble(awardField.getText());
         String description = Description.getText();
 
-        manageGoalsFrame.updateRow(goalsName, target, award, description);
-        manageGoalsFrame.setVisible(true);
+        SavingGoal newGoal = new SavingGoal(goalsName, description, target, award);
+        newGoal.setName(goalsName);
+        newGoal.setDescription(description);
+        newGoal.setReward(award);
+        newGoal.setTargetAmount(target);
+        childAccount.addSavingGoal(newGoal);
+        accountManager.saveAccount(childAccount);
 
-        dispose();
+
+
+        accountManager.saveAccount(parentAccount);
     }
 
 
@@ -172,20 +184,12 @@ public class GoalFrame extends ParentPageFrame {
         dialog.setVisible(true);
     }
 
-    private void returnToManageGoalsFrame() {
+    private void returnToManageGoalsFrame(AccountManager accountManager, ParentAccount parentAccount) {
         // 关闭当前的 GoalFrame
-
-        dispose();
+        ManageGoalsFrame manageGoalsFrame = new ManageGoalsFrame(accountManager, parentAccount);
+        manageGoalsFrame.setVisible(true);
+        this.dispose();
     }
-
-    //public static void main(String[] args) {
-      //  SwingUtilities.invokeLater(() -> new GoalFrame(accountManager, parentAccount, "Name", "1000", goalsModel).setVisible(true));
-    //}
-    //}示例主函数
-
-
-
-
 }
 
 

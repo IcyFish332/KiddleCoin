@@ -92,7 +92,7 @@ public class ManageTasksFrame extends ParentPageFrame {
         lowerPanel.add(tablePanel);  // Add tablePanel to the lowerPanel
     }
     private void openSetTaskFrame() {
-        AssignmentFrame assignmentFrame = new AssignmentFrame(accountManager, parentAccount,this);
+        AssignmentFrame assignmentFrame = new AssignmentFrame(accountManager, parentAccount);
         assignmentFrame.setVisible(true);
     }
 

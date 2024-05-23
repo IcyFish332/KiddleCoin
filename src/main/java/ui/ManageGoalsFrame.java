@@ -118,11 +118,12 @@ public class ManageGoalsFrame extends ParentPageFrame {
     }
 
     private void openSetGoalFrame() {
-        GoalFrame goalFrame = new GoalFrame(accountManager, parentAccount, this);
+        GoalFrame goalFrame = new GoalFrame(accountManager, parentAccount,childAccount);
         goalFrame.setVisible(true);
+        dispose();
     }
 
-    public void updateRow(String goalsName, String target, String award, String description) {
+    public void updateRow(String goalsName, double target, double award, String description) {
         goalsModel.addRow(new Object[]{goalsName, description, target, award, "", "Edit Move"});
     }
 }
