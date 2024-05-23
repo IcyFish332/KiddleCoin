@@ -7,10 +7,10 @@ import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
-import ui.HistoryFrame;
-import ui.MyAccountFrame;
-import ui.MyGoalsFrame;
-import ui.MyTasksFrame;
+import ui.kidCenter.HistoryFrame;
+import ui.kidCenter.MyAccountFrame;
+import ui.kidCenter.MyGoalsFrame;
+import ui.kidCenter.MyTasksFrame;
 import ui.userCenter.KidUserCenterFrame;
 
 
