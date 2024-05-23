@@ -7,54 +7,59 @@ import java.awt.*;
 import ui.GoalFrame;
 
 import core.ParentAccount;
+import core.ChildAccount;
 import ui.template.ParentPageFrame;
 import ui.template.BigButton;
 
 public class KidDetailsFrame extends ParentPageFrame {
     private static AccountManager accountManager;
     private static ParentAccount parentAccount;
+    private static ChildAccount childAccount;
     private static DefaultTableModel goalsModel;
     private DefaultTableModel tasksModel;
     private JTable goalsTable;
     private JTable tasksTable;
 
-    public KidDetailsFrame(AccountManager accountManager, ParentAccount parentAccount, String name, String totalSavings) {
+    public KidDetailsFrame(AccountManager accountManager, ParentAccount parentAccount, ChildAccount childAccount) {
         super("Details of Kid's Account", accountManager, parentAccount);
         this.accountManager = accountManager;
         this.parentAccount = parentAccount;
-        initComponents(name, totalSavings);
+        this.childAccount = childAccount;
+        initComponents();
     }
 
-    private void initComponents(String name, String totalSavings) {
-        setSize(1000, 700);
+    private void initComponents() {
         setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
 
         lowerPanel.setLayout(new BoxLayout(lowerPanel, BoxLayout.Y_AXIS)); // Set vertical box layout for lowerPanel
 
-        addTitleAndInfoPanel(name, totalSavings);
-        setupGoalsSection(name, totalSavings);
-        setupTasksSection(name, totalSavings);
+        addTitleAndInfoPanel();
+        setupGoalsSection();
+        setupTasksSection();
         addBottomButtons();
+
+        this.contentPanel.add(lowerPanel, BorderLayout.CENTER);
     }
 
-    private void addTitleAndInfoPanel(String name, String totalSavings) {
+    private void addTitleAndInfoPanel() {
         JPanel infoPanel = new JPanel();
         infoPanel.setLayout(new BoxLayout(infoPanel, BoxLayout.X_AXIS)); // Horizontal layout for name and savings
         infoPanel.setBorder(BorderFactory.createEmptyBorder(10, 20, 10, 20));
 
-        JLabel nameLabel = new JLabel("Name: " + name);
+        JLabel nameLabel = new JLabel("Name: " + childAccount.getUsername());
         nameLabel.setFont(new Font("Arial", Font.PLAIN, 16));
-        JLabel savingsLabel = new JLabel("Total Savings: " + totalSavings);
+        JLabel savingsLabel = new JLabel("Total Savings: " + childAccount.getSavings());
         savingsLabel.setFont(new Font("Arial", Font.PLAIN, 16));
 
         infoPanel.add(nameLabel);
         infoPanel.add(Box.createHorizontalGlue()); // This will push the savings label to the right
         infoPanel.add(savingsLabel);
 
-        lowerPanel.add(infoPanel); // Add infoPanel to the lowerPanel
+        lowerPanel.add(infoPanel, BorderLayout.NORTH); // Add infoPanel to the lowerPanel
+
     }
 
-    private void setupGoalsSection(String name, String totalSavings) {
+    private void setupGoalsSection() {
         JPanel goalsPanel = new JPanel(new BorderLayout());
         JLabel goalsLabel = new JLabel("Goals");
         goalsLabel.setFont(new Font("Arial", Font.BOLD, 18));
@@ -65,26 +70,23 @@ public class KidDetailsFrame extends ParentPageFrame {
         goalsTable = new JTable(goalsModel);
         goalsTable.getColumnModel().getColumn(5).setCellRenderer(new ButtonRenderer());
         goalsTable.getColumnModel().getColumn(5).setCellEditor(new ButtonEditor(new JCheckBox(), goalsTable, "goal"));
-        goalsModel.addRow(new Object[]{"My Game", "For a computer game", "$30", "$10", "$17", ""});
+
+        // Load goals from childAccount and add to table
+        childAccount.getSavingGoals().forEach(goal -> {
+            double progress = (childAccount.getSavings() / goal.getTargetAmount()) * 100;
+            String progressStr = String.format("%.1f%%", progress);
+            goalsModel.addRow(new Object[]{goal.getName(), goal.getDescription(), goal.getTargetAmount(), goal.getReward(), progressStr, ""});
+        });
 
         JScrollPane goalsScrollPane = new JScrollPane(goalsTable);
 
         goalsPanel.add(goalsLabel, BorderLayout.NORTH);
         goalsPanel.add(goalsScrollPane, BorderLayout.CENTER);
 
-        BigButton manageGoalsButton = new BigButton("See details and manage goals...");
-//        manageGoalsButton.setFont(new Font("Arial", Font.PLAIN, 12));
-//        manageGoalsButton.setForeground(new Color(255, 105, 180));
-        manageGoalsButton.addActionListener(e -> {
-            ManageGoalsFrame manageGoalsFrame = new ManageGoalsFrame(accountManager, parentAccount, name, totalSavings, goalsModel);
-            manageGoalsFrame.setVisible(true);
-        });
-        goalsPanel.add(manageGoalsButton, BorderLayout.SOUTH);
-
-        lowerPanel.add(goalsPanel); // Add goalsPanel to the lowerPanel
+        lowerPanel.add(goalsPanel, BorderLayout.WEST); // Add goalsPanel to the lowerPanel
     }
 
-    private void setupTasksSection(String name, String totalSavings) {
+    private void setupTasksSection() {
         JPanel tasksPanel = new JPanel(new BorderLayout());
         JLabel tasksLabel = new JLabel("Tasks");
         tasksLabel.setFont(new Font("Arial", Font.BOLD, 18));
@@ -96,21 +98,16 @@ public class KidDetailsFrame extends ParentPageFrame {
         tasksTable.getColumnModel().getColumn(3).setCellRenderer(new ButtonRenderer());
         tasksTable.getColumnModel().getColumn(3).setCellEditor(new ButtonEditor(new JCheckBox(), tasksTable, "task"));
 
+        childAccount.getTasks().forEach(task -> {
+            tasksModel.addRow(new Object[]{task.getName(), task.getDescription(), task.getReward(), ""});
+        });
+
         JScrollPane tasksScrollPane = new JScrollPane(tasksTable);
 
         tasksPanel.add(tasksLabel, BorderLayout.NORTH);
         tasksPanel.add(tasksScrollPane, BorderLayout.CENTER);
 
-        BigButton manageTasksButton = new BigButton("See details and manage tasks...");
-//        manageTasksButton.setFont(new Font("Arial", Font.PLAIN, 12));
-//        manageTasksButton.setForeground(new Color(255, 105, 180));
-        manageTasksButton.addActionListener(e -> {
-            ManageTasksFrame manageTasksFrame = new ManageTasksFrame(accountManager, parentAccount, name, totalSavings, tasksModel);
-            manageTasksFrame.setVisible(true);
-        });
-        tasksPanel.add(manageTasksButton, BorderLayout.SOUTH);
-
-        lowerPanel.add(tasksPanel); // Add tasksPanel to the lowerPanel
+        lowerPanel.add(tasksPanel, BorderLayout.EAST); // Add tasksPanel to the lowerPanel
     }
 
     private void addBottomButtons() {
@@ -120,7 +117,7 @@ public class KidDetailsFrame extends ParentPageFrame {
         BigButton setGoalButton = new BigButton("Set a Goal");
 //        setGoalButton.setFont(new Font("Arial", Font.BOLD, 16));
 //        setGoalButton.setForeground(new Color(255, 105, 180));
-        setGoalButton.addActionListener(e ->  openSetGoalFrame());
+        setGoalButton.addActionListener(e -> openSetGoalFrame());
         buttonPanel.add(setGoalButton);
 
         BigButton assignTaskButton = new BigButton("Assign a Task");
@@ -129,14 +126,16 @@ public class KidDetailsFrame extends ParentPageFrame {
         assignTaskButton.addActionListener(e -> openAssignTaskFrame());
         buttonPanel.add(assignTaskButton);
 
-        lowerPanel.add(buttonPanel); // Add buttonPanel to the lowerPanel
+        lowerPanel.add(buttonPanel, BorderLayout.SOUTH); // Add buttonPanel to the lowerPanel
     }
+
     private void openSetGoalFrame() {
-        GoalFrame goalFrame = new GoalFrame(accountManager, parentAccount,null); // 创建 GoalFrame 实例
+        GoalFrame goalFrame = new GoalFrame(accountManager, parentAccount, null); // 创建 GoalFrame 实例
         goalFrame.setVisible(true); // 显示 GoalFrame
     }
+
     private void openAssignTaskFrame() {
-        AssignmentFrame taskFrame = new AssignmentFrame(accountManager,parentAccount,null); // 创建 GoalFrame 实例
+        AssignmentFrame taskFrame = new AssignmentFrame(accountManager, parentAccount, null); // 创建 GoalFrame 实例
         taskFrame.setVisible(true); // 显示 GoalFrame
     }
 
@@ -251,7 +250,7 @@ public class KidDetailsFrame extends ParentPageFrame {
             String award = (String) model.getValueAt(row, 2);
 
             JTextField nameField = new JTextField(name);
-            JTextField descriptionField =  new JTextField(description);
+            JTextField descriptionField = new JTextField(description);
             JTextField awardField = new JTextField(award);
 
             Object[] message = {
@@ -273,7 +272,4 @@ public class KidDetailsFrame extends ParentPageFrame {
             return panel;
         }
     }
-    public static void main(String[] args) {
-      SwingUtilities.invokeLater(() -> new KidsListManagementFrame(accountManager, parentAccount).setVisible(true));
-    }
-    }
+}

@@ -8,6 +8,7 @@ import java.awt.event.ActionListener;
 import core.AccountManager;
 import core.ParentAccount;
 import ui.KidDetailsFrame;
+import ui.KidsListManagementFrame;
 import ui.ManageGoalsFrame;
 import ui.ManageTasksFrame;
 import ui.userCenter.ParentUserCenterFrame;
@@ -22,7 +23,7 @@ public class ParentPageFrame extends JFrame {
     public ParentPageFrame(String title, AccountManager accountManager, ParentAccount parentAccount) {
 
         setTitle("KiddleCoin");
-        setSize(800, 600);
+        setSize(1200, 900);
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         setLocationRelativeTo(null);
 
@@ -66,8 +67,8 @@ public class ParentPageFrame extends JFrame {
         buttonPanel.add(button1);
         button1.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
-                KidDetailsFrame kidDetailsFrame = new KidDetailsFrame(accountManager, parentAccount,"name","1000");
-                kidDetailsFrame.setVisible(true);
+                KidsListManagementFrame kidsListManagementFrame = new KidsListManagementFrame(accountManager, parentAccount);
+                kidsListManagementFrame.setVisible(true);
                 dispose();
             }
         });
