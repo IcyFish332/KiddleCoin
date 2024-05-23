@@ -22,7 +22,7 @@ public class ManageTasksFrame extends ParentPageFrame {
     private DefaultTableModel tasksModel;
     private JTable tasksTable;
     private JComboBox<String> childAccountComboBox;
-    private JComboBox<String> savingsComboBox;
+    private JLabel savingsLabel;
 
     public ManageTasksFrame(AccountManager accountManager, ParentAccount parentAccount) {
         super("Manage Kid's Tasks", accountManager, parentAccount);
@@ -57,20 +57,23 @@ public class ManageTasksFrame extends ParentPageFrame {
         infoPanel.setBorder(BorderFactory.createEmptyBorder(10, 20, 10, 20));
 
         childAccountComboBox = new JComboBox<>();
-        savingsComboBox = new JComboBox<>();
+        savingsLabel = new JLabel();
 
         Set<String> childAccountIds = parentAccount.getChildAccountIds();
         for (String childAccountId : childAccountIds) {
             ChildAccount account = (ChildAccount) accountManager.getAccount(childAccountId);
             childAccountComboBox.addItem(account.getUsername());
-            savingsComboBox.addItem(String.valueOf(account.getSavings()));
+        }
+
+        if (childAccount != null) {
+            savingsLabel.setText(String.valueOf(childAccount.getSavings()));
         }
 
         childAccountComboBox.addActionListener(e -> {
             String selectedChildUsername = (String) childAccountComboBox.getSelectedItem();
             if (selectedChildUsername != null) {
                 childAccount = (ChildAccount) accountManager.getAccountByUsername(selectedChildUsername);
-                savingsComboBox.setSelectedItem(String.valueOf(childAccount.getSavings()));
+                savingsLabel.setText(String.valueOf(childAccount.getSavings()));
                 updateTasksTable();
             }
         });
@@ -79,7 +82,7 @@ public class ManageTasksFrame extends ParentPageFrame {
         infoPanel.add(childAccountComboBox);
         infoPanel.add(Box.createHorizontalStrut(20));
         infoPanel.add(new JLabel("Total Savings: "));
-        infoPanel.add(savingsComboBox);
+        infoPanel.add(savingsLabel);
 
         lowerPanel.add(infoPanel);
     }
