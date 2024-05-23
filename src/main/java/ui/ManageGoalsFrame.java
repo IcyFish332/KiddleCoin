@@ -1,56 +1,85 @@
 package ui;
 
 import core.AccountManager;
+import core.ChildAccount;
 import core.ParentAccount;
+import core.SavingGoal;
 import ui.template.BigButton;
 import ui.template.ParentPageFrame;
 
 import javax.swing.*;
 import javax.swing.table.DefaultTableModel;
+import javax.swing.table.TableCellEditor;
+import javax.swing.table.TableCellRenderer;
 import java.awt.*;
+import java.util.Set;
 
 public class ManageGoalsFrame extends ParentPageFrame {
-    private  AccountManager accountManager;
-    private  ParentAccount parentAccount;
-    private  DefaultTableModel goalsModel;
-    private JTable goalsTable;
-    private int currentRowIndex = 0; // 初始化为0，以从第一行开始
+    private AccountManager accountManager;
+    private ParentAccount parentAccount;
+    private ChildAccount childAccount;
 
-    public ManageGoalsFrame(AccountManager accountManager, ParentAccount parentAccount, String name, String totalSavings, DefaultTableModel receivedGoalsModel) {
+    private DefaultTableModel goalsModel;
+    private JTable goalsTable;
+    private JComboBox<String> childAccountComboBox;
+    private JComboBox<String> savingsComboBox;
+
+    public ManageGoalsFrame(AccountManager accountManager, ParentAccount parentAccount) {
         super("Manage Kid's Goals", accountManager, parentAccount);
         this.accountManager = accountManager;
         this.parentAccount = parentAccount;
-        this.goalsModel = receivedGoalsModel;
-        initComponents(name, totalSavings);
+        initComponents();
     }
 
-    private void initComponents(String name, String totalSavings) {
-        setTitle("Manage Kid's Goals");
-        setSize(800, 600);
+    private void initComponents() {
         setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
-
         lowerPanel.setLayout(new BoxLayout(lowerPanel, BoxLayout.Y_AXIS));
 
-        addInfoPanel(name, totalSavings);
+        selectFirstChildAccount();
+        addInfoPanel();
         addGoalsListPanel();
         addGoalsTable();
 
         setVisible(true);
     }
 
-    private void addInfoPanel(String name, String totalSavings) {
+    private void selectFirstChildAccount() {
+        Set<String> childAccountIds = parentAccount.getChildAccountIds();
+        if (!childAccountIds.isEmpty()) {
+            String firstChildAccountId = childAccountIds.iterator().next();
+            this.childAccount = (ChildAccount) accountManager.getAccount(firstChildAccountId);
+        }
+    }
+
+    private void addInfoPanel() {
         JPanel infoPanel = new JPanel();
         infoPanel.setLayout(new BoxLayout(infoPanel, BoxLayout.X_AXIS));
         infoPanel.setBorder(BorderFactory.createEmptyBorder(10, 20, 10, 20));
 
-        JLabel nameLabel = new JLabel("Name: " + name);
-        nameLabel.setFont(new Font("Arial", Font.PLAIN, 16));
-        JLabel savingsLabel = new JLabel("Total Savings: " + totalSavings);
-        savingsLabel.setFont(new Font("Arial", Font.PLAIN, 16));
+        childAccountComboBox = new JComboBox<>();
+        savingsComboBox = new JComboBox<>();
 
-        infoPanel.add(nameLabel);
+        Set<String> childAccountIds = parentAccount.getChildAccountIds();
+        for (String childAccountId : childAccountIds) {
+            ChildAccount account = (ChildAccount) accountManager.getAccount(childAccountId);
+            childAccountComboBox.addItem(account.getUsername());
+            savingsComboBox.addItem(String.valueOf(account.getSavings()));
+        }
+
+        childAccountComboBox.addActionListener(e -> {
+            String selectedChildUsername = (String) childAccountComboBox.getSelectedItem();
+            if (selectedChildUsername != null) {
+                childAccount = (ChildAccount) accountManager.getAccountByUsername(selectedChildUsername);
+                savingsComboBox.setSelectedItem(String.valueOf(childAccount.getSavings()));
+                updateGoalsTable();
+            }
+        });
+
+        infoPanel.add(new JLabel("Name: "));
+        infoPanel.add(childAccountComboBox);
         infoPanel.add(Box.createHorizontalStrut(20));
-        infoPanel.add(savingsLabel);
+        infoPanel.add(new JLabel("Total Savings: "));
+        infoPanel.add(savingsComboBox);
 
         lowerPanel.add(infoPanel);
     }
@@ -76,35 +105,181 @@ public class ManageGoalsFrame extends ParentPageFrame {
     private void addGoalsTable() {
         JPanel tablePanel = new JPanel(new BorderLayout());
         String[] goalColumns = {"Goal's Name", "Description", "Target", "Award", "Progress", "Operation"};
-        goalsModel = new DefaultTableModel(null, goalColumns);
+        goalsModel = new DefaultTableModel(null, goalColumns) {
+            @Override
+            public boolean isCellEditable(int row, int column) {
+                return column == 5; // Only operation column is editable
+            }
+        };
         goalsTable = new JTable(goalsModel);
         goalsTable.setRowHeight(30);
+        goalsTable.getColumnModel().getColumn(5).setCellRenderer(new ButtonRenderer());
+        goalsTable.getColumnModel().getColumn(5).setCellEditor(new ButtonEditor(goalsTable, "goal"));
 
         JScrollPane goalsScrollPane = new JScrollPane(goalsTable);
         tablePanel.add(goalsScrollPane, BorderLayout.CENTER);
 
         lowerPanel.add(tablePanel);
+        updateGoalsTable();
+    }
+
+    private void updateGoalsTable() {
+        goalsModel.setRowCount(0);
+        if (childAccount != null) {
+            for (SavingGoal goal : childAccount.getSavingGoals()) {
+                double progress = (childAccount.getSavings() / goal.getTargetAmount()) * 100;
+                goalsModel.addRow(new Object[]{
+                        goal.getName(),
+                        goal.getDescription(),
+                        goal.getTargetAmount(),
+                        goal.getReward(),
+                        String.format("%.2f%%", progress),
+                        ""
+                });
+            }
+        }
     }
 
     private void openSetGoalFrame() {
-        GoalFrame goalFrame = new GoalFrame(accountManager, parentAccount,this);
+        GoalFrame goalFrame = new GoalFrame(accountManager, parentAccount, childAccount);
         goalFrame.setVisible(true);
     }
 
-    public void updateRow(String goalsName, String target, String award, String description) {
-        if (currentRowIndex >= goalsModel.getRowCount()) {
-            goalsModel.addRow(new Object[]{"", "", "", "", "", ""});
+    static class ButtonRenderer extends JPanel implements TableCellRenderer {
+        protected JButton editButton, moveButton;
+
+        public ButtonRenderer() {
+            super(new FlowLayout(FlowLayout.LEFT));
+            editButton = new JButton("Edit");
+            moveButton = new JButton("Move");
+            add(editButton);
+            add(moveButton);
         }
-        goalsModel.setValueAt(goalsName, currentRowIndex, 0);
-        goalsModel.setValueAt(description, currentRowIndex, 1);
-        goalsModel.setValueAt(target, currentRowIndex, 2);
-        goalsModel.setValueAt(award, currentRowIndex, 3);
-        currentRowIndex++; // 更新完整行后递增行索引
+
+        @Override
+        public Component getTableCellRendererComponent(JTable table, Object value,
+                                                       boolean isSelected, boolean hasFocus, int row, int column) {
+            return this;
+        }
     }
 
+    static class ButtonEditor extends AbstractCellEditor implements TableCellEditor {
+        protected JPanel panel;
+        protected JButton editButton, moveButton;
+        private JTable table;
+        private String type;
 
-    //public static void main(String[] args) {
-    //   SwingUtilities.invokeLater(() -> new ManageGoalsFrame(accountManager, parentAccount, "Name", "1000", goalsModel).setVisible(true));
-    //}示例主函数
+        public ButtonEditor(JTable table, String type) {
+            this.table = table;
+            this.type = type;
+            panel = new JPanel(new FlowLayout(FlowLayout.LEFT));
+            editButton = new JButton("Edit");
+            moveButton = new JButton("Move");
 
+            editButton.addActionListener(e -> {
+                fireEditingStopped(); // Make sure to fire event to stop editing
+                editItem();
+            });
+
+            moveButton.addActionListener(e -> {
+                fireEditingStopped(); // Ensure to fire event to stop editing
+                moveItem();
+            });
+
+            panel.add(editButton);
+            panel.add(moveButton);
+        }
+
+        private void editItem() {
+            int row = table.getSelectedRow();
+            if (row >= 0) {
+                DefaultTableModel model = (DefaultTableModel) table.getModel();
+                if ("goal".equals(type)) {
+                    editGoal(row, model);
+                } else {
+                    editTask(row, model);
+                }
+            } else {
+                JOptionPane.showMessageDialog(null, "No item selected!");
+            }
+        }
+
+        private void moveItem() {
+            int row = table.getSelectedRow();
+            if (row >= 0) {
+                DefaultTableModel model = (DefaultTableModel) table.getModel();
+                int confirm = JOptionPane.showConfirmDialog(null, "Are you sure you want to delete this item?", "Confirm Delete", JOptionPane.YES_NO_OPTION);
+                if (confirm == JOptionPane.YES_OPTION) {
+                    model.removeRow(row);
+                }
+            } else {
+                JOptionPane.showMessageDialog(null, "No item selected!");
+            }
+        }
+
+        private void editGoal(int row, DefaultTableModel model) {
+            String name = String.valueOf(model.getValueAt(row, 0));
+            String description = String.valueOf(model.getValueAt(row, 1));
+            String moneyAmount = String.valueOf(model.getValueAt(row, 2));
+            String award = String.valueOf(model.getValueAt(row, 3));
+            String progress = String.valueOf(model.getValueAt(row, 4));
+
+            JTextField nameField = new JTextField(name);
+            JTextField descriptionField = new JTextField(description);
+            JTextField moneyAmountField = new JTextField(moneyAmount);
+            JTextField awardField = new JTextField(award);
+            JTextField progressField = new JTextField(progress);
+
+            Object[] message = {
+                    "Name:", nameField,
+                    "Description:", descriptionField,
+                    "Money Amount:", moneyAmountField,
+                    "Award:", awardField,
+                    "Progress:", progressField
+            };
+
+            int option = JOptionPane.showConfirmDialog(null, message, "Edit Goal", JOptionPane.OK_CANCEL_OPTION);
+            if (option == JOptionPane.OK_OPTION) {
+                model.setValueAt(nameField.getText(), row, 0);
+                model.setValueAt(descriptionField.getText(), row, 1);
+                model.setValueAt(moneyAmountField.getText(), row, 2);
+                model.setValueAt(awardField.getText(), row, 3);
+                model.setValueAt(progressField.getText(), row, 4);
+            }
+        }
+
+        private void editTask(int row, DefaultTableModel model) {
+            String name = String.valueOf(model.getValueAt(row, 0));
+            String description = String.valueOf(model.getValueAt(row, 1));
+            String award = String.valueOf(model.getValueAt(row, 2));
+
+            JTextField nameField = new JTextField(name);
+            JTextField descriptionField = new JTextField(description);
+            JTextField awardField = new JTextField(award);
+
+            Object[] message = {
+                    "Name:", nameField,
+                    "Description:", descriptionField,
+                    "Award:", awardField
+            };
+
+            int option = JOptionPane.showConfirmDialog(null, message, "Edit Task", JOptionPane.OK_CANCEL_OPTION);
+            if (option == JOptionPane.OK_OPTION) {
+                model.setValueAt(nameField.getText(), row, 0);
+                model.setValueAt(descriptionField.getText(), row, 1);
+                model.setValueAt(awardField.getText(), row, 2);
+            }
+        }
+
+        @Override
+        public Component getTableCellEditorComponent(JTable table, Object value, boolean isSelected, int row, int column) {
+            return panel;
+        }
+
+        @Override
+        public Object getCellEditorValue() {
+            return null;
+        }
+    }
 }
+

@@ -1,4 +1,5 @@
 package ui;
+import core.Account;
 import core.AccountManager;
 import javax.swing.*;
 import javax.swing.table.DefaultTableModel;
@@ -7,6 +8,7 @@ import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
+import core.ChildAccount;
 import core.ParentAccount;
 import ui.template.ParentPageFrame;
 import ui.template.BigButton;
@@ -29,10 +31,17 @@ public class KidsListManagementFrame extends ParentPageFrame {
         lowerPanel.setLayout(new BorderLayout()); // 设置 lowerPanel 的布局为 BorderLayout
 
         // 表格模型
-        String[] columnNames = {"Name", "Account", "Savings", "Operations"};
+        String[] columnNames = {"Name", "Balance", "Savings", "Operations"};
         model = new DefaultTableModel(null, columnNames);
         table = new JTable(model);
         table.setRowHeight(30);
+
+        for (String childAccountId : parentAccount.getChildAccountIds()) {
+            Account account = accountManager.getAccount(childAccountId);
+            if (account instanceof ChildAccount) {
+                model.addRow(new Object[]{account.getUsername(), childAccountId, ((ChildAccount) account).getSavings(), ""});
+            }
+        }
 
         // Operations列
         table.getColumnModel().getColumn(3).setCellRenderer(new OperationsRenderer());
@@ -56,26 +65,39 @@ public class KidsListManagementFrame extends ParentPageFrame {
 
 
     private void addAccountAction(ActionEvent e) {
-        JTextField nameField = new JTextField();
-        JTextField accountField = new JTextField();
-        JTextField savingsField = new JTextField();
+        JTextField accountIdField = new JTextField();
         Object[] message = {
-                "Name:", nameField,
-                "Account:", accountField,
-                "Savings:", savingsField
+                "Account ID:", accountIdField
         };
 
         int option;
         do {
             option = JOptionPane.showConfirmDialog(null, message, "Add Kid Account", JOptionPane.OK_CANCEL_OPTION, JOptionPane.PLAIN_MESSAGE);
             if (option == JOptionPane.OK_OPTION) {
-                // 检查所有输入字段是否已填写
-                if (nameField.getText().trim().isEmpty() || accountField.getText().trim().isEmpty() || savingsField.getText().trim().isEmpty()) {
-                    JOptionPane.showMessageDialog(null, "Please fill in all fields.", "Input Error", JOptionPane.ERROR_MESSAGE);
+                // 检查账户 ID 字段是否已填写
+                if (accountIdField.getText().trim().isEmpty()) {
+                    JOptionPane.showMessageDialog(null, "Please fill in the Account ID field.", "Input Error", JOptionPane.ERROR_MESSAGE);
                 } else {
-                    // 如果所有字段都已填写，则添加行并跳出循环
-                    model.addRow(new Object[]{nameField.getText(), accountField.getText(), savingsField.getText(), ""});
-                    break; // 跳出循环
+                    String accountId = accountIdField.getText().trim();
+                    Account account = accountManager.getAccount(accountId);
+
+                    if (account instanceof ChildAccount) {
+                        // 将账户 ID 添加到 ParentAccount 的 childAccountIds 集合中
+                        parentAccount.addChildAccount(accountId);
+
+                        // 将 ParentAccount ID 添加到 ChildAccount 的 parentAccountIds 集合中
+                        ((ChildAccount) account).addParentAccount(parentAccount.getAccountId());
+
+                        // 保存更新后的账户信息
+                        accountManager.saveAccount(parentAccount);
+                        accountManager.saveAccount(account);
+
+                        // 在表格中添加新行
+                        model.addRow(new Object[]{account.getUsername(), accountId, ((ChildAccount) account).getSavings(), ""});
+                        break; // 跳出循环
+                    } else {
+                        JOptionPane.showMessageDialog(null, "Invalid Account ID. Please enter a valid Child Account ID.", "Input Error", JOptionPane.ERROR_MESSAGE);
+                    }
                 }
             } else {
                 break; // 如果用户选择取消，也跳出循环
@@ -85,16 +107,14 @@ public class KidsListManagementFrame extends ParentPageFrame {
 
 
     class OperationsRenderer extends JPanel implements TableCellRenderer {
-        BigButton detailsButton, editButton, deleteButton;
+        BigButton detailsButton, deleteButton;
 
         public OperationsRenderer() {
             setLayout(new BoxLayout(this, BoxLayout.X_AXIS));  // 使用 BoxLayout 管理布局
             detailsButton = new BigButton("For More Details");
-            editButton = new BigButton("Edit");
             deleteButton = new BigButton("Delete");
 
             add(detailsButton);
-            add(editButton);
             add(deleteButton);
 
             adjustButtonVisibility(true); // 确保按钮在初始化时都是可见的
@@ -102,7 +122,6 @@ public class KidsListManagementFrame extends ParentPageFrame {
 
         private void adjustButtonVisibility(boolean isVisible) {
             detailsButton.setVisible(isVisible);
-            editButton.setVisible(isVisible);
             deleteButton.setVisible(isVisible);
         }
 
@@ -116,18 +135,16 @@ public class KidsListManagementFrame extends ParentPageFrame {
 
     class OperationsEditor extends DefaultCellEditor {
         protected JPanel panel;
-        protected BigButton detailsButton, editButton, deleteButton;
+        protected BigButton detailsButton, deleteButton;
 
         public OperationsEditor(JCheckBox checkBox) {
             super(checkBox);
             panel = new JPanel();
             panel.setLayout(new BoxLayout(panel, BoxLayout.X_AXIS));  // 使用 BoxLayout
             detailsButton = new BigButton("For More Details");
-            editButton = new BigButton("Edit");
             deleteButton = new BigButton("Delete");
 
             panel.add(detailsButton);
-            panel.add(editButton);
             panel.add(deleteButton);
 
             adjustButtonVisibility(true);
@@ -136,24 +153,23 @@ public class KidsListManagementFrame extends ParentPageFrame {
             detailsButton.addActionListener(e -> {
                 int row = table.getSelectedRow();
                 if (row >= 0) {
-                    String name = model.getValueAt(row, 0).toString();
-                    String savings = model.getValueAt(row, 2).toString();
-                    KidDetailsFrame detailsFrame = new KidDetailsFrame(accountManager, parentAccount, name, savings);
-                    detailsFrame.setVisible(true);
+                    String accountId = model.getValueAt(row, 1).toString(); // 获取选中行的Account ID
+                    Account account = accountManager.getAccount(accountId);
+                    if (account instanceof ChildAccount) {
+                        ChildAccount childAccount = (ChildAccount) account;
+                        KidDetailsFrame detailsFrame = new KidDetailsFrame(accountManager, parentAccount, childAccount);
+                        detailsFrame.setVisible(true);
+                    } else {
+                        JOptionPane.showMessageDialog(null, "Invalid Account ID. Please select a valid Child Account.", "Input Error", JOptionPane.ERROR_MESSAGE);
+                    }
                 }
             });
-            editButton.addActionListener(e -> editKid());
             deleteButton.addActionListener(e -> deleteKid());
         }
 
-//        private void openDetailsFrame(String name, String savings) {
-//            KidDetailsFrame detailsFrame = new KidDetailsFrame(accountManager, parentAcccount,name, savings);
-//            detailsFrame.setVisible(true);
-//        }
 
         private void adjustButtonVisibility(boolean isVisible) {
             detailsButton.setVisible(isVisible);
-            editButton.setVisible(isVisible);
             deleteButton.setVisible(isVisible);
         }
 
@@ -165,50 +181,27 @@ public class KidsListManagementFrame extends ParentPageFrame {
     }
 
 
-    private void editKid() {
-        int selectedRow = table.getSelectedRow();
-        if (selectedRow >= 0) {
-            String name = (String) table.getValueAt(selectedRow, 0);
-            String accountId = (String) table.getValueAt(selectedRow, 1);
-            String savings = (String) table.getValueAt(selectedRow, 2);
-
-            JTextField nameField = new JTextField(name);
-            JTextField accountIdField = new JTextField(accountId);
-            JTextField savingsField = new JTextField(savings);
-            JPanel dialogPanel = new JPanel(new GridLayout(0, 2));
-            dialogPanel.add(new JLabel("Name:"));
-            dialogPanel.add(nameField);
-            dialogPanel.add(new JLabel("Account ID:"));
-            dialogPanel.add(accountIdField);
-            dialogPanel.add(new JLabel("Savings:"));
-            dialogPanel.add(savingsField);
-
-            int result = JOptionPane.showConfirmDialog(null, dialogPanel,
-                    "Edit details for the selected kid account", JOptionPane.OK_CANCEL_OPTION);
-            if (result == JOptionPane.OK_OPTION) {
-                table.setValueAt(nameField.getText(), selectedRow, 0);
-                table.setValueAt(accountIdField.getText(), selectedRow, 1);
-                table.setValueAt(savingsField.getText(), selectedRow, 2);
-            }
-        } else {
-            JOptionPane.showMessageDialog(this, "No account selected!");
-        }
-    }
-
     private void deleteKid() {
         int selectedRow = table.getSelectedRow();
         if (selectedRow >= 0) {
-            model.removeRow(selectedRow);
+            String accountId = (String) table.getValueAt(selectedRow, 1);
+            Account account = accountManager.getAccount(accountId);
+            if (account instanceof ChildAccount) {
+                // 解除关联
+                parentAccount.removeChildAccount(accountId);
+                ((ChildAccount) account).removeParentAccount(parentAccount.getAccountId());
+
+                // 保存更新
+                accountManager.saveAccount(parentAccount);
+                accountManager.saveAccount(account);
+
+                // 从表格中移除行
+                model.removeRow(selectedRow);
+            } else {
+                JOptionPane.showMessageDialog(this, "Invalid Account selected.", "Error", JOptionPane.ERROR_MESSAGE);
+            }
         } else {
-            JOptionPane.showMessageDialog(this, "No account selected!");
+            JOptionPane.showMessageDialog(this, "No account selected!", "Error", JOptionPane.ERROR_MESSAGE);
         }
     }
 }
-
-
-
-//    public static void main(String[] args) {
-//        ParentAccount childAccount = null;
-//        new KidsListManagementFrame(accountManager,childAccount).setVisible(true);
-//    }
-//}
