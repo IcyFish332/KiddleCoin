@@ -84,6 +84,7 @@ public class KidDetailsFrame extends ParentPageFrame {
         goalsPanel.add(goalsScrollPane, BorderLayout.CENTER);
 
         lowerPanel.add(goalsPanel, BorderLayout.WEST); // Add goalsPanel to the lowerPanel
+
     }
 
     private void setupTasksSection() {

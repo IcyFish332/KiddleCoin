@@ -76,7 +76,7 @@ public class ParentPageFrame extends JFrame {
         buttonPanel.add(button2);
         button2.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
-                ManageGoalsFrame manageGoalsFrame = new ManageGoalsFrame(accountManager, parentAccount,"name","1000",null);
+                ManageGoalsFrame manageGoalsFrame = new ManageGoalsFrame(accountManager, parentAccount);
                 manageGoalsFrame.setVisible(true);
                 dispose();
             }

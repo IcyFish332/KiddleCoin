@@ -2,50 +2,62 @@ package ui;
 
 import core.AccountManager;
 import core.ParentAccount;
+import core.ChildAccount;
+import core.SavingGoal;
 import ui.template.BigButton;
 import ui.template.ParentPageFrame;
 
 import javax.swing.*;
 import javax.swing.table.DefaultTableModel;
 import java.awt.*;
+import java.util.Set;
 
 public class ManageGoalsFrame extends ParentPageFrame {
-    private   AccountManager accountManager;
-    private   ParentAccount parentAccount;
-    private   DefaultTableModel goalsModel;
-    private JTable goalsTable;
-    private int currentRowIndex = 0; // 初始化为0，以从第一行开始
+    private AccountManager accountManager;
+    private ParentAccount parentAccount;
+    private ChildAccount childAccount;
 
-    public ManageGoalsFrame(AccountManager accountManager, ParentAccount parentAccount, String name, String totalSavings, DefaultTableModel receivedGoalsModel) {
+    private DefaultTableModel goalsModel;
+    private JTable goalsTable;
+    private JLabel savingsLabel;
+
+    public ManageGoalsFrame(AccountManager accountManager, ParentAccount parentAccount) {
         super("Manage Kid's Goals", accountManager, parentAccount);
         this.accountManager = accountManager;
         this.parentAccount = parentAccount;
-        this.goalsModel = receivedGoalsModel;
-        initComponents(name, totalSavings);
+        initComponents();
     }
 
-    private void initComponents(String name, String totalSavings) {
-        setTitle("Manage Kid's Goals");
-        setSize(800, 600);
+    private void initComponents() {
         setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
 
         lowerPanel.setLayout(new BoxLayout(lowerPanel, BoxLayout.Y_AXIS));
 
-        addInfoPanel(name, totalSavings);
+        selectFirstChildAccount();
+        addInfoPanel();
         addGoalsListPanel();
         addGoalsTable();
 
         setVisible(true);
     }
 
-    private void addInfoPanel(String name, String totalSavings) {
+    private void selectFirstChildAccount() {
+        Set<String> childAccountIds = parentAccount.getChildAccountIds();
+        if (!childAccountIds.isEmpty()) {
+            String firstChildAccountId = childAccountIds.iterator().next();
+            this.childAccount = (ChildAccount) accountManager.getAccount(firstChildAccountId);
+        }
+    }
+
+    private void addInfoPanel() {
         JPanel infoPanel = new JPanel();
         infoPanel.setLayout(new BoxLayout(infoPanel, BoxLayout.X_AXIS));
         infoPanel.setBorder(BorderFactory.createEmptyBorder(10, 20, 10, 20));
 
-        JLabel nameLabel = new JLabel("Name: " + name);
+        JLabel nameLabel = new JLabel("Name: " + (childAccount != null ? childAccount.getUsername() : ""));
         nameLabel.setFont(new Font("Arial", Font.PLAIN, 16));
-        JLabel savingsLabel = new JLabel("Total Savings: " + totalSavings);
+
+        savingsLabel = new JLabel("Total Savings: " + (childAccount != null ? childAccount.getSavings() : 0));
         savingsLabel.setFont(new Font("Arial", Font.PLAIN, 16));
 
         infoPanel.add(nameLabel);
@@ -84,27 +96,33 @@ public class ManageGoalsFrame extends ParentPageFrame {
         tablePanel.add(goalsScrollPane, BorderLayout.CENTER);
 
         lowerPanel.add(tablePanel);
+
+        updateGoalsTable();
+    }
+
+    private void updateGoalsTable() {
+        goalsModel.setRowCount(0); // Clear existing rows
+        if (childAccount != null) {
+            for (SavingGoal goal : childAccount.getSavingGoals()) {
+                double progress = (childAccount.getSavings() / goal.getTargetAmount()) * 100;
+                goalsModel.addRow(new Object[]{
+                        goal.getName(),
+                        goal.getDescription(),
+                        goal.getTargetAmount(),
+                        goal.getReward(),
+                        String.format("%.2f%%", progress),
+                        "Edit Move"
+                });
+            }
+        }
     }
 
     private void openSetGoalFrame() {
-        GoalFrame goalFrame = new GoalFrame(accountManager, parentAccount,this);
+        GoalFrame goalFrame = new GoalFrame(accountManager, parentAccount, this);
         goalFrame.setVisible(true);
     }
 
     public void updateRow(String goalsName, String target, String award, String description) {
-        if (currentRowIndex >= goalsModel.getRowCount()) {
-            goalsModel.addRow(new Object[]{"", "", "", "", "", ""});
-        }
-        goalsModel.setValueAt(goalsName, currentRowIndex, 0);
-        goalsModel.setValueAt(description, currentRowIndex, 1);
-        goalsModel.setValueAt(target, currentRowIndex, 2);
-        goalsModel.setValueAt(award, currentRowIndex, 3);
-        currentRowIndex++; // 更新完整行后递增行索引
+        goalsModel.addRow(new Object[]{goalsName, description, target, award, "", "Edit Move"});
     }
-
-
-    //public static void main(String[] args) {
-     // SwingUtilities.invokeLater(() -> new ManageGoalsFrame(accountManager, parentAccount, "Name", "1000", goalsModel).setVisible(true));
-    //}
-
 }
