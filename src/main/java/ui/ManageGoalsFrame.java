@@ -35,6 +35,7 @@ public class ManageGoalsFrame extends ParentPageFrame {
     private void initComponents() {
         setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
         lowerPanel.setLayout(new BoxLayout(lowerPanel, BoxLayout.Y_AXIS));
+        lowerPanel.setBackground(Color.WHITE);
 
         selectFirstChildAccount();
         addInfoPanel();
@@ -54,6 +55,7 @@ public class ManageGoalsFrame extends ParentPageFrame {
 
     private void addInfoPanel() {
         JPanel infoPanel = new JPanel();
+        infoPanel.setBackground(Color.WHITE);
         infoPanel.setLayout(new BoxLayout(infoPanel, BoxLayout.X_AXIS));
         infoPanel.setBorder(BorderFactory.createEmptyBorder(10, 20, 10, 20));
 
@@ -93,6 +95,7 @@ public class ManageGoalsFrame extends ParentPageFrame {
         JPanel goalsListPanel = new JPanel();
         goalsListPanel.setLayout(new BorderLayout());
         goalsListPanel.setBorder(BorderFactory.createEmptyBorder(10, 0, 10, 0));
+        goalsListPanel.setBackground(Color.WHITE);
 
         JLabel goalsListLabel = new JLabel("Goals List");
         goalsListLabel.setFont(new Font("Arial", Font.BOLD, 18));
@@ -175,12 +178,15 @@ public class ManageGoalsFrame extends ParentPageFrame {
     private class ButtonRenderer extends JPanel implements TableCellRenderer {
         public ButtonRenderer() {
             setOpaque(true);
+            setBackground(Color.WHITE); // 设置背景颜色为白色
         }
 
         @Override
         public Component getTableCellRendererComponent(JTable table, Object value,
                                                        boolean isSelected, boolean hasFocus, int row, int column) {
             JPanel panel = new JPanel(new FlowLayout(FlowLayout.LEFT));
+            panel.setBackground(Color.WHITE); // 设置按钮面板的背景颜色为白色
+            panel.setBackground(Color.WHITE);
             JButton editButton = new JButton("Edit");
             JButton deleteButton = new JButton("Delete");
 
@@ -192,6 +198,13 @@ public class ManageGoalsFrame extends ParentPageFrame {
             return panel;
         }
     }
+    public void setSelectedChildAccount(ChildAccount childAccount) {
+        this.childAccount = childAccount;
+        updateGoalsTable();
+                            // 更新目标列表以反映选定的孩子账户
+    }
+
+
 
     private class ButtonEditor extends AbstractCellEditor implements TableCellEditor {
         private JPanel panel;
@@ -201,6 +214,7 @@ public class ManageGoalsFrame extends ParentPageFrame {
 
         public ButtonEditor() {
             panel = new JPanel(new FlowLayout(FlowLayout.LEFT));
+            panel.setBackground(Color.WHITE); // 设置背景颜色为白色
             editButton = new JButton("Edit");
             deleteButton = new JButton("Delete");
 
@@ -210,6 +224,7 @@ public class ManageGoalsFrame extends ParentPageFrame {
             panel.add(editButton);
             panel.add(deleteButton);
         }
+
 
         @Override
         public Component getTableCellEditorComponent(JTable table, Object value, boolean isSelected, int row, int column) {
@@ -233,3 +248,4 @@ public class ManageGoalsFrame extends ParentPageFrame {
         }
     }
 }
+
