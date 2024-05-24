@@ -7,6 +7,7 @@ import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import ui.userCenter.KidUserCenterFrame;
+import ui.encouragement.EncouragementFrame;
 
 public class KidPageFrame extends JFrame {
     protected JLabel titleLabel;
@@ -74,6 +75,17 @@ public class KidPageFrame extends JFrame {
             public void actionPerformed(ActionEvent e) {
                 KidUserCenterFrame kidUserCenterFrame = new KidUserCenterFrame(accountManager, childAccount);
                 kidUserCenterFrame.setVisible(true);
+                dispose();
+            }
+        });
+
+        SidebarButton button7 = new SidebarButton("Daily Encouragement");
+        buttonPanel.add(button7);
+
+        button7.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+                EncouragementFrame encouragementFrame = new EncouragementFrame(accountManager, childAccount);
+                encouragementFrame.setVisible(true);
                 dispose();
             }
         });
