@@ -1,8 +1,6 @@
 package ui;
 import core.AccountManager;
-import core.ChildAccount;
 import core.ParentAccount;
-import core.Task;
 import ui.template.BigButton;
 import ui.template.ParentPageFrame;
 import ui.ManageTasksFrame;
@@ -15,16 +13,19 @@ import java.util.Set;
 
 
 public class AssignmentFrame extends ParentPageFrame {
+    private static AccountManager accountManager;
+    private static ParentAccount parentAccount;
     private static ManageTasksFrame manageTasksFrame;
-    private ChildAccount childAccount;
     private JTextField targetnameField;
     private JTextField taskcontentField;
 
     private JTextField awardField;
     private JTextField deadlineField;
 
-    public AssignmentFrame(AccountManager accountManager, ParentAccount parentAccount) {
+    public AssignmentFrame(AccountManager accountManager, ParentAccount parentAccount,ManageTasksFrame manageTasksFrame) {
         super("Assign a Task", accountManager, parentAccount);
+        this.manageTasksFrame = manageTasksFrame;
+        this.accountManager = accountManager;
         setLocationRelativeTo(null);
 
         // Lower Panel for user inputs and information label
@@ -170,12 +171,11 @@ public class AssignmentFrame extends ParentPageFrame {
     private void updateInformation() {
         String goalsName = targetnameField.getText();
         String target = taskcontentField.getText();
-        double award = Double.parseDouble(awardField.getText());
+        String award = awardField.getText();
+        String description = deadlineField.getText();
 
-
-
-
-
+        manageTasksFrame.updateRow(goalsName, target, award, description);
+        manageTasksFrame.setVisible(true);
 
         dispose();
     }
@@ -186,5 +186,3 @@ public class AssignmentFrame extends ParentPageFrame {
 
 
 }
-
-

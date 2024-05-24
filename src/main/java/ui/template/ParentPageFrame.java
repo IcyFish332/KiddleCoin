@@ -87,7 +87,7 @@ public class ParentPageFrame extends JFrame {
         buttonPanel.add(button3);
         button3.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
-                ManageTasksFrame parentUserCenterFrame = new ManageTasksFrame(accountManager, parentAccount,"name","1000",null);
+                ManageTasksFrame parentUserCenterFrame = new ManageTasksFrame(accountManager, parentAccount);
                 parentUserCenterFrame.setVisible(true);
                 dispose();
             }

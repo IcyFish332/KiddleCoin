@@ -171,9 +171,7 @@ public class AwardFrame extends ParentPageFrame {
     }
 
 //public static void main(String[] args) {
- //     SwingUtilities.invokeLater(() -> new AwardFrame(accountManager, parentAccount).setVisible(true));
-   // }
+    //     SwingUtilities.invokeLater(() -> new AwardFrame(accountManager, parentAccount).setVisible(true));
+    // }
 
 }
-
-

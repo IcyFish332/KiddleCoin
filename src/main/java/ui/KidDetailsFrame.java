@@ -131,12 +131,12 @@ public class KidDetailsFrame extends ParentPageFrame {
     }
 
     private void openSetGoalFrame() {
-        GoalFrame goalFrame = new GoalFrame(accountManager, parentAccount,childAccount); // 创建 GoalFrame 实例
+        GoalFrame goalFrame = new GoalFrame(accountManager, parentAccount, null); // 创建 GoalFrame 实例
         goalFrame.setVisible(true); // 显示 GoalFrame
     }
 
     private void openAssignTaskFrame() {
-        AssignmentFrame taskFrame = new AssignmentFrame(accountManager, parentAccount); // 创建 GoalFrame 实例
+        AssignmentFrame taskFrame = new AssignmentFrame(accountManager, parentAccount, null); // 创建 GoalFrame 实例
         taskFrame.setVisible(true); // 显示 GoalFrame
     }
 
@@ -215,11 +215,11 @@ public class KidDetailsFrame extends ParentPageFrame {
         }
 
         private void editGoal(int row, DefaultTableModel model) {
-            String name = (String) model.getValueAt(row, 0);
-            String description = (String) model.getValueAt(row, 1);
-            String moneyAmount = (String) model.getValueAt(row, 2);
-            String award = (String) model.getValueAt(row, 3);
-            String progress = (String) model.getValueAt(row, 4);
+            String name = String.valueOf(model.getValueAt(row, 0));
+            String description = String.valueOf(model.getValueAt(row, 1));
+            String moneyAmount = String.valueOf(model.getValueAt(row, 2));
+            String award = String.valueOf(model.getValueAt(row, 3));
+            String progress = String.valueOf(model.getValueAt(row, 4));
 
             JTextField nameField = new JTextField(name);
             JTextField descriptionField = new JTextField(description);
@@ -245,10 +245,11 @@ public class KidDetailsFrame extends ParentPageFrame {
             }
         }
 
+
         private void editTask(int row, DefaultTableModel model) {
-            String name = (String) model.getValueAt(row, 0);
-            String description = (String) model.getValueAt(row, 1);
-            String award = (String) model.getValueAt(row, 2);
+            String name = String.valueOf(model.getValueAt(row, 0));
+            String description = String.valueOf(model.getValueAt(row, 1));
+            String award = String.valueOf(model.getValueAt(row, 2));  // 假设奖励字段为字符串，如果不是，也需要转换
 
             JTextField nameField = new JTextField(name);
             JTextField descriptionField = new JTextField(description);
@@ -267,6 +268,7 @@ public class KidDetailsFrame extends ParentPageFrame {
                 model.setValueAt(awardField.getText(), row, 2);
             }
         }
+
 
         @Override
         public Component getTableCellEditorComponent(JTable table, Object value, boolean isSelected, int row, int column) {

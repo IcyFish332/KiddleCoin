@@ -191,5 +191,3 @@ public class GoalFrame extends ParentPageFrame {
         this.dispose();
     }
 }
-
-
