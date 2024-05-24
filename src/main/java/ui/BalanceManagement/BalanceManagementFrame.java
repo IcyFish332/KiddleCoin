@@ -1,4 +1,4 @@
-package ui;
+package ui.BalanceManagement;
 
 import ui.template.KidPageFrame;
 import core.ChildAccount;

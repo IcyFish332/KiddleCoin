@@ -2,7 +2,7 @@ package ui.template;
 
 import core.AccountManager;
 import core.ChildAccount;
-import ui.BalanceManagementFrame;
+import ui.BalanceManagement.BalanceManagementFrame;
 import ui.userCenter.KidUserCenterFrame;
 
 import javax.swing.*;
