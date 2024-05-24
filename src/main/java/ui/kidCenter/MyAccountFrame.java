@@ -82,22 +82,6 @@ public class MyAccountFrame extends KidPageFrame {
         gbc.anchor = GridBagConstraints.NORTHWEST;
         lowerPanel.add(balancePanel, gbc);
 
-        // Add Deposit and Withdraw buttons
-        JPanel buttonPanel = new JPanel(new GridLayout(2, 1, 10, 10));
-        buttonPanel.setBackground(Color.WHITE);
-        JButton depositButton = new JButton("I want to deposit money");
-        JButton withdrawButton = new JButton("I want to withdraw money");
-        depositButton.setBackground(new Color(0xFFF0F5));
-        withdrawButton.setBackground(new Color(0xFFF0F5));
-        buttonPanel.add(depositButton);
-        buttonPanel.add(withdrawButton);
-
-        gbc.gridx = 2;
-        gbc.gridy = 0;
-        gbc.gridwidth = 1;
-        gbc.insets = new Insets(10, 10, 10, 10);
-        gbc.anchor = GridBagConstraints.NORTHWEST;
-        lowerPanel.add(buttonPanel, gbc);
 
         // Add Go to see my goals title
         JLabel goalsTitleLabel = new JLabel("Go to see my goals");
