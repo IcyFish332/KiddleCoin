@@ -1,9 +1,6 @@
 package ui;
 
-import core.AccountManager;
-import core.ChildAccount;
-import core.ParentAccount;
-import core.Task;
+import core.*;
 import ui.template.BigButton;
 import ui.template.ParentPageFrame;
 
@@ -107,17 +104,17 @@ public class ManageTasksFrame extends ParentPageFrame {
 
     private void addTasksTable() {
         JPanel tablePanel = new JPanel(new BorderLayout());
-        String[] taskColumns = {"Task's Name", "Description", "Award", "Operation"};
+        String[] taskColumns = {"Task's Name", "Description", "Award", "Deadline", "Operation"};
         tasksModel = new DefaultTableModel(null, taskColumns) {
             @Override
             public boolean isCellEditable(int row, int column) {
-                return column == 3; // Only operation column is editable
+                return column == 4; // Only operation column is editable
             }
         };
         tasksTable = new JTable(tasksModel);
         tasksTable.setRowHeight(30);
-        tasksTable.getColumnModel().getColumn(3).setCellRenderer(new ButtonRenderer());
-        tasksTable.getColumnModel().getColumn(3).setCellEditor(new ButtonEditor(tasksTable, "task"));
+        tasksTable.getColumnModel().getColumn(4).setCellRenderer(new ButtonRenderer());
+        tasksTable.getColumnModel().getColumn(4).setCellEditor(new ButtonEditor(tasksTable, "task"));
 
         JScrollPane tasksScrollPane = new JScrollPane(tasksTable);
         tablePanel.add(tasksScrollPane, BorderLayout.CENTER);
@@ -134,6 +131,7 @@ public class ManageTasksFrame extends ParentPageFrame {
                         task.getName(),
                         task.getDescription(),
                         task.getReward(),
+                        task.getDueDate(), // Add deadline to the table row
                         ""
                 });
             }
@@ -141,13 +139,10 @@ public class ManageTasksFrame extends ParentPageFrame {
     }
 
     private void openSetTaskFrame() {
-        AssignmentFrame taskFrame = new AssignmentFrame(accountManager, parentAccount, this);
+        AssignmentFrame taskFrame = new AssignmentFrame(accountManager, parentAccount, childAccount);
         taskFrame.setVisible(true);
     }
 
-    public void updateRow(String taskName, String description, String award, String s) {
-        tasksModel.addRow(new Object[]{taskName, description, award, ""});
-    }
 
     static class ButtonRenderer extends JPanel implements TableCellRenderer {
         protected JButton editButton, moveButton;
@@ -172,6 +167,9 @@ public class ManageTasksFrame extends ParentPageFrame {
         protected JButton editButton, moveButton;
         private JTable table;
         private String type;
+        private ChildAccount childAccount;
+        private AccountManager accountManager;
+        private ParentAccount parentAccount;
 
         public ButtonEditor(JTable table, String type) {
             this.table = table;
@@ -187,7 +185,7 @@ public class ManageTasksFrame extends ParentPageFrame {
 
             moveButton.addActionListener(e -> {
                 fireEditingStopped(); // Ensure to fire event to stop editing
-                moveItem();
+                moveItem(accountManager,parentAccount);
             });
 
             panel.add(editButton);
@@ -204,13 +202,18 @@ public class ManageTasksFrame extends ParentPageFrame {
             }
         }
 
-        private void moveItem() {
+        private void moveItem(AccountManager accountManager,ParentAccount parentAccount) {
             int row = table.getSelectedRow();
             if (row >= 0) {
                 DefaultTableModel model = (DefaultTableModel) table.getModel();
                 int confirm = JOptionPane.showConfirmDialog(null, "Are you sure you want to delete this item?", "Confirm Delete", JOptionPane.YES_NO_OPTION);
                 if (confirm == JOptionPane.YES_OPTION) {
                     model.removeRow(row);
+                    childAccount.getSavingGoals().remove(row);
+                    SavingGoal goalToDelete = childAccount.getSavingGoals().get(row);
+                    childAccount.removeSavingGoal(goalToDelete);
+                    accountManager.saveAccount(childAccount);
+                    accountManager.saveAccount(parentAccount);
                 }
             } else {
                 JOptionPane.showMessageDialog(null, "No item selected!");
@@ -221,15 +224,18 @@ public class ManageTasksFrame extends ParentPageFrame {
             String name = String.valueOf(model.getValueAt(row, 0));
             String description = String.valueOf(model.getValueAt(row, 1));
             String award = String.valueOf(model.getValueAt(row, 2));
+            String deadline = String.valueOf(model.getValueAt(row, 3)); // Get deadline value
 
             JTextField nameField = new JTextField(name);
             JTextField descriptionField = new JTextField(description);
             JTextField awardField = new JTextField(award);
+            JTextField deadlineField = new JTextField(deadline); // Add deadline field
 
             Object[] message = {
                     "Name:", nameField,
                     "Description:", descriptionField,
-                    "Award:", awardField
+                    "Award:", awardField,
+                    "Deadline:", deadlineField // Add deadline input
             };
 
             int option = JOptionPane.showConfirmDialog(null, message, "Edit Task", JOptionPane.OK_CANCEL_OPTION);
@@ -237,6 +243,7 @@ public class ManageTasksFrame extends ParentPageFrame {
                 model.setValueAt(nameField.getText(), row, 0);
                 model.setValueAt(descriptionField.getText(), row, 1);
                 model.setValueAt(awardField.getText(), row, 2);
+                model.setValueAt(deadlineField.getText(), row, 3); // Update deadline value
             }
         }
 

@@ -19,10 +19,6 @@ public class GoalFrame extends ParentPageFrame {
     private JTextField targetField;
     private JTextField awardField;
     private JTextArea Description;
-
-    private AccountManager accountManager;
-    private ParentAccount parentAccount;
-
     public GoalFrame(AccountManager accountManager, ParentAccount parentAccount,ChildAccount childAccount) {
         super("Set a Goal", accountManager, parentAccount);
         this.childAccount=childAccount;
