@@ -7,6 +7,10 @@ import java.awt.event.ActionListener;
 
 import core.AccountManager;
 import core.ParentAccount;
+import ui.KidDetailsFrame;
+import ui.KidsListManagementFrame;
+import ui.ManageGoalsFrame;
+import ui.ManageTasksFrame;
 import ui.userCenter.ParentUserCenterFrame;
 
 public class ParentPageFrame extends JFrame {
@@ -19,7 +23,7 @@ public class ParentPageFrame extends JFrame {
     public ParentPageFrame(String title, AccountManager accountManager, ParentAccount parentAccount) {
 
         setTitle("KiddleCoin");
-        setSize(800, 600);
+        setSize(1200, 900);
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         setLocationRelativeTo(null);
 
@@ -61,11 +65,35 @@ public class ParentPageFrame extends JFrame {
         // 添加侧边栏按钮
         SidebarButton button1 = new SidebarButton("Kid List");
         buttonPanel.add(button1);
-
+        button1.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+                KidsListManagementFrame kidsListManagementFrame = new KidsListManagementFrame(accountManager, parentAccount);
+                kidsListManagementFrame.setVisible(true);
+                dispose();
+            }
+        });
         SidebarButton button2 = new SidebarButton("Manage Goals");
         buttonPanel.add(button2);
+        button2.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+                ManageGoalsFrame manageGoalsFrame = new ManageGoalsFrame(accountManager, parentAccount);
+                manageGoalsFrame.setVisible(true);
+                dispose();
+            }
+        });
+
+
         SidebarButton button3 = new SidebarButton("Manage Tasks");
         buttonPanel.add(button3);
+        button3.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+                ManageTasksFrame parentUserCenterFrame = new ManageTasksFrame(accountManager, parentAccount);
+                parentUserCenterFrame.setVisible(true);
+                dispose();
+            }
+        });
+
+
         SidebarButton button4 = new SidebarButton("User Center");
         buttonPanel.add(button4);
         button4.addActionListener(new ActionListener() {
@@ -93,7 +121,7 @@ public class ParentPageFrame extends JFrame {
                 BorderFactory.createEmptyBorder(10, 40, 10, 40), // 设置边距
                 BorderFactory.createMatteBorder(0, 0, 1, 0, Color.LIGHT_GRAY) // 添加底部灰色边框
         ));
-         //Add spacing before the title
+        //Add spacing before the title
 
         //创建标题
         titleLabel = new JLabel(title);
