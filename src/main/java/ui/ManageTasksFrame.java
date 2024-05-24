@@ -13,6 +13,7 @@ import javax.swing.table.TableCellEditor;
 import javax.swing.table.TableCellRenderer;
 import java.awt.*;
 import java.util.EventObject;
+import java.util.Locale;
 import java.util.Set;
 import java.text.SimpleDateFormat;
 
@@ -142,7 +143,7 @@ public class ManageTasksFrame extends ParentPageFrame {
         if (childAccount != null) {
             for (Task task : childAccount.getTasks()) {
                 // Format the date as "Year-Month-Day (Day of the Week)"
-                SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd (EEE)");
+                SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd EEEE", Locale.ENGLISH);
                 String formattedDate = dateFormat.format(task.getDueDate());
 
                 tasksModel.addRow(new Object[]{
