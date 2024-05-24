@@ -4,7 +4,6 @@ import core.AccountManager;
 import core.ChildAccount;
 import core.ParentAccount;
 import core.SavingGoal;
-import ui.GoalFrame;
 import ui.template.BigButton;
 import ui.template.ParentPageFrame;
 
@@ -13,6 +12,7 @@ import javax.swing.table.DefaultTableModel;
 import javax.swing.table.TableCellEditor;
 import javax.swing.table.TableCellRenderer;
 import java.awt.*;
+import java.util.EventObject;
 import java.util.Set;
 
 public class ManageGoalsFrame extends ParentPageFrame {
@@ -113,13 +113,13 @@ public class ManageGoalsFrame extends ParentPageFrame {
         goalsModel = new DefaultTableModel(null, goalColumns) {
             @Override
             public boolean isCellEditable(int row, int column) {
-                return column == 5; // Only operation column is editable
+                return column == 5; // Only the Operation column is editable
             }
         };
         goalsTable = new JTable(goalsModel);
         goalsTable.setRowHeight(30);
         goalsTable.getColumnModel().getColumn(5).setCellRenderer(new ButtonRenderer());
-        goalsTable.getColumnModel().getColumn(5).setCellEditor(new ButtonEditor(goalsTable, "goal"));
+        goalsTable.getColumnModel().getColumn(5).setCellEditor(new ButtonEditor());
 
         JScrollPane goalsScrollPane = new JScrollPane(goalsTable);
         tablePanel.add(goalsScrollPane, BorderLayout.CENTER);
@@ -139,7 +139,7 @@ public class ManageGoalsFrame extends ParentPageFrame {
                         goal.getTargetAmount(),
                         goal.getReward(),
                         String.format("%.2f%%", progress),
-                        ""
+                        "Edit/Delete"
                 });
             }
         }
@@ -148,151 +148,72 @@ public class ManageGoalsFrame extends ParentPageFrame {
     private void openSetGoalFrame() {
         GoalFrame goalFrame = new GoalFrame(accountManager, parentAccount, childAccount);
         goalFrame.setVisible(true);
+        this.dispose(); // 关闭当前窗口
     }
 
-    static class ButtonRenderer extends JPanel implements TableCellRenderer {
-        protected JButton editButton, moveButton;
+    private void editGoal(int row) {
+        SavingGoal goal = childAccount.getSavingGoals().get(row);
+        GoalFrame goalFrame = new GoalFrame(accountManager, parentAccount, childAccount, goal);
+        goalFrame.setVisible(true);
+        this.dispose(); // 关闭当前窗口
+    }
 
+    private void deleteGoal(int row) {
+        if (row >= 0 && row < goalsModel.getRowCount()) {
+            int confirm = JOptionPane.showConfirmDialog(null, "Are you sure you want to delete this item?", "Confirm Delete", JOptionPane.YES_NO_OPTION);
+            if (confirm == JOptionPane.YES_OPTION) {
+                SavingGoal goalToRemove = childAccount.getSavingGoals().get(row);
+                childAccount.removeSavingGoal(goalToRemove);
+                accountManager.saveAccount(childAccount);
+                updateGoalsTable();
+            }
+        } else {
+            JOptionPane.showMessageDialog(null, "Invalid row selected for deletion.");
+        }
+    }
+
+    private class ButtonRenderer extends JPanel implements TableCellRenderer {
         public ButtonRenderer() {
-            super(new FlowLayout(FlowLayout.LEFT));
-            editButton = new JButton("Edit");
-            moveButton = new JButton("Move");
-            add(editButton);
-            add(moveButton);
+            setOpaque(true);
         }
 
         @Override
         public Component getTableCellRendererComponent(JTable table, Object value,
                                                        boolean isSelected, boolean hasFocus, int row, int column) {
-            return this;
+            JPanel panel = new JPanel(new FlowLayout(FlowLayout.LEFT));
+            JButton editButton = new JButton("Edit");
+            JButton deleteButton = new JButton("Delete");
+
+            editButton.addActionListener(e -> editGoal(row));
+            deleteButton.addActionListener(e -> deleteGoal(row));
+
+            panel.add(editButton);
+            panel.add(deleteButton);
+            return panel;
         }
     }
 
-    static class ButtonEditor extends AbstractCellEditor implements TableCellEditor {
-        protected JPanel panel;
-        protected JButton editButton, moveButton;
-        private JTable table;
-        private String type;
-        private ChildAccount childAccount;
-        private  AccountManager accountManager;
-        private ParentAccount parentAccount;
+    private class ButtonEditor extends AbstractCellEditor implements TableCellEditor {
+        private JPanel panel;
+        private JButton editButton;
+        private JButton deleteButton;
+        private int currentRow;
 
-        public ButtonEditor(JTable table, String type) {
-            this.table = table;
-            this.type = type;
+        public ButtonEditor() {
             panel = new JPanel(new FlowLayout(FlowLayout.LEFT));
             editButton = new JButton("Edit");
-            moveButton = new JButton("Move");
+            deleteButton = new JButton("Delete");
 
-            editButton.addActionListener(e -> {
-                fireEditingStopped();
-                // Make sure to fire event to stop editing
-                editItem(accountManager,parentAccount);
-
-            });
-
-            moveButton.addActionListener(e -> {
-                fireEditingStopped(); // Ensure to fire event to stop editing
-                moveItem();
-            });
+            editButton.addActionListener(e -> editGoal(currentRow));
+            deleteButton.addActionListener(e -> deleteGoal(currentRow));
 
             panel.add(editButton);
-            panel.add(moveButton);
-        }
-
-        private void editItem(AccountManager accountManager,ParentAccount parentAccount) {
-            int row = table.getSelectedRow();
-            if (row >= 0) {
-                DefaultTableModel model = (DefaultTableModel) table.getModel();
-                if ("goal".equals(type)) {
-                    editGoal(row, model,accountManager,parentAccount);
-
-                } else {
-                    editTask(row, model);
-                }
-            } else {
-                JOptionPane.showMessageDialog(null, "No item selected!");
-            }
-        }
-
-        private void moveItem() {
-            int row = table.getSelectedRow();
-            if (row >= 0) {
-                DefaultTableModel model = (DefaultTableModel) table.getModel();
-                int confirm = JOptionPane.showConfirmDialog(null, "Are you sure you want to delete this item?", "Confirm Delete", JOptionPane.YES_NO_OPTION);
-                if (confirm == JOptionPane.YES_OPTION) {
-                    model.removeRow(row);
-                    // Remove the SavingGoal instance from the childAccount
-
-                }
-            } else {
-                JOptionPane.showMessageDialog(null, "No item selected!");
-            }
-        }
-
-        private void editGoal(int row, DefaultTableModel model,AccountManager accountManager,ParentAccount parentAccount) {
-            String name = String.valueOf(model.getValueAt(row, 0));
-            String description = String.valueOf(model.getValueAt(row, 1));
-            double target = Double.parseDouble(String.valueOf(model.getValueAt(row, 2)));
-            double award = Double.parseDouble(String.valueOf(model.getValueAt(row, 3)));
-
-
-            JTextField nameField = new JTextField(name);
-            JTextField descriptionField = new JTextField(description);
-            JTextField moneyAmountField = new JTextField(String.valueOf(award));
-            JTextField awardField = new JTextField(String.valueOf(target));
-
-
-            Object[] message = {
-                    "Name:", nameField,
-                    "Description:", descriptionField,
-                    "Money Amount:", moneyAmountField,
-                    "Award:", awardField,
-            };
-
-            int option = JOptionPane.showConfirmDialog(null, message, "Edit Goal", JOptionPane.OK_CANCEL_OPTION);
-            if (option == JOptionPane.OK_OPTION) {
-                model.setValueAt(nameField.getText(), row, 0);
-                model.setValueAt(descriptionField.getText(), row, 1);
-                model.setValueAt(moneyAmountField.getText(), row, 2);
-                model.setValueAt(awardField.getText(), row, 3);
-                SavingGoal newGoal = new SavingGoal(name, description, target, award);
-                newGoal.setName(name);
-                newGoal.setDescription(description);
-                newGoal.setReward(award);
-                newGoal.setTargetAmount(target);
-                childAccount.addSavingGoal(newGoal);
-                accountManager.saveAccount(childAccount);
-                accountManager.saveAccount(parentAccount);
-
-            }
-        }
-
-        private void editTask(int row, DefaultTableModel model) {
-            String name = String.valueOf(model.getValueAt(row, 0));
-            String description = String.valueOf(model.getValueAt(row, 1));
-            String award = String.valueOf(model.getValueAt(row, 2));
-
-            JTextField nameField = new JTextField(name);
-            JTextField descriptionField = new JTextField(description);
-            JTextField awardField = new JTextField(award);
-
-            Object[] message = {
-                    "Name:", nameField,
-                    "Description:", descriptionField,
-                    "Award:", awardField
-            };
-
-            int option = JOptionPane.showConfirmDialog(null, message, "Edit Task", JOptionPane.OK_CANCEL_OPTION);
-            if (option == JOptionPane.OK_OPTION) {
-                model.setValueAt(nameField.getText(), row, 0);
-                model.setValueAt(descriptionField.getText(), row, 1);
-                model.setValueAt(awardField.getText(), row, 2);
-            }
+            panel.add(deleteButton);
         }
 
         @Override
         public Component getTableCellEditorComponent(JTable table, Object value, boolean isSelected, int row, int column) {
+            currentRow = row; // 保存当前行索引
             return panel;
         }
 
@@ -300,7 +221,15 @@ public class ManageGoalsFrame extends ParentPageFrame {
         public Object getCellEditorValue() {
             return null;
         }
+
+        @Override
+        public boolean isCellEditable(EventObject anEvent) {
+            return true;
+        }
+
+        @Override
+        public boolean shouldSelectCell(EventObject anEvent) {
+            return true;
+        }
     }
 }
-
-
