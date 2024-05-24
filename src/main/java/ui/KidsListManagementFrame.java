@@ -30,12 +30,32 @@ public class KidsListManagementFrame extends ParentPageFrame {
 
     private void initComponents() {
         lowerPanel.setLayout(new BorderLayout());
+        lowerPanel.setBackground(Color.WHITE);
+
+        // 标题行
+        JPanel titlePanel = new JPanel(new BorderLayout());
+        titlePanel.setBackground(Color.WHITE);
+        JLabel titleLabel = new JLabel("Kids List Management");
+        titleLabel.setBackground(Color.WHITE);
+        titleLabel.setFont(new Font("Arial", Font.BOLD, 18));
+        titlePanel.add(titleLabel, BorderLayout.WEST);
+
+        // 添加按钮
+        BigButton addButton = new BigButton("Add");
+        addButton.setBackground(Color.WHITE);
+        addButton.addActionListener(this::addAccountAction);
+        titlePanel.add(addButton, BorderLayout.EAST);
+
+        lowerPanel.add(titlePanel, BorderLayout.NORTH);
 
         // 表格模型
-        String[] columnNames = {"Name", "Balance", "Savings", "Operations"};
+        String[] columnNames = {"Name", "AccountID", "Savings", "Operations"};
         model = new DefaultTableModel(null, columnNames);
         table = new JTable(model);
         table.setRowHeight(30);
+        table.setBackground(Color.WHITE);
+        table.setGridColor(Color.WHITE);  // Set grid color to white to blend with background
+        table.setShowGrid(true);
 
         for (String childAccountId : parentAccount.getChildAccountIds()) {
             Account account = accountManager.getAccount(childAccountId);
@@ -46,9 +66,11 @@ public class KidsListManagementFrame extends ParentPageFrame {
 
         // 设置表格列的单元格编辑器
         table.getColumnModel().getColumn(2).setCellEditor(new SavingsEditor(new JTextField()));
+
         // Operations列
         table.getColumnModel().getColumn(3).setCellRenderer(new OperationsRenderer());
         table.getColumnModel().getColumn(3).setCellEditor(new OperationsEditor(new JCheckBox()));
+
         // 调整列宽
         table.getColumnModel().getColumn(0).setPreferredWidth(150);
         table.getColumnModel().getColumn(1).setPreferredWidth(150);
@@ -56,18 +78,16 @@ public class KidsListManagementFrame extends ParentPageFrame {
         table.getColumnModel().getColumn(3).setPreferredWidth(400);
 
         JScrollPane scrollPane = new JScrollPane(table);
+        scrollPane.getViewport().setBackground(Color.WHITE);
         lowerPanel.add(scrollPane, BorderLayout.CENTER);
 
-        // 添加按钮
-        JButton addButton = new JButton("Add");
-        addButton.addActionListener(this::addAccountAction);
-        lowerPanel.add(addButton, BorderLayout.SOUTH);
-
+        this.contentPanel.setBackground(Color.WHITE);
         this.contentPanel.add(lowerPanel, BorderLayout.CENTER);
     }
 
     private void addAccountAction(ActionEvent e) {
         JTextField accountIdField = new JTextField();
+        accountIdField.setBackground(Color.WHITE);
         Object[] message = {
                 "Account ID:", accountIdField
         };
@@ -107,6 +127,7 @@ public class KidsListManagementFrame extends ParentPageFrame {
         public SavingsEditor(JTextField textField) {
             super(textField);
             this.textField = textField;
+            this.textField.setBackground(Color.WHITE);
         }
 
         @Override
@@ -145,8 +166,12 @@ public class KidsListManagementFrame extends ParentPageFrame {
 
         public OperationsRenderer() {
             setLayout(new BoxLayout(this, BoxLayout.X_AXIS));
+            setBackground(Color.WHITE);
             detailsButton = new BigButton("For More Details");
             deleteButton = new BigButton("Delete");
+
+            detailsButton.setBackground(Color.WHITE);
+            deleteButton.setBackground(Color.WHITE);
 
             add(detailsButton);
             add(deleteButton);
@@ -175,8 +200,12 @@ public class KidsListManagementFrame extends ParentPageFrame {
             super(checkBox);
             panel = new JPanel();
             panel.setLayout(new BoxLayout(panel, BoxLayout.X_AXIS));
+            panel.setBackground(Color.WHITE);
             detailsButton = new BigButton("For More Details");
             deleteButton = new BigButton("Delete");
+
+            detailsButton.setBackground(Color.WHITE);
+            deleteButton.setBackground(Color.WHITE);
 
             panel.add(detailsButton);
             panel.add(deleteButton);
@@ -192,6 +221,7 @@ public class KidsListManagementFrame extends ParentPageFrame {
                         ChildAccount childAccount = (ChildAccount) account;
                         KidDetailsFrame detailsFrame = new KidDetailsFrame(accountManager, parentAccount, childAccount);
                         detailsFrame.setVisible(true);
+                        dispose();
                     } else {
                         JOptionPane.showMessageDialog(null, "Invalid Account ID. Please select a valid Child Account.", "Input Error", JOptionPane.ERROR_MESSAGE);
                     }

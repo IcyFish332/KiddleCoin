@@ -4,6 +4,7 @@ import core.AccountManager;
 import core.ChildAccount;
 import core.ParentAccount;
 import core.SavingGoal;
+import ui.GoalFrame;
 import ui.template.BigButton;
 import ui.template.ParentPageFrame;
 
@@ -172,6 +173,9 @@ public class ManageGoalsFrame extends ParentPageFrame {
         protected JButton editButton, moveButton;
         private JTable table;
         private String type;
+        private ChildAccount childAccount;
+        private  AccountManager accountManager;
+        private ParentAccount parentAccount;
 
         public ButtonEditor(JTable table, String type) {
             this.table = table;
@@ -181,8 +185,10 @@ public class ManageGoalsFrame extends ParentPageFrame {
             moveButton = new JButton("Move");
 
             editButton.addActionListener(e -> {
-                fireEditingStopped(); // Make sure to fire event to stop editing
-                editItem();
+                fireEditingStopped();
+                // Make sure to fire event to stop editing
+                editItem(accountManager,parentAccount);
+
             });
 
             moveButton.addActionListener(e -> {
@@ -194,12 +200,13 @@ public class ManageGoalsFrame extends ParentPageFrame {
             panel.add(moveButton);
         }
 
-        private void editItem() {
+        private void editItem(AccountManager accountManager,ParentAccount parentAccount) {
             int row = table.getSelectedRow();
             if (row >= 0) {
                 DefaultTableModel model = (DefaultTableModel) table.getModel();
                 if ("goal".equals(type)) {
-                    editGoal(row, model);
+                    editGoal(row, model,accountManager,parentAccount);
+
                 } else {
                     editTask(row, model);
                 }
@@ -215,31 +222,32 @@ public class ManageGoalsFrame extends ParentPageFrame {
                 int confirm = JOptionPane.showConfirmDialog(null, "Are you sure you want to delete this item?", "Confirm Delete", JOptionPane.YES_NO_OPTION);
                 if (confirm == JOptionPane.YES_OPTION) {
                     model.removeRow(row);
+                    // Remove the SavingGoal instance from the childAccount
+
                 }
             } else {
                 JOptionPane.showMessageDialog(null, "No item selected!");
             }
         }
 
-        private void editGoal(int row, DefaultTableModel model) {
+        private void editGoal(int row, DefaultTableModel model,AccountManager accountManager,ParentAccount parentAccount) {
             String name = String.valueOf(model.getValueAt(row, 0));
             String description = String.valueOf(model.getValueAt(row, 1));
-            String moneyAmount = String.valueOf(model.getValueAt(row, 2));
-            String award = String.valueOf(model.getValueAt(row, 3));
-            String progress = String.valueOf(model.getValueAt(row, 4));
+            double target = Double.parseDouble(String.valueOf(model.getValueAt(row, 2)));
+            double award = Double.parseDouble(String.valueOf(model.getValueAt(row, 3)));
+
 
             JTextField nameField = new JTextField(name);
             JTextField descriptionField = new JTextField(description);
-            JTextField moneyAmountField = new JTextField(moneyAmount);
-            JTextField awardField = new JTextField(award);
-            JTextField progressField = new JTextField(progress);
+            JTextField moneyAmountField = new JTextField(String.valueOf(award));
+            JTextField awardField = new JTextField(String.valueOf(target));
+
 
             Object[] message = {
                     "Name:", nameField,
                     "Description:", descriptionField,
                     "Money Amount:", moneyAmountField,
                     "Award:", awardField,
-                    "Progress:", progressField
             };
 
             int option = JOptionPane.showConfirmDialog(null, message, "Edit Goal", JOptionPane.OK_CANCEL_OPTION);
@@ -248,7 +256,15 @@ public class ManageGoalsFrame extends ParentPageFrame {
                 model.setValueAt(descriptionField.getText(), row, 1);
                 model.setValueAt(moneyAmountField.getText(), row, 2);
                 model.setValueAt(awardField.getText(), row, 3);
-                model.setValueAt(progressField.getText(), row, 4);
+                SavingGoal newGoal = new SavingGoal(name, description, target, award);
+                newGoal.setName(name);
+                newGoal.setDescription(description);
+                newGoal.setReward(award);
+                newGoal.setTargetAmount(target);
+                childAccount.addSavingGoal(newGoal);
+                accountManager.saveAccount(childAccount);
+                accountManager.saveAccount(parentAccount);
+
             }
         }
 
@@ -286,4 +302,5 @@ public class ManageGoalsFrame extends ParentPageFrame {
         }
     }
 }
+
 
