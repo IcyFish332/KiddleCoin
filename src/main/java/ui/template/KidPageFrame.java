@@ -1,6 +1,9 @@
 package ui.template;
+
 import core.AccountManager;
 import core.ChildAccount;
+import ui.BalanceManagement.BalanceManagementFrame;
+import ui.userCenter.KidUserCenterFrame;
 
 import javax.swing.*;
 import java.awt.*;
@@ -14,6 +17,7 @@ import ui.kidCenter.MyTasksFrame;
 import ui.userCenter.KidUserCenterFrame;
 
 
+
 public class KidPageFrame extends JFrame {
     protected JLabel titleLabel;
     protected JPanel sidebarPanel;
@@ -22,7 +26,6 @@ public class KidPageFrame extends JFrame {
     protected JPanel lowerPanel;
 
     public KidPageFrame(String title, AccountManager accountManager, ChildAccount childAccount) {
-
         setTitle("KiddleCoin");
         setSize(800, 600);
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -127,6 +130,14 @@ public class KidPageFrame extends JFrame {
             }
         });
 
+        button2.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+                BalanceManagementFrame balanceFrame = new BalanceManagementFrame(childAccount,accountManager);
+                balanceFrame.setVisible(true);
+                dispose();
+            }
+        });
+
         middlePanel.add(iconLabel, BorderLayout.NORTH);
         middlePanel.add(buttonPanel, BorderLayout.CENTER);
 
@@ -191,5 +202,4 @@ public class KidPageFrame extends JFrame {
             setBorder(BorderFactory.createEmptyBorder(5, 10, 5, 10));
         }
     }
-
 }
