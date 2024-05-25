@@ -1,4 +1,4 @@
-package ui.BalanceManagement;
+package ui.kid.BalanceManagement;
 
 import ui.template.BigButton;
 import core.ChildAccount;
@@ -7,18 +7,18 @@ import core.AccountManager;
 import javax.swing.*;
 import java.awt.*;
 
-public class SaveGoalsFrame extends JFrame {
+public class WithdrawalFrame extends JFrame {
 
     private ChildAccount childAccount;
     private AccountManager accountManager;
     private BalanceManagementFrame balanceManagementFrame;
     private JTextField amountField;
 
-    public SaveGoalsFrame(ChildAccount childAccount, AccountManager accountManager, BalanceManagementFrame balanceManagementFrame) {
+    public WithdrawalFrame(ChildAccount childAccount, AccountManager accountManager, BalanceManagementFrame balanceManagementFrame) {
         this.childAccount = childAccount;
         this.accountManager = accountManager;
         this.balanceManagementFrame = balanceManagementFrame;
-        setTitle("Save Money into My Goals");
+        setTitle("Make a Withdrawal");
         setSize(300, 200);
         setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
         setLocationRelativeTo(null);
@@ -58,18 +58,20 @@ public class SaveGoalsFrame extends JFrame {
         getContentPane().add(mainPanel);
     }
 
-    // 处理提交按钮点击事件的方法
+    // 提交按钮的事件处理逻辑
     private void onSubmit() {
         try {
             double amount = Double.parseDouble(amountField.getText());
-            childAccount.saveMoney(amount);
+            childAccount.withdraw(amount);
             // 保存更新后的账户数据
             accountManager.saveAccount(childAccount);
-            JOptionPane.showMessageDialog(this, "Money saved to goal successfully!");
+            JOptionPane.showMessageDialog(this, "Withdrawal successful!");
             balanceManagementFrame.updateLabels();  // 更新标签显示
             dispose();  // 关闭窗口
         } catch (NumberFormatException e) {
             JOptionPane.showMessageDialog(this, "Please enter a valid amount.");
+        } catch (IllegalArgumentException e) {
+            JOptionPane.showMessageDialog(this, "Insufficient balance.");
         }
     }
 }

@@ -7,11 +7,10 @@ import java.awt.event.ActionListener;
 
 import core.AccountManager;
 import core.ParentAccount;
-import ui.KidDetailsFrame;
-import ui.KidsListManagementFrame;
-import ui.ManageGoalsFrame;
-import ui.ManageTasksFrame;
-import ui.userCenter.ParentUserCenterFrame;
+import ui.parent.KidsListManagementFrame;
+import ui.parent.ManageGoalsFrame;
+import ui.parent.ManageTasksFrame;
+import ui.parent.ParentUserCenterFrame;
 
 public class ParentPageFrame extends JFrame {
     protected JLabel titleLabel;
@@ -150,7 +149,7 @@ public class ParentPageFrame extends JFrame {
             super(text);
 
             // 设置按钮大小
-            Dimension maxBtnSize = new Dimension(150, 30);
+            Dimension maxBtnSize = new Dimension(200, 30);
             setMaximumSize(maxBtnSize);
             setPreferredSize(maxBtnSize);
 

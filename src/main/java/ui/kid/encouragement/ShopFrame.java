@@ -1,4 +1,4 @@
-package ui.encouragement;
+package ui.kid.encouragement;
 import core.AccountManager;
 import core.ChildAccount;
 

@@ -1,9 +1,10 @@
-package ui;
+package ui.parent;
 
 import core.AccountManager;
 import core.ChildAccount;
 import core.ParentAccount;
 import core.SavingGoal;
+import ui.parent.ManageGoalsFrame;
 import ui.template.BigButton;
 import ui.template.ParentPageFrame;
 
@@ -12,7 +13,6 @@ import java.awt.*;
 
 public class GoalFrame extends ParentPageFrame {
     private ChildAccount childAccount;
-    private ChildAccount selectedChildAccount;
 
     private JTextField goalnameField;
     private JTextField targetField;
@@ -24,7 +24,6 @@ public class GoalFrame extends ParentPageFrame {
 
     public GoalFrame(AccountManager accountManager, ParentAccount parentAccount, ChildAccount childAccount) {
         this(accountManager, parentAccount, childAccount, null);
-        this.selectedChildAccount = childAccount;
     }
 
 
@@ -33,7 +32,6 @@ public class GoalFrame extends ParentPageFrame {
         this.childAccount = childAccount;
         this.accountManager = accountManager;
         this.parentAccount = parentAccount;
-        this.selectedChildAccount = childAccount;
         setLocationRelativeTo(null);
 
         lowerPanel.setLayout(new GridBagLayout());

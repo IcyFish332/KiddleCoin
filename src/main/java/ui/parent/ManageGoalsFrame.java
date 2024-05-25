@@ -1,4 +1,4 @@
-package ui;
+package ui.parent;
 
 import core.AccountManager;
 import core.ChildAccount;

@@ -1,4 +1,4 @@
-package ui.encouragement;
+package ui.kid.encouragement;
 import core.AccountManager;
 import core.ChildAccount;
 
@@ -9,7 +9,6 @@ import java.awt.event.ActionListener;
 
 import ui.template.BigButton;
 import ui.template.KidPageFrame;
-import ui.encouragement.ShopFrame;
 
 public class EncouragementFrame extends KidPageFrame {
 

@@ -1,4 +1,4 @@
-package ui.BalanceManagement;
+package ui.kid.BalanceManagement;
 
 import ui.template.BigButton;
 import core.ChildAccount;
@@ -7,18 +7,18 @@ import core.AccountManager;
 import javax.swing.*;
 import java.awt.*;
 
-public class WithdrawalFrame extends JFrame {
+public class DepositFrame extends JFrame {
 
     private ChildAccount childAccount;
     private AccountManager accountManager;
     private BalanceManagementFrame balanceManagementFrame;
     private JTextField amountField;
 
-    public WithdrawalFrame(ChildAccount childAccount, AccountManager accountManager, BalanceManagementFrame balanceManagementFrame) {
+    public DepositFrame(ChildAccount childAccount, AccountManager accountManager, BalanceManagementFrame balanceManagementFrame) {
         this.childAccount = childAccount;
         this.accountManager = accountManager;
         this.balanceManagementFrame = balanceManagementFrame;
-        setTitle("Make a Withdrawal");
+        setTitle("Make a Deposit");
         setSize(300, 200);
         setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
         setLocationRelativeTo(null);
@@ -32,14 +32,15 @@ public class WithdrawalFrame extends JFrame {
         mainPanel.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
 
         // 创建一个用于输入金额的面板
-        JPanel amountPanel = new JPanel(new BorderLayout(10, 10));
+        JPanel inputPanel = new JPanel(new BorderLayout(10, 10));
         JLabel amountLabel = new JLabel("Amount:");
         amountField = new JTextField(15);
-        amountPanel.add(amountLabel, BorderLayout.WEST);
-        amountPanel.add(amountField, BorderLayout.CENTER);
-        mainPanel.add(amountPanel);
+        inputPanel.add(amountLabel, BorderLayout.WEST);
+        inputPanel.add(amountField, BorderLayout.CENTER);
 
-        // 在金额面板和按钮面板之间添加垂直间距
+        mainPanel.add(inputPanel);
+
+        // 在输入面板和按钮面板之间添加垂直间距
         mainPanel.add(Box.createVerticalStrut(20));
 
         // 创建按钮面板
@@ -48,6 +49,7 @@ public class WithdrawalFrame extends JFrame {
         BigButton returnButton = new BigButton("Return");
         buttonPanel.add(submitButton);
         buttonPanel.add(returnButton);
+
         mainPanel.add(buttonPanel);
 
         // 添加事件监听器到submitButton
@@ -58,20 +60,18 @@ public class WithdrawalFrame extends JFrame {
         getContentPane().add(mainPanel);
     }
 
-    // 提交按钮的事件处理逻辑
+    // 这个方法将在点击Submit按钮时被调用
     private void onSubmit() {
         try {
             double amount = Double.parseDouble(amountField.getText());
-            childAccount.withdraw(amount);
+            childAccount.deposit(amount);
             // 保存更新后的账户数据
             accountManager.saveAccount(childAccount);
-            JOptionPane.showMessageDialog(this, "Withdrawal successful!");
+            JOptionPane.showMessageDialog(this, "Deposit successful!");
             balanceManagementFrame.updateLabels();  // 更新标签显示
             dispose();  // 关闭窗口
         } catch (NumberFormatException e) {
             JOptionPane.showMessageDialog(this, "Please enter a valid amount.");
-        } catch (IllegalArgumentException e) {
-            JOptionPane.showMessageDialog(this, "Insufficient balance.");
         }
     }
 }

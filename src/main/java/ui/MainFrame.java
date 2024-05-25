@@ -4,8 +4,8 @@ import core.Account;
 import core.AccountManager;
 import core.ChildAccount;
 import core.ParentAccount;
-import ui.userCenter.KidUserCenterFrame;
-import ui.userCenter.ParentUserCenterFrame;
+import ui.kid.KidUserCenterFrame;
+import ui.parent.ParentUserCenterFrame;
 
 import javax.swing.*;
 import java.awt.*;

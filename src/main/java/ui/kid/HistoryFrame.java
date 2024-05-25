@@ -1,4 +1,4 @@
-package ui.kidCenter;
+package ui.kid;
 
 import core.AccountManager;
 import core.ChildAccount;
