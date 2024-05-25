@@ -1,4 +1,4 @@
-package ui.kidCenter;
+package ui.kid;
 
 import core.AccountManager;
 import core.ChildAccount;
@@ -12,10 +12,7 @@ import javax.swing.table.TableCellRenderer;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.awt.event.MouseAdapter;
-import java.awt.event.MouseEvent;
 import java.text.SimpleDateFormat;
-import java.util.Date;
 import java.util.List;
 
 public class MyTasksFrame extends KidPageFrame {

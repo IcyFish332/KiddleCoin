@@ -1,4 +1,4 @@
-package ui.kidCenter;
+package ui.kid;
 
 import core.AccountManager;
 import core.ChildAccount;
@@ -191,7 +191,7 @@ public class MyAccountFrame extends KidPageFrame {
         lowerPanel.add(seeMoreTasksLabel, gbc);
 
         // Adjust frame
-        pack();
+        //pack();
         setLocationRelativeTo(null);
     }
 }

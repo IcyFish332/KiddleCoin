@@ -1,14 +1,12 @@
-package ui;
+package ui.parent;
 import core.AccountManager;
 import core.ParentAccount;
 import ui.template.BigButton;
 import ui.template.ParentPageFrame;
-import ui.ManageTasksFrame;
 
 import javax.swing.*;
 import javax.swing.table.DefaultTableModel;
 import java.awt.*;
-import java.util.Set;
 
 public class AwardFrame extends ParentPageFrame {
     private  AccountManager accountManager;
@@ -169,9 +167,5 @@ public class AwardFrame extends ParentPageFrame {
 
         dispose();
     }
-
-//public static void main(String[] args) {
-    //     SwingUtilities.invokeLater(() -> new AwardFrame(accountManager, parentAccount).setVisible(true));
-    // }
 
 }
