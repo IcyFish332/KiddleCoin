@@ -1,13 +1,23 @@
 package ui.template;
+
 import core.AccountManager;
 import core.ChildAccount;
+import ui.BalanceManagement.BalanceManagementFrame;
+import ui.userCenter.KidUserCenterFrame;
 
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+
+import ui.kidCenter.HistoryFrame;
+import ui.kidCenter.MyAccountFrame;
+import ui.kidCenter.MyGoalsFrame;
+import ui.kidCenter.MyTasksFrame;
 import ui.userCenter.KidUserCenterFrame;
 import ui.encouragement.EncouragementFrame;
+
+
 
 public class KidPageFrame extends JFrame {
     protected JLabel titleLabel;
@@ -17,9 +27,8 @@ public class KidPageFrame extends JFrame {
     protected JPanel lowerPanel;
 
     public KidPageFrame(String title, AccountManager accountManager, ChildAccount childAccount) {
-
         setTitle("KiddleCoin");
-        setSize(800, 600);
+        setSize(1200, 900);
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         setLocationRelativeTo(null);
 
@@ -60,14 +69,66 @@ public class KidPageFrame extends JFrame {
         // 添加侧边栏按钮
         SidebarButton button1 = new SidebarButton("My Account");
         buttonPanel.add(button1);
+      
+        button1.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                MyAccountFrame myAccountFrame = new MyAccountFrame(accountManager, childAccount);
+                myAccountFrame.setVisible(true);
+                dispose();
+            }
+        });
+
+
         SidebarButton button2 = new SidebarButton("Manage My Balance");
-        buttonPanel.add(button2);
+        buttonPanel.add(button2)；
+          
+        button2.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+                BalanceManagementFrame balanceFrame = new BalanceManagementFrame(childAccount,accountManager);
+                balanceFrame.setVisible(true);
+                dispose();
+            }
+        });
+      
         SidebarButton button3 = new SidebarButton("My Goals");
         buttonPanel.add(button3);
+      
+        button3.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                MyGoalsFrame myGoalsFrame = new MyGoalsFrame(accountManager, childAccount);
+                myGoalsFrame.setVisible(true);
+                dispose();
+            }
+        });
+
+
         SidebarButton button4 = new SidebarButton("My Tasks");
         buttonPanel.add(button4);
+      
+        button4.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                MyTasksFrame myTasksFrame = new MyTasksFrame(accountManager, childAccount);
+                myTasksFrame.setVisible(true);
+                dispose();
+            }
+        });
+
+
         SidebarButton button5 = new SidebarButton("History");
         buttonPanel.add(button5);
+
+        button5.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                HistoryFrame historyFrame = new HistoryFrame(accountManager, childAccount);
+                historyFrame.setVisible(true);
+                dispose();
+            }
+        });
+
         SidebarButton button6 = new SidebarButton("User Center");
         buttonPanel.add(button6);
 
@@ -78,6 +139,7 @@ public class KidPageFrame extends JFrame {
                 dispose();
             }
         });
+
 
         SidebarButton button7 = new SidebarButton("Daily Encouragement");
         buttonPanel.add(button7);
@@ -154,5 +216,4 @@ public class KidPageFrame extends JFrame {
             setBorder(BorderFactory.createEmptyBorder(5, 10, 5, 10));
         }
     }
-
 }
