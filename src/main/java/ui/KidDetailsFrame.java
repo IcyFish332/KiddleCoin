@@ -1,15 +1,16 @@
 package ui;
-import core.AccountManager;
-import javax.swing.*;
-import javax.swing.table.DefaultTableModel;
-import javax.swing.table.TableCellRenderer;
-import java.awt.*;
-import ui.GoalFrame;
 
-import core.ParentAccount;
+import core.AccountManager;
 import core.ChildAccount;
+import core.ParentAccount;
 import ui.template.ParentPageFrame;
 import ui.template.BigButton;
+
+import javax.swing.*;
+import javax.swing.table.DefaultTableModel;
+import java.awt.*;
+import java.text.SimpleDateFormat;
+import java.util.Locale;
 
 public class KidDetailsFrame extends ParentPageFrame {
     private static AccountManager accountManager;
@@ -31,7 +32,7 @@ public class KidDetailsFrame extends ParentPageFrame {
     private void initComponents() {
         setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
 
-        lowerPanel.setLayout(new BoxLayout(lowerPanel, BoxLayout.Y_AXIS)); // Set vertical box layout for lowerPanel
+        lowerPanel.setLayout(new BoxLayout(lowerPanel, BoxLayout.Y_AXIS));
         lowerPanel.setBackground(Color.WHITE);
 
         addTitleAndInfoPanel();
@@ -41,22 +42,19 @@ public class KidDetailsFrame extends ParentPageFrame {
         this.contentPanel.setBackground(Color.WHITE);
         this.contentPanel.add(lowerPanel, BorderLayout.CENTER);
 
-        // 添加返回按钮
         BigButton backButton = new BigButton("Return");
         backButton.setBackground(Color.WHITE);
         backButton.addActionListener(e -> {
-            // 在这里添加返回上一页面的代码
-            // 例如,如果上一页面是 KidsListManagementFrame 的实例:
             KidsListManagementFrame kidsListManagementFrame = new KidsListManagementFrame(accountManager, parentAccount);
             kidsListManagementFrame.setVisible(true);
-            dispose(); // 关闭当前页面
+            dispose();
         });
         lowerPanel.add(backButton, BorderLayout.SOUTH);
     }
 
     private void addTitleAndInfoPanel() {
         JPanel infoPanel = new JPanel();
-        infoPanel.setLayout(new BoxLayout(infoPanel, BoxLayout.X_AXIS)); // Horizontal layout for name and savings
+        infoPanel.setLayout(new BoxLayout(infoPanel, BoxLayout.X_AXIS));
         infoPanel.setBorder(BorderFactory.createEmptyBorder(10, 20, 10, 20));
         infoPanel.setBackground(Color.WHITE);
 
@@ -68,10 +66,10 @@ public class KidDetailsFrame extends ParentPageFrame {
         savingsLabel.setBackground(Color.WHITE);
 
         infoPanel.add(nameLabel);
-        infoPanel.add(Box.createHorizontalGlue()); // This will push the savings label to the right
+        infoPanel.add(Box.createHorizontalGlue());
         infoPanel.add(savingsLabel);
 
-        lowerPanel.add(infoPanel, BorderLayout.NORTH); // Add infoPanel to the lowerPanel
+        lowerPanel.add(infoPanel, BorderLayout.NORTH);
     }
 
     private void setupGoalsSection() {
@@ -86,14 +84,13 @@ public class KidDetailsFrame extends ParentPageFrame {
         goalsModel = new DefaultTableModel(null, goalColumns);
         goalsTable = new JTable(goalsModel);
         goalsTable.setBackground(Color.WHITE);
-        goalsTable.setGridColor(Color.WHITE);  // Set grid color to white to blend with background
+        goalsTable.setGridColor(Color.WHITE);
         goalsTable.setShowGrid(true);
 
-        // Load goals from childAccount and add to table
         childAccount.getSavingGoals().forEach(goal -> {
             double progress = (childAccount.getSavings() / goal.getTargetAmount()) * 100;
             String progressStr = String.format("%.1f%%", progress);
-            goalsModel.addRow(new Object[]{goal.getName(), goal.getDescription(), goal.getTargetAmount(), goal.getReward(), progressStr, ""});
+            goalsModel.addRow(new Object[]{goal.getName(), goal.getDescription(), goal.getTargetAmount(), goal.getReward(), progressStr});
         });
 
         JScrollPane goalsScrollPane = new JScrollPane(goalsTable);
@@ -102,7 +99,7 @@ public class KidDetailsFrame extends ParentPageFrame {
         goalsPanel.add(goalsLabel, BorderLayout.NORTH);
         goalsPanel.add(goalsScrollPane, BorderLayout.CENTER);
 
-        lowerPanel.add(goalsPanel, BorderLayout.WEST); // Add goalsPanel to the lowerPanel
+        lowerPanel.add(goalsPanel, BorderLayout.WEST);
     }
 
     private void setupTasksSection() {
@@ -113,15 +110,17 @@ public class KidDetailsFrame extends ParentPageFrame {
         tasksLabel.setForeground(new Color(255, 105, 180));
         tasksLabel.setBackground(Color.WHITE);
 
-        String[] taskColumns = {"Task's Name", "Description", "Award","deadline"};
+        String[] taskColumns = {"Task's Name", "Description", "Award", "Due Date"};
         tasksModel = new DefaultTableModel(null, taskColumns);
         tasksTable = new JTable(tasksModel);
         tasksTable.setBackground(Color.WHITE);
-        tasksTable.setGridColor(Color.WHITE);  // Set grid color to white to blend with background
+        tasksTable.setGridColor(Color.WHITE);
         tasksTable.setShowGrid(true);
 
+        SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd EEEE", Locale.ENGLISH);
         childAccount.getTasks().forEach(task -> {
-            tasksModel.addRow(new Object[]{task.getName(), task.getDescription(), task.getReward(), ""});
+            String formattedDueDate = dateFormat.format(task.getDueDate());
+            tasksModel.addRow(new Object[]{task.getName(), task.getDescription(), task.getReward(), formattedDueDate});
         });
 
         JScrollPane tasksScrollPane = new JScrollPane(tasksTable);
@@ -130,7 +129,6 @@ public class KidDetailsFrame extends ParentPageFrame {
         tasksPanel.add(tasksLabel, BorderLayout.NORTH);
         tasksPanel.add(tasksScrollPane, BorderLayout.CENTER);
 
-        lowerPanel.add(tasksPanel, BorderLayout.EAST); // Add tasksPanel to the lowerPanel
+        lowerPanel.add(tasksPanel, BorderLayout.EAST);
     }
 }
-

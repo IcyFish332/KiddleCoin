@@ -12,6 +12,8 @@ import java.awt.*;
 
 public class GoalFrame extends ParentPageFrame {
     private ChildAccount childAccount;
+    private ChildAccount selectedChildAccount;
+
     private JTextField goalnameField;
     private JTextField targetField;
     private JTextField awardField;
@@ -22,13 +24,16 @@ public class GoalFrame extends ParentPageFrame {
 
     public GoalFrame(AccountManager accountManager, ParentAccount parentAccount, ChildAccount childAccount) {
         this(accountManager, parentAccount, childAccount, null);
+        this.selectedChildAccount = childAccount;
     }
+
 
     public GoalFrame(AccountManager accountManager, ParentAccount parentAccount, ChildAccount childAccount, SavingGoal goal) {
         super(goal == null ? "Set a Goal" : "Edit Goal", accountManager, parentAccount);
         this.childAccount = childAccount;
         this.accountManager = accountManager;
         this.parentAccount = parentAccount;
+        this.selectedChildAccount = childAccount;
         setLocationRelativeTo(null);
 
         lowerPanel.setLayout(new GridBagLayout());
@@ -113,9 +118,7 @@ public class GoalFrame extends ParentPageFrame {
                 showInvalidInfoDialog();
             } else {
                 updateInformation(accountManager, parentAccount, goal);
-                ManageGoalsFrame manageGoalsFrame = new ManageGoalsFrame(accountManager, parentAccount);
-                manageGoalsFrame.setVisible(true);
-                this.dispose();
+                returnToManageGoalsFrame(accountManager, parentAccount);
             }
         });
 
@@ -174,7 +177,9 @@ public class GoalFrame extends ParentPageFrame {
 
     private void returnToManageGoalsFrame(AccountManager accountManager, ParentAccount parentAccount) {
         ManageGoalsFrame manageGoalsFrame = new ManageGoalsFrame(accountManager, parentAccount);
+        // 设置已选中的孩子账户
         manageGoalsFrame.setVisible(true);
         this.dispose();
     }
+
 }

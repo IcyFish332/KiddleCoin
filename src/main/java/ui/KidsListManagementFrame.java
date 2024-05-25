@@ -35,7 +35,7 @@ public class KidsListManagementFrame extends ParentPageFrame {
         // 标题行
         JPanel titlePanel = new JPanel(new BorderLayout());
         titlePanel.setBackground(Color.WHITE);
-        JLabel titleLabel = new JLabel("Kids List Management");
+        JLabel titleLabel = new JLabel();
         titleLabel.setBackground(Color.WHITE);
         titleLabel.setFont(new Font("Arial", Font.BOLD, 18));
         titlePanel.add(titleLabel, BorderLayout.WEST);

@@ -12,7 +12,11 @@ import javax.swing.table.DefaultTableModel;
 import javax.swing.table.TableCellEditor;
 import javax.swing.table.TableCellRenderer;
 import java.awt.*;
+import java.util.EventObject;
+import java.util.Locale;
 import java.util.Set;
+import java.text.SimpleDateFormat;
+
 
 public class ManageTasksFrame extends ParentPageFrame {
     private AccountManager accountManager;
@@ -34,6 +38,7 @@ public class ManageTasksFrame extends ParentPageFrame {
     private void initComponents() {
         setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
         lowerPanel.setLayout(new BoxLayout(lowerPanel, BoxLayout.Y_AXIS));
+        lowerPanel.setBackground(Color.WHITE);
 
         selectFirstChildAccount();
         addInfoPanel();
@@ -53,20 +58,18 @@ public class ManageTasksFrame extends ParentPageFrame {
 
     private void addInfoPanel() {
         JPanel infoPanel = new JPanel();
+        infoPanel.setBackground(Color.WHITE);
         infoPanel.setLayout(new BoxLayout(infoPanel, BoxLayout.X_AXIS));
         infoPanel.setBorder(BorderFactory.createEmptyBorder(10, 20, 10, 20));
 
         childAccountComboBox = new JComboBox<>();
         savingsLabel = new JLabel();
+        savingsLabel.setBackground(Color.WHITE);
 
         Set<String> childAccountIds = parentAccount.getChildAccountIds();
         for (String childAccountId : childAccountIds) {
             ChildAccount account = (ChildAccount) accountManager.getAccount(childAccountId);
             childAccountComboBox.addItem(account.getUsername());
-        }
-
-        if (childAccount != null) {
-            savingsLabel.setText(String.valueOf(childAccount.getSavings()));
         }
 
         childAccountComboBox.addActionListener(e -> {
@@ -77,6 +80,11 @@ public class ManageTasksFrame extends ParentPageFrame {
                 updateTasksTable();
             }
         });
+
+        // Set the initial value of the savings label
+        if (childAccount != null) {
+            savingsLabel.setText(String.valueOf(childAccount.getSavings()));
+        }
 
         infoPanel.add(new JLabel("Name: "));
         infoPanel.add(childAccountComboBox);
@@ -90,13 +98,15 @@ public class ManageTasksFrame extends ParentPageFrame {
     private void addTasksListPanel() {
         JPanel tasksListPanel = new JPanel();
         tasksListPanel.setLayout(new BorderLayout());
+        tasksListPanel.setBackground(Color.WHITE);
         tasksListPanel.setBorder(BorderFactory.createEmptyBorder(10, 0, 10, 0));
 
         JLabel tasksListLabel = new JLabel("Tasks List");
+        tasksListLabel.setBackground(Color.WHITE);
         tasksListLabel.setFont(new Font("Arial", Font.BOLD, 18));
         tasksListLabel.setForeground(new Color(255, 105, 180));
 
-        BigButton setTaskButton = new BigButton("+ Assign a Task");
+        BigButton setTaskButton = new BigButton("+ Set a Task");
         setTaskButton.setFont(new Font("Arial", Font.PLAIN, 14));
         setTaskButton.addActionListener(e -> openSetTaskFrame());
         tasksListPanel.add(tasksListLabel, BorderLayout.WEST);
@@ -107,17 +117,18 @@ public class ManageTasksFrame extends ParentPageFrame {
 
     private void addTasksTable() {
         JPanel tablePanel = new JPanel(new BorderLayout());
-        String[] taskColumns = {"Task's Name", "Description", "Award", "Operation"};
+        tablePanel.setBackground(Color.WHITE);
+        String[] taskColumns = {"Task's Name", "Description", "Award", "Due Date", "Operation"}; // Update column name to "Due Date"
         tasksModel = new DefaultTableModel(null, taskColumns) {
             @Override
             public boolean isCellEditable(int row, int column) {
-                return column == 3; // Only operation column is editable
+                return column == 4; // Only the Operation column is editable
             }
         };
         tasksTable = new JTable(tasksModel);
         tasksTable.setRowHeight(30);
-        tasksTable.getColumnModel().getColumn(3).setCellRenderer(new ButtonRenderer());
-        tasksTable.getColumnModel().getColumn(3).setCellEditor(new ButtonEditor(tasksTable, "task"));
+        tasksTable.getColumnModel().getColumn(4).setCellRenderer(new ButtonRenderer()); // Update column index
+        tasksTable.getColumnModel().getColumn(4).setCellEditor(new ButtonEditor()); // Update column index
 
         JScrollPane tasksScrollPane = new JScrollPane(tasksTable);
         tablePanel.add(tasksScrollPane, BorderLayout.CENTER);
@@ -126,128 +137,112 @@ public class ManageTasksFrame extends ParentPageFrame {
         updateTasksTable();
     }
 
+
     private void updateTasksTable() {
         tasksModel.setRowCount(0);
         if (childAccount != null) {
             for (Task task : childAccount.getTasks()) {
+                // Format the date as "Year-Month-Day (Day of the Week)"
+                SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd EEEE", Locale.ENGLISH);
+                String formattedDate = dateFormat.format(task.getDueDate());
+
                 tasksModel.addRow(new Object[]{
                         task.getName(),
                         task.getDescription(),
                         task.getReward(),
-                        ""
+                        formattedDate, // Use the formatted date here
+                        "Edit/Delete"
                 });
             }
         }
     }
 
+
     private void openSetTaskFrame() {
-        AssignmentFrame taskFrame = new AssignmentFrame(accountManager, parentAccount, this);
+        AssignmentFrame taskFrame = new AssignmentFrame(accountManager, parentAccount, childAccount);
         taskFrame.setVisible(true);
+        this.dispose(); // 关闭当前窗口
     }
 
-    public void updateRow(String taskName, String description, String award, String s) {
-        tasksModel.addRow(new Object[]{taskName, description, award, ""});
+    private void editTask(int row) {
+        Task task = childAccount.getTasks().get(row);
+        AssignmentFrame assignmentFrame = new AssignmentFrame(accountManager, parentAccount, childAccount, task);
+        assignmentFrame.setVisible(true);
+        this.dispose(); // 关闭当前窗口
     }
 
-    static class ButtonRenderer extends JPanel implements TableCellRenderer {
-        protected JButton editButton, moveButton;
+    private void deleteTask(int row) {
+        if (row >= 0 && row < tasksModel.getRowCount()) {
+            int confirm = JOptionPane.showConfirmDialog(null, "Are you sure you want to delete this item?", "Confirm Delete", JOptionPane.YES_NO_OPTION);
+            if (confirm == JOptionPane.YES_OPTION) {
+                Task task = childAccount.getTasks().get(row);
+                childAccount.removeTask(task);
+                accountManager.saveAccount(childAccount);
+                updateTasksTable();
+            }
+        } else {
+            JOptionPane.showMessageDialog(null, "Invalid row selected for deletion.");
+        }
+    }
 
+    private class ButtonRenderer extends JPanel implements TableCellRenderer {
         public ButtonRenderer() {
-            super(new FlowLayout(FlowLayout.LEFT));
-            editButton = new JButton("Edit");
-            moveButton = new JButton("Move");
-            add(editButton);
-            add(moveButton);
+            setOpaque(true);
         }
 
         @Override
         public Component getTableCellRendererComponent(JTable table, Object value,
                                                        boolean isSelected, boolean hasFocus, int row, int column) {
-            return this;
+            JPanel panel = new JPanel(new FlowLayout(FlowLayout.LEFT));
+            JButton editButton = new JButton("Edit");
+            JButton deleteButton = new JButton("Delete");
+
+            editButton.addActionListener(e -> editTask(row));
+            deleteButton.addActionListener(e -> deleteTask(row));
+
+            panel.add(editButton);
+            panel.add(deleteButton);
+            return panel;
         }
     }
 
-    static class ButtonEditor extends AbstractCellEditor implements TableCellEditor {
-        protected JPanel panel;
-        protected JButton editButton, moveButton;
-        private JTable table;
-        private String type;
+    private class ButtonEditor extends AbstractCellEditor implements TableCellEditor {
+        private JPanel panel;
+        private JButton editButton;
+        private JButton deleteButton;
+        private int currentRow;
 
-        public ButtonEditor(JTable table, String type) {
-            this.table = table;
-            this.type = type;
+        public ButtonEditor() {
             panel = new JPanel(new FlowLayout(FlowLayout.LEFT));
             editButton = new JButton("Edit");
-            moveButton = new JButton("Move");
+            deleteButton = new JButton("Delete");
 
-            editButton.addActionListener(e -> {
-                fireEditingStopped(); // Make sure to fire event to stop editing
-                editItem();
-            });
-
-            moveButton.addActionListener(e -> {
-                fireEditingStopped(); // Ensure to fire event to stop editing
-                moveItem();
-            });
+            editButton.addActionListener(e -> editTask(currentRow));
+            deleteButton.addActionListener(e -> deleteTask(currentRow));
 
             panel.add(editButton);
-            panel.add(moveButton);
-        }
-
-        private void editItem() {
-            int row = table.getSelectedRow();
-            if (row >= 0) {
-                DefaultTableModel model = (DefaultTableModel) table.getModel();
-                editTask(row, model);
-            } else {
-                JOptionPane.showMessageDialog(null, "No item selected!");
-            }
-        }
-
-        private void moveItem() {
-            int row = table.getSelectedRow();
-            if (row >= 0) {
-                DefaultTableModel model = (DefaultTableModel) table.getModel();
-                int confirm = JOptionPane.showConfirmDialog(null, "Are you sure you want to delete this item?", "Confirm Delete", JOptionPane.YES_NO_OPTION);
-                if (confirm == JOptionPane.YES_OPTION) {
-                    model.removeRow(row);
-                }
-            } else {
-                JOptionPane.showMessageDialog(null, "No item selected!");
-            }
-        }
-
-        private void editTask(int row, DefaultTableModel model) {
-            String name = String.valueOf(model.getValueAt(row, 0));
-            String description = String.valueOf(model.getValueAt(row, 1));
-            String award = String.valueOf(model.getValueAt(row, 2));
-
-            JTextField nameField = new JTextField(name);
-            JTextField descriptionField = new JTextField(description);
-            JTextField awardField = new JTextField(award);
-
-            Object[] message = {
-                    "Name:", nameField,
-                    "Description:", descriptionField,
-                    "Award:", awardField
-            };
-
-            int option = JOptionPane.showConfirmDialog(null, message, "Edit Task", JOptionPane.OK_CANCEL_OPTION);
-            if (option == JOptionPane.OK_OPTION) {
-                model.setValueAt(nameField.getText(), row, 0);
-                model.setValueAt(descriptionField.getText(), row, 1);
-                model.setValueAt(awardField.getText(), row, 2);
-            }
+            panel.add(deleteButton);
         }
 
         @Override
         public Component getTableCellEditorComponent(JTable table, Object value, boolean isSelected, int row, int column) {
+            currentRow = row; // 保存当前行索引
             return panel;
         }
 
         @Override
         public Object getCellEditorValue() {
             return null;
+        }
+
+        @Override
+        public boolean isCellEditable(EventObject anEvent) {
+            return true;
+        }
+
+        @Override
+        public boolean shouldSelectCell(EventObject anEvent) {
+            return true;
         }
     }
 }
