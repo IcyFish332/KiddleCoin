@@ -137,6 +137,7 @@ public class ChildAccountTest {
         childAccount.addTask(task);
         childAccount.completeTask(task);
         assertNull(task.getDueDate());
+
     }
 
 }

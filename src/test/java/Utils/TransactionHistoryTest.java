@@ -55,3 +55,4 @@ public class TransactionHistoryTest {
         assertEquals(null, transactionHistory.getType());
     }
 }
+
