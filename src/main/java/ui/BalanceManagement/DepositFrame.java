@@ -61,9 +61,15 @@ public class DepositFrame extends JFrame {
     }
 
     // 这个方法将在点击Submit按钮时被调用
+    // 这个方法将在点击Submit按钮时被调用
     private void onSubmit() {
         try {
             double amount = Double.parseDouble(amountField.getText());
+            // 检查输入的金额是否大于零
+            if (amount <= 0) {
+                JOptionPane.showMessageDialog(this, "Invalid input: Please enter a positive amount.");
+                return; // 如果输入无效，停止执行后续代码
+            }
             childAccount.deposit(amount);
             // 保存更新后的账户数据
             accountManager.saveAccount(childAccount);

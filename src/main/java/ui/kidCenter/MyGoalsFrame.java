@@ -18,11 +18,25 @@ import java.awt.event.MouseEvent;
 import java.text.NumberFormat;
 import java.util.List;
 
+/**
+ * MyGoalsFrame is a JFrame that displays and manages saving goals for a child account.
+ * It includes features for viewing, adding, saving, and deleting saving goals.
+ */
+
 public class MyGoalsFrame extends KidPageFrame {
     private DefaultTableModel tableModel;
     private JTable goalsTable;
     private AccountManager accountManager;
     private ChildAccount childAccount;
+    private int currentPageIndex = 0;
+    private int pageSize = 10;
+
+    /**
+     * Constructs a MyGoalsFrame with the specified AccountManager and ChildAccount.
+     *
+     * @param accountManager the account manager managing the account
+     * @param childAccount   the child account to display information for
+     */
 
     public MyGoalsFrame(AccountManager accountManager, ChildAccount childAccount) {
         super("My Goals", accountManager, childAccount);
@@ -84,6 +98,10 @@ public class MyGoalsFrame extends KidPageFrame {
             @Override
             public void actionPerformed(ActionEvent e) {
                 // Implement logic for going to the previous page
+                if (currentPageIndex > 0) {
+                    currentPageIndex--;
+                    loadDataIntoTable();
+                }
             }
         });
         BigButton nextButton = new BigButton("Next");
@@ -91,6 +109,11 @@ public class MyGoalsFrame extends KidPageFrame {
             @Override
             public void actionPerformed(ActionEvent e) {
                 // Implement logic for going to the next page
+                int maxPageIndex = (int) Math.ceil((double) childAccount.getSavingGoals().size() / pageSize) - 1;
+                if (currentPageIndex < maxPageIndex) {
+                    currentPageIndex++;
+                    loadDataIntoTable();
+                }
             }
         });
         paginationPanel.add(previousButton);
@@ -126,7 +149,9 @@ public class MyGoalsFrame extends KidPageFrame {
         setVisible(true);
     }
 
-    // Load data from the backend into the table
+    /**
+     * Loads data from the backend into the table.
+     */
     private void loadDataIntoTable() {
         tableModel.setRowCount(0);
         List<SavingGoal> goals = childAccount.getSavingGoals();
@@ -150,7 +175,11 @@ public class MyGoalsFrame extends KidPageFrame {
         }
     }
 
-    // Method to save a goal from the table
+    /**
+     * Saves a goal from the table to the backend.
+     *
+     * @param row the row index of the goal in the table
+     */
     private void saveGoalFromTable(int row) {
         // Get data from the row
         String goalName = (String) tableModel.getValueAt(row, 0);
@@ -170,7 +199,7 @@ public class MyGoalsFrame extends KidPageFrame {
             targetAmount = Double.parseDouble(targetAmountStr);
             reward = Double.parseDouble(rewardStr);
         } catch (NumberFormatException ex) {
-            JOptionPane.showMessageDialog(MyGoalsFrame.this, "Invalid money amount!", "Error", JOptionPane.ERROR_MESSAGE);
+            JOptionPane.showMessageDialog(MyGoalsFrame.this, "Invalid money!", "Error", JOptionPane.ERROR_MESSAGE);
             return;
         }
 
@@ -184,7 +213,11 @@ public class MyGoalsFrame extends KidPageFrame {
     }
 
 
-    // Method to delete a goal from the table
+    /**
+     * Deletes a goal from the table and the backend.
+     *
+     * @param row the row index of the goal in the table
+     */
     private void deleteGoalFromTable(int row) {
         // Delete the corresponding goal from the backend
         SavingGoal goalToDelete = childAccount.getSavingGoals().get(row);
@@ -195,10 +228,16 @@ public class MyGoalsFrame extends KidPageFrame {
         tableModel.removeRow(row);
     }
 
-    // Inner class for rendering buttons
+    /**
+     * Inner class for rendering buttons in the table.
+     */
     class ButtonRenderer extends JPanel implements TableCellRenderer {
         BigButton button;
-
+        /**
+         * Constructs a ButtonRenderer with the specified button text.
+         *
+         * @param buttonText the text to display on the button
+         */
         public ButtonRenderer(String buttonText) {
             setLayout(new BorderLayout());
             button = new BigButton(buttonText);

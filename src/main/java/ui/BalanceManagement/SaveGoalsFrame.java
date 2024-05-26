@@ -59,9 +59,15 @@ public class SaveGoalsFrame extends JFrame {
     }
 
     // 处理提交按钮点击事件的方法
+    // 处理提交按钮点击事件的方法
     private void onSubmit() {
         try {
             double amount = Double.parseDouble(amountField.getText());
+            // 检查输入的金额是否大于零
+            if (amount <= 0) {
+                JOptionPane.showMessageDialog(this, "Invalid input: Please enter a positive amount.");
+                return; // 如果输入无效，停止执行后续代码
+            }
             childAccount.saveMoney(amount);
             // 保存更新后的账户数据
             accountManager.saveAccount(childAccount);
@@ -72,4 +78,5 @@ public class SaveGoalsFrame extends JFrame {
             JOptionPane.showMessageDialog(this, "Please enter a valid amount.");
         }
     }
+
 }

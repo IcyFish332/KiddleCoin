@@ -14,12 +14,26 @@ import java.awt.event.ActionListener;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * HistoryFrame is a JFrame that displays and manages the transaction history for a child account.
+ * It includes features for viewing the transaction history, paginating through records, and displaying the current balance.
+ */
+
 public class HistoryFrame extends KidPageFrame {
     private JLabel balanceLabel;
     private JTable historyTable;
     private DefaultTableModel tableModel;
     private JPanel balancePanel;
     private ChildAccount childAccount;
+    private int currentPageIndex = 0;
+    private int pageSize = 10;
+    /**
+     * Constructs a HistoryFrame with the specified AccountManager and ChildAccount.
+     *
+     * @param accountManager the account manager managing the account
+     * @param childAccount   the child account to display the transaction history for
+     */
+
 
     public HistoryFrame(AccountManager accountManager, ChildAccount childAccount) {
         super("History", accountManager, childAccount);
@@ -57,7 +71,10 @@ public class HistoryFrame extends KidPageFrame {
             @Override
             public void actionPerformed(ActionEvent e) {
                 // Implement logic for going to the previous page
-                // You'll likely need to manage page numbers or data fetching
+                if (currentPageIndex > 0) {
+                    currentPageIndex--;
+                    loadHistoryData(); // 加载前一页的数据
+                }
             }
         });
         BigButton nextButton = new BigButton("Next");
@@ -65,7 +82,11 @@ public class HistoryFrame extends KidPageFrame {
             @Override
             public void actionPerformed(ActionEvent e) {
                 // Implement logic for going to the next page
-                // You'll likely need to manage page numbers or data fetching
+                int maxPageIndex = (int) Math.ceil((double) childAccount.getTransactionHistory().size() / pageSize) - 1;
+                if (currentPageIndex < maxPageIndex) {
+                    currentPageIndex++;
+                    loadHistoryData(); // 加载下一页的数据
+                }
             }
         });
         paginationPanel.add(previousButton);
@@ -77,12 +98,15 @@ public class HistoryFrame extends KidPageFrame {
 
         setVisible(true);
     }
+    /**
+     * Loads the transaction history data from the backend into the table.
+     */
 
     private void loadHistoryData() {
-        // 从后端获取交易历史记录
+        // Get transaction history
         List<TransactionHistory> history = childAccount.getTransactionHistory();
 
-        // 将交易历史记录转换为表格数据
+        // Convert transaction history to table data
         List<String[]> historyData = new ArrayList<>();
         for (TransactionHistory transaction : history) {
             String[] rowData = {
@@ -94,13 +118,13 @@ public class HistoryFrame extends KidPageFrame {
             historyData.add(rowData);
         }
 
-        // 更新表格模型
-        tableModel.setRowCount(0); // 清空之前的表格数据
+        // Update the table model
+        tableModel.setRowCount(0); // clear
         for (String[] rowData : historyData) {
             tableModel.addRow(rowData);
         }
 
-        // 更新余额
+        // Update balance
         balanceLabel.setText("$" + String.format("%.2f", childAccount.getBalance()));
     }
 }
