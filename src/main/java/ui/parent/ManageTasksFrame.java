@@ -21,9 +21,9 @@ import java.text.SimpleDateFormat;
 public class ManageTasksFrame extends ParentPageFrame {
     private AccountManager accountManager;
     private ParentAccount parentAccount;
-    private ChildAccount childAccount;
+    public ChildAccount childAccount;
 
-    private DefaultTableModel tasksModel;
+    public DefaultTableModel tasksModel;
     private JTable tasksTable;
     private JComboBox<String> childAccountComboBox;
     private JLabel savingsLabel;
@@ -158,20 +158,20 @@ public class ManageTasksFrame extends ParentPageFrame {
     }
 
 
-    private void openSetTaskFrame() {
+    public void openSetTaskFrame() {
         AssignmentFrame taskFrame = new AssignmentFrame(accountManager, parentAccount, childAccount);
         taskFrame.setVisible(true);
         this.dispose(); // 关闭当前窗口
     }
 
-    private void editTask(int row) {
+    public void editTask(int row) {
         Task task = childAccount.getTasks().get(row);
         AssignmentFrame assignmentFrame = new AssignmentFrame(accountManager, parentAccount, childAccount, task);
         assignmentFrame.setVisible(true);
         this.dispose(); // 关闭当前窗口
     }
 
-    private void deleteTask(int row) {
+    public void deleteTask(int row) {
         if (row >= 0 && row < tasksModel.getRowCount()) {
             int confirm = JOptionPane.showConfirmDialog(null, "Are you sure you want to delete this item?", "Confirm Delete", JOptionPane.YES_NO_OPTION);
             if (confirm == JOptionPane.YES_OPTION) {

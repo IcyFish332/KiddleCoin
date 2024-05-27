@@ -14,10 +14,10 @@ import java.awt.*;
 public class GoalFrame extends ParentPageFrame {
     private ChildAccount childAccount;
 
-    private JTextField goalnameField;
-    private JTextField targetField;
-    private JTextField awardField;
-    private JTextArea descriptionArea;
+    public JTextField goalnameField;
+    public JTextField targetField;
+    public JTextField awardField;
+    public JTextArea descriptionArea;
 
     private AccountManager accountManager;
     private ParentAccount parentAccount;
@@ -133,7 +133,7 @@ public class GoalFrame extends ParentPageFrame {
         setVisible(true);
     }
 
-    private void updateInformation(AccountManager accountManager, ParentAccount parentAccount, SavingGoal goal) {
+    public void updateInformation(AccountManager accountManager, ParentAccount parentAccount, SavingGoal goal) {
         String goalsName = goalnameField.getText();
         double target = Double.parseDouble(targetField.getText());
         double award = Double.parseDouble(awardField.getText());
@@ -153,14 +153,14 @@ public class GoalFrame extends ParentPageFrame {
         accountManager.saveAccount(parentAccount);
     }
 
-    private boolean anyTextFieldIsEmpty() {
+    public boolean anyTextFieldIsEmpty() {
         return goalnameField.getText().isEmpty() ||
                 targetField.getText().isEmpty() ||
                 awardField.getText().isEmpty() ||
                 descriptionArea.getText().isEmpty();
     }
 
-    private void showInvalidInfoDialog() {
+    public void showInvalidInfoDialog() {
         JDialog dialog = new JDialog(this, "Invalid Information", true);
         dialog.setLayout(new FlowLayout());
         JLabel label = new JLabel("Invalid Information");
@@ -173,7 +173,7 @@ public class GoalFrame extends ParentPageFrame {
         dialog.setVisible(true);
     }
 
-    private void returnToManageGoalsFrame(AccountManager accountManager, ParentAccount parentAccount) {
+    public void returnToManageGoalsFrame(AccountManager accountManager, ParentAccount parentAccount) {
         ManageGoalsFrame manageGoalsFrame = new ManageGoalsFrame(accountManager, parentAccount);
         // 设置已选中的孩子账户
         manageGoalsFrame.setVisible(true);

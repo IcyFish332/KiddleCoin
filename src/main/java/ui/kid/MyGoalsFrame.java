@@ -19,7 +19,7 @@ import java.text.NumberFormat;
 import java.util.List;
 
 public class MyGoalsFrame extends KidPageFrame {
-    private DefaultTableModel tableModel;
+    public DefaultTableModel tableModel;
     private JTable goalsTable;
     private AccountManager accountManager;
     private ChildAccount childAccount;
@@ -127,7 +127,7 @@ public class MyGoalsFrame extends KidPageFrame {
     }
 
     // Load data from the backend into the table
-    private void loadDataIntoTable() {
+    public void loadDataIntoTable() {
         tableModel.setRowCount(0);
         List<SavingGoal> goals = childAccount.getSavingGoals();
         NumberFormat percentFormat = NumberFormat.getPercentInstance();
@@ -151,7 +151,7 @@ public class MyGoalsFrame extends KidPageFrame {
     }
 
     // Method to save a goal from the table
-    private void saveGoalFromTable(int row) {
+    public void saveGoalFromTable(int row) {
         // Get data from the row
         String goalName = (String) tableModel.getValueAt(row, 0);
         String description = (String) tableModel.getValueAt(row, 1);
@@ -170,7 +170,7 @@ public class MyGoalsFrame extends KidPageFrame {
             targetAmount = Double.parseDouble(targetAmountStr);
             reward = Double.parseDouble(rewardStr);
         } catch (NumberFormatException ex) {
-            JOptionPane.showMessageDialog(MyGoalsFrame.this, "Invalid money amount!", "Error", JOptionPane.ERROR_MESSAGE);
+            JOptionPane.showMessageDialog(MyGoalsFrame.this, "Invalid money!", "Error", JOptionPane.ERROR_MESSAGE);
             return;
         }
 
@@ -185,7 +185,7 @@ public class MyGoalsFrame extends KidPageFrame {
 
 
     // Method to delete a goal from the table
-    private void deleteGoalFromTable(int row) {
+    public void deleteGoalFromTable(int row) {
         // Delete the corresponding goal from the backend
         SavingGoal goalToDelete = childAccount.getSavingGoals().get(row);
         childAccount.removeSavingGoal(goalToDelete);

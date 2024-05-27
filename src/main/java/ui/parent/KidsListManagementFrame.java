@@ -16,8 +16,8 @@ import ui.template.BigButton;
 public class KidsListManagementFrame extends ParentPageFrame {
     private AccountManager accountManager;
     private ParentAccount parentAccount;
-    private DefaultTableModel model;
-    private JTable table;
+    public DefaultTableModel model;
+    public JTable table;
 
     public KidsListManagementFrame(AccountManager accountManager, ParentAccount parentAccount) {
         super("Kids' List Management", accountManager, parentAccount);

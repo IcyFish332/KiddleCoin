@@ -9,9 +9,9 @@ import java.awt.*;
 import java.util.Set;
 
 public class ParentUserCenterFrame extends ParentPageFrame {
-    private JPasswordField oldPasswordField;
-    private JPasswordField newPasswordField1;
-    private JPasswordField newPasswordField2;
+    public JPasswordField oldPasswordField;
+    public JPasswordField newPasswordField1;
+    public JPasswordField newPasswordField2;
 
     public ParentUserCenterFrame(AccountManager accountManager, ParentAccount parentAccount) {
         super("User Center", accountManager, parentAccount);
@@ -138,7 +138,7 @@ public class ParentUserCenterFrame extends ParentPageFrame {
         gbc.gridy++; // 移动到下一行
     }
 
-    private void validateAndChangePassword(AccountManager accountManager, ParentAccount parentAccount) {
+    public void validateAndChangePassword(AccountManager accountManager, ParentAccount parentAccount) {
         String oldPassword = new String(oldPasswordField.getPassword());
         String newPassword1 = new String(newPasswordField1.getPassword());
         String newPassword2 = new String(newPasswordField2.getPassword());

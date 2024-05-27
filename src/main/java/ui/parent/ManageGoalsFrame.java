@@ -18,12 +18,12 @@ import java.util.Set;
 public class ManageGoalsFrame extends ParentPageFrame {
     private AccountManager accountManager;
     private ParentAccount parentAccount;
-    private ChildAccount childAccount;
+    public ChildAccount childAccount;
 
-    private DefaultTableModel goalsModel;
+    public DefaultTableModel goalsModel;
     private JTable goalsTable;
-    private JComboBox<String> childAccountComboBox;
-    private JLabel savingsLabel;
+    public JComboBox<String> childAccountComboBox;
+    public JLabel savingsLabel;
 
     public ManageGoalsFrame(AccountManager accountManager, ParentAccount parentAccount) {
         super("Manage Kid's Goals", accountManager, parentAccount);
@@ -32,7 +32,7 @@ public class ManageGoalsFrame extends ParentPageFrame {
         initComponents();
     }
 
-    private void initComponents() {
+    public void initComponents() {
         setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
         lowerPanel.setLayout(new BoxLayout(lowerPanel, BoxLayout.Y_AXIS));
         lowerPanel.setBackground(Color.WHITE);
@@ -45,7 +45,7 @@ public class ManageGoalsFrame extends ParentPageFrame {
         setVisible(true);
     }
 
-    private void selectFirstChildAccount() {
+    public void selectFirstChildAccount() {
         Set<String> childAccountIds = parentAccount.getChildAccountIds();
         if (!childAccountIds.isEmpty()) {
             String firstChildAccountId = childAccountIds.iterator().next();
@@ -53,7 +53,7 @@ public class ManageGoalsFrame extends ParentPageFrame {
         }
     }
 
-    private void addInfoPanel() {
+    public void addInfoPanel() {
         JPanel infoPanel = new JPanel();
         infoPanel.setBackground(Color.WHITE);
         infoPanel.setLayout(new BoxLayout(infoPanel, BoxLayout.X_AXIS));
@@ -91,7 +91,7 @@ public class ManageGoalsFrame extends ParentPageFrame {
         lowerPanel.add(infoPanel);
     }
 
-    private void addGoalsListPanel() {
+    public void addGoalsListPanel() {
         JPanel goalsListPanel = new JPanel();
         goalsListPanel.setLayout(new BorderLayout());
         goalsListPanel.setBorder(BorderFactory.createEmptyBorder(10, 0, 10, 0));
@@ -110,7 +110,7 @@ public class ManageGoalsFrame extends ParentPageFrame {
         lowerPanel.add(goalsListPanel);
     }
 
-    private void addGoalsTable() {
+    public void addGoalsTable() {
         JPanel tablePanel = new JPanel(new BorderLayout());
         String[] goalColumns = {"Goal's Name", "Description", "Target", "Award", "Progress", "Operation"};
         goalsModel = new DefaultTableModel(null, goalColumns) {
@@ -131,7 +131,7 @@ public class ManageGoalsFrame extends ParentPageFrame {
         updateGoalsTable();
     }
 
-    private void updateGoalsTable() {
+    public void updateGoalsTable() {
         goalsModel.setRowCount(0);
         if (childAccount != null) {
             for (SavingGoal goal : childAccount.getSavingGoals()) {
@@ -148,20 +148,20 @@ public class ManageGoalsFrame extends ParentPageFrame {
         }
     }
 
-    private void openSetGoalFrame() {
+    public void openSetGoalFrame() {
         GoalFrame goalFrame = new GoalFrame(accountManager, parentAccount, childAccount);
         goalFrame.setVisible(true);
         this.dispose(); // 关闭当前窗口
     }
 
-    private void editGoal(int row) {
+    public void editGoal(int row) {
         SavingGoal goal = childAccount.getSavingGoals().get(row);
         GoalFrame goalFrame = new GoalFrame(accountManager, parentAccount, childAccount, goal);
         goalFrame.setVisible(true);
         this.dispose(); // 关闭当前窗口
     }
 
-    private void deleteGoal(int row) {
+    public void deleteGoal(int row) {
         if (row >= 0 && row < goalsModel.getRowCount()) {
             int confirm = JOptionPane.showConfirmDialog(null, "Are you sure you want to delete this item?", "Confirm Delete", JOptionPane.YES_NO_OPTION);
             if (confirm == JOptionPane.YES_OPTION) {

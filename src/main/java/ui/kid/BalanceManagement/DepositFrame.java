@@ -12,7 +12,7 @@ public class DepositFrame extends JFrame {
     private ChildAccount childAccount;
     private AccountManager accountManager;
     private BalanceManagementFrame balanceManagementFrame;
-    private JTextField amountField;
+    public JTextField amountField;
 
     public DepositFrame(ChildAccount childAccount, AccountManager accountManager, BalanceManagementFrame balanceManagementFrame) {
         this.childAccount = childAccount;
@@ -25,7 +25,8 @@ public class DepositFrame extends JFrame {
         initUI();
     }
 
-    private void initUI() {
+    //private
+    public void initUI() {
         // 使用 BoxLayout 来创建一个垂直布局的主面板
         JPanel mainPanel = new JPanel();
         mainPanel.setLayout(new BoxLayout(mainPanel, BoxLayout.Y_AXIS));
@@ -61,9 +62,16 @@ public class DepositFrame extends JFrame {
     }
 
     // 这个方法将在点击Submit按钮时被调用
-    private void onSubmit() {
+    // 这个方法将在点击Submit按钮时被调用
+    //private
+    public void onSubmit() {
         try {
             double amount = Double.parseDouble(amountField.getText());
+            // 检查输入的金额是否大于零
+            if (amount <= 0) {
+                JOptionPane.showMessageDialog(this, "Invalid input: Please enter a positive amount.");
+                return; // 如果输入无效，停止执行后续代码
+            }
             childAccount.deposit(amount);
             // 保存更新后的账户数据
             accountManager.saveAccount(childAccount);

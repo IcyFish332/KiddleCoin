@@ -12,7 +12,7 @@ public class WithdrawalFrame extends JFrame {
     private ChildAccount childAccount;
     private AccountManager accountManager;
     private BalanceManagementFrame balanceManagementFrame;
-    private JTextField amountField;
+    public JTextField amountField;
 
     public WithdrawalFrame(ChildAccount childAccount, AccountManager accountManager, BalanceManagementFrame balanceManagementFrame) {
         this.childAccount = childAccount;
@@ -25,7 +25,8 @@ public class WithdrawalFrame extends JFrame {
         initUI();
     }
 
-    private void initUI() {
+    //private
+    public void initUI() {
         // 使用 BoxLayout 来创建一个垂直布局的主面板
         JPanel mainPanel = new JPanel();
         mainPanel.setLayout(new BoxLayout(mainPanel, BoxLayout.Y_AXIS));
@@ -59,9 +60,21 @@ public class WithdrawalFrame extends JFrame {
     }
 
     // 提交按钮的事件处理逻辑
-    private void onSubmit() {
+    // 提交按钮的事件处理逻辑
+    //private
+    public void onSubmit() {
         try {
             double amount = Double.parseDouble(amountField.getText());
+            // 检查输入的金额是否大于零
+            if (amount <= 0) {
+                JOptionPane.showMessageDialog(this, "Invalid input: Please enter a positive amount.");
+                return; // 如果输入无效，停止执行后续代码
+            }
+            // 检查账户余额是否足够
+            if (amount > childAccount.getBalance()) {
+                JOptionPane.showMessageDialog(this, "Insufficient balance.");
+                return; // 如果余额不足，停止执行后续代码
+            }
             childAccount.withdraw(amount);
             // 保存更新后的账户数据
             accountManager.saveAccount(childAccount);
@@ -70,8 +83,8 @@ public class WithdrawalFrame extends JFrame {
             dispose();  // 关闭窗口
         } catch (NumberFormatException e) {
             JOptionPane.showMessageDialog(this, "Please enter a valid amount.");
-        } catch (IllegalArgumentException e) {
-            JOptionPane.showMessageDialog(this, "Insufficient balance.");
         }
     }
+
 }
+

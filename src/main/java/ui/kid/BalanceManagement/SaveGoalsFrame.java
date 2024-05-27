@@ -12,7 +12,7 @@ public class SaveGoalsFrame extends JFrame {
     private ChildAccount childAccount;
     private AccountManager accountManager;
     private BalanceManagementFrame balanceManagementFrame;
-    private JTextField amountField;
+    public JTextField amountField;
 
     public SaveGoalsFrame(ChildAccount childAccount, AccountManager accountManager, BalanceManagementFrame balanceManagementFrame) {
         this.childAccount = childAccount;
@@ -25,7 +25,8 @@ public class SaveGoalsFrame extends JFrame {
         initUI();
     }
 
-    private void initUI() {
+    //private
+    public void initUI() {
         // 使用 BoxLayout 来创建一个垂直布局的主面板
         JPanel mainPanel = new JPanel();
         mainPanel.setLayout(new BoxLayout(mainPanel, BoxLayout.Y_AXIS));
@@ -59,9 +60,16 @@ public class SaveGoalsFrame extends JFrame {
     }
 
     // 处理提交按钮点击事件的方法
-    private void onSubmit() {
+    // 处理提交按钮点击事件的方法
+    //private
+    public void onSubmit() {
         try {
             double amount = Double.parseDouble(amountField.getText());
+            // 检查输入的金额是否大于零
+            if (amount <= 0) {
+                JOptionPane.showMessageDialog(this, "Invalid input: Please enter a positive amount.");
+                return; // 如果输入无效，停止执行后续代码
+            }
             childAccount.saveMoney(amount);
             // 保存更新后的账户数据
             accountManager.saveAccount(childAccount);
@@ -72,4 +80,5 @@ public class SaveGoalsFrame extends JFrame {
             JOptionPane.showMessageDialog(this, "Please enter a valid amount.");
         }
     }
+
 }

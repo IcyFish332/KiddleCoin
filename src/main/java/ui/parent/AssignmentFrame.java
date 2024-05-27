@@ -14,14 +14,14 @@ import java.awt.*;
 
 public class AssignmentFrame extends ParentPageFrame {
     private ChildAccount childAccount;
-    private JTextField taskNameField;
-    private JTextField rewardField;
-    private JTextArea descriptionArea;
-    private JTextField dueDateField;
+    public JTextField taskNameField;
+    public JTextField rewardField;
+    public JTextArea descriptionArea;
+    public JTextField dueDateField;
 
     private AccountManager accountManager;
     private ParentAccount parentAccount;
-    private ManageTasksFrame manageTasksFrame;
+    public ManageTasksFrame manageTasksFrame;
 
     public AssignmentFrame(AccountManager accountManager, ParentAccount parentAccount, ChildAccount childAccount) {
         this(accountManager, parentAccount, childAccount, null);
@@ -135,7 +135,7 @@ public class AssignmentFrame extends ParentPageFrame {
         setVisible(true);
     }
 
-    private void updateInformation(AccountManager accountManager, ParentAccount parentAccount, Task task) {
+    public void updateInformation(AccountManager accountManager, ParentAccount parentAccount, Task task) {
         String taskName = taskNameField.getText();
         String description = descriptionArea.getText();
         double award;

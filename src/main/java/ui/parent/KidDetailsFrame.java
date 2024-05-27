@@ -17,9 +17,9 @@ public class KidDetailsFrame extends ParentPageFrame {
     private static ParentAccount parentAccount;
     private static ChildAccount childAccount;
     private static DefaultTableModel goalsModel;
-    private DefaultTableModel tasksModel;
-    private JTable goalsTable;
-    private JTable tasksTable;
+    public DefaultTableModel tasksModel;
+    public JTable goalsTable;
+    public JTable tasksTable;
 
     public KidDetailsFrame(AccountManager accountManager, ParentAccount parentAccount, ChildAccount childAccount) {
         super("Details of Kid's Account", accountManager, parentAccount);
