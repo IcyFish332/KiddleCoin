@@ -204,8 +204,6 @@ public class MyAccountFrame extends KidPageFrame {
         gbc.anchor = GridBagConstraints.NORTHWEST;
         lowerPanel.add(seeMoreTasksLabel, gbc);
 
-        // Adjust frame
-        pack();
         setLocationRelativeTo(null);
     }
 }

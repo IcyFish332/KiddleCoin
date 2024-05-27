@@ -14,7 +14,7 @@ import java.util.Set;
  *
  * It provides a UI for displaying user information and changing the password.
  *
- * @Author: Ruihang Zhang
+ * @author Ruihang Zhang
  */
 public class KidUserCenterFrame extends KidPageFrame {
     private JPasswordField oldPasswordField;

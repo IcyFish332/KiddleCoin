@@ -12,7 +12,7 @@ import ui.template.KidPageFrame;
  *
  * It extends the KidPageFrame and provides a UI for displaying items that kids can purchase.
  *
- * @Author: Ruihang Zhang
+ * @author Ruihang Zhang
  */
 public class ShopFrame extends KidPageFrame {
 
@@ -32,23 +32,20 @@ public class ShopFrame extends KidPageFrame {
         JPanel mainContentPanel = new JPanel();
         mainContentPanel.setBackground(Color.WHITE);
         mainContentPanel.setLayout(new GridBagLayout());
-
         GridBagConstraints gbc = new GridBagConstraints();
         gbc.insets = new Insets(10, 10, 10, 10); // Set component spacing
 
         // Create title and description text
         JLabel descriptionLabel = new JLabel("I want to buy ...");
         descriptionLabel.setFont(new Font("Calibri", Font.PLAIN, 24));
-
         gbc.gridx = 0;
         gbc.gridy = 0;
         gbc.gridwidth = 2;
         gbc.anchor = GridBagConstraints.WEST;
-
         mainContentPanel.add(descriptionLabel, gbc);
 
         // Resize piggy_bank icon and set position
-        ImageIcon piggyBankIcon = new ImageIcon("src/main/java/ui/encouragement/piggyBox.png");
+        ImageIcon piggyBankIcon = new ImageIcon("src/main/java/ui/kid/encouragement/piggyBox.png");
         Image piggyBankImage = piggyBankIcon.getImage().getScaledInstance(250, 250, Image.SCALE_SMOOTH); // Resize icon
         piggyBankIcon = new ImageIcon(piggyBankImage);
 
@@ -63,7 +60,7 @@ public class ShopFrame extends KidPageFrame {
         mainContentPanel.add(piggyBankLabel, gbc);
 
         // Resize candy icon and set position
-        ImageIcon candyIcon = new ImageIcon("src/main/java/ui/encouragement/candy.jpg");
+        ImageIcon candyIcon = new ImageIcon("src/main/java/ui/kid/encouragement/candy.jpg");
         Image candyImage = candyIcon.getImage().getScaledInstance(130, 100, Image.SCALE_SMOOTH); // Resize icon
         candyIcon = new ImageIcon(candyImage);
 
@@ -77,7 +74,7 @@ public class ShopFrame extends KidPageFrame {
         mainContentPanel.add(candyLabel, gbc);
 
         // Resize bear icon and set position
-        ImageIcon bearIcon = new ImageIcon("src/main/java/ui/encouragement/bear.jpg");
+        ImageIcon bearIcon = new ImageIcon("src/main/java/ui/kid/encouragement/bear.jpg");
         Image bearImage = bearIcon.getImage().getScaledInstance(150, 150, Image.SCALE_SMOOTH); // Resize icon
         bearIcon = new ImageIcon(bearImage);
 
@@ -90,7 +87,7 @@ public class ShopFrame extends KidPageFrame {
         mainContentPanel.add(bearLabel, gbc);
 
         // Resize car icon and set position
-        ImageIcon carIcon = new ImageIcon("src/main/java/ui/encouragement/car.png");
+        ImageIcon carIcon = new ImageIcon("src/main/java/ui/kid/encouragement/car.png");
         Image carImage = carIcon.getImage().getScaledInstance(130, 130, Image.SCALE_SMOOTH); // Resize icon
         carIcon = new ImageIcon(carImage);
 

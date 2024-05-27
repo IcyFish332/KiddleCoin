@@ -19,26 +19,24 @@ import java.text.NumberFormat;
 import java.util.List;
 
 /**
- * MyGoalsFrame is a JFrame that displays and manages saving goals for a child account.
- * It includes features for viewing, adding, saving, and deleting saving goals.
+ * A frame for managing the saving goals of a child account.
+ * This frame provides functionalities to add, save, and delete saving goals.
+ * It displays the goals in a table format and includes pagination controls.
+ *
  * @author Longyue Liu
  */
-
 public class MyGoalsFrame extends KidPageFrame {
     private DefaultTableModel tableModel;
     private JTable goalsTable;
     private AccountManager accountManager;
     private ChildAccount childAccount;
-    private int currentPageIndex = 0;
-    private int pageSize = 10;
 
     /**
-     * Constructs a MyGoalsFrame with the specified AccountManager and ChildAccount.
+     * Constructs a new MyGoalsFrame with the specified account manager and child account.
      *
-     * @param accountManager the account manager managing the account
-     * @param childAccount   the child account to display information for
+     * @param accountManager the account manager used to handle account operations
+     * @param childAccount the child account associated with this frame
      */
-
     public MyGoalsFrame(AccountManager accountManager, ChildAccount childAccount) {
         super("My Goals", accountManager, childAccount);
         this.childAccount = childAccount;
@@ -99,10 +97,6 @@ public class MyGoalsFrame extends KidPageFrame {
             @Override
             public void actionPerformed(ActionEvent e) {
                 // Implement logic for going to the previous page
-                if (currentPageIndex > 0) {
-                    currentPageIndex--;
-                    loadDataIntoTable();
-                }
             }
         });
         BigButton nextButton = new BigButton("Next");
@@ -110,11 +104,6 @@ public class MyGoalsFrame extends KidPageFrame {
             @Override
             public void actionPerformed(ActionEvent e) {
                 // Implement logic for going to the next page
-                int maxPageIndex = (int) Math.ceil((double) childAccount.getSavingGoals().size() / pageSize) - 1;
-                if (currentPageIndex < maxPageIndex) {
-                    currentPageIndex++;
-                    loadDataIntoTable();
-                }
             }
         });
         paginationPanel.add(previousButton);
@@ -151,7 +140,7 @@ public class MyGoalsFrame extends KidPageFrame {
     }
 
     /**
-     * Loads data from the backend into the table.
+     * Loads saving goals data from the backend into the table.
      */
     private void loadDataIntoTable() {
         tableModel.setRowCount(0);
@@ -179,7 +168,7 @@ public class MyGoalsFrame extends KidPageFrame {
     /**
      * Saves a goal from the table to the backend.
      *
-     * @param row the row index of the goal in the table
+     * @param row the row index of the goal to save
      */
     private void saveGoalFromTable(int row) {
         // Get data from the row
@@ -213,11 +202,10 @@ public class MyGoalsFrame extends KidPageFrame {
         loadDataIntoTable();
     }
 
-
     /**
      * Deletes a goal from the table and the backend.
      *
-     * @param row the row index of the goal in the table
+     * @param row the row index of the goal to delete
      */
     private void deleteGoalFromTable(int row) {
         // Delete the corresponding goal from the backend
@@ -234,10 +222,11 @@ public class MyGoalsFrame extends KidPageFrame {
      */
     class ButtonRenderer extends JPanel implements TableCellRenderer {
         BigButton button;
+
         /**
-         * Constructs a ButtonRenderer with the specified button text.
+         * Constructs a new ButtonRenderer with the specified button text.
          *
-         * @param buttonText the text to display on the button
+         * @param buttonText the text of the button to render
          */
         public ButtonRenderer(String buttonText) {
             setLayout(new BorderLayout());

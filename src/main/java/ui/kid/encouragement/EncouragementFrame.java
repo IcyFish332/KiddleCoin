@@ -123,7 +123,7 @@ public class EncouragementFrame extends KidPageFrame {
         thumbsUpPanel.add(Box.createHorizontalStrut(20)); // Add horizontal spacing
 
         // Resize thumbs_up.png
-        ImageIcon icon = new ImageIcon("src/main/java/ui/encouragement/thumb.jpg");
+        ImageIcon icon = new ImageIcon("src/main/java/ui/kid/encouragement/thumb.jpg");
         Image image = icon.getImage();
         Image newImage = image.getScaledInstance(150, 150, Image.SCALE_SMOOTH); // Resize icon
         icon = new ImageIcon(newImage);

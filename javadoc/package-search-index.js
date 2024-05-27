@@ -1,0 +1,1 @@
+packageSearchIndex = [{"l":"All Packages","u":"allpackages-index.html"},{"l":"core"},{"l":"data"},{"l":"ui"},{"l":"ui.kid"},{"l":"ui.kid.BalanceManagement"},{"l":"ui.kid.encouragement"},{"l":"ui.parent"},{"l":"ui.template"},{"l":"utils"}];updateSearchResults();

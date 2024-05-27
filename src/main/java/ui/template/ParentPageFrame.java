@@ -17,7 +17,7 @@ import ui.parent.ParentUserCenterFrame;
  *
  * It provides a UI template with a sidebar for navigation and content panels for displaying information.
  *
- * @Author: Ruihang Zhang
+ * @author Ruihang Zhang
  */
 public class ParentPageFrame extends JFrame {
     protected JLabel titleLabel;

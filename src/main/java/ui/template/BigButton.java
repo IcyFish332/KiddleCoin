@@ -6,7 +6,7 @@ import javax.swing.*;
 /**
  * This class represents a custom JButton with rounded corners and custom colors.
  *
- * @Author: Ruihang Zhang
+ * @author Ruihang Zhang
  */
 public class BigButton extends JButton {
     private Color backgroundColor;
