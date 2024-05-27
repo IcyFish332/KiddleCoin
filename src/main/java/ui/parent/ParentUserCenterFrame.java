@@ -7,11 +7,21 @@ import ui.template.ParentPageFrame;
 import javax.swing.*;
 import java.awt.*;
 import java.util.Set;
-
+/**
+ * The `ParentUserCenterFrame` class is a graphical user interface component that extends the `ParentPageFrame` class.
+ * It provides a frame for parent users to view their account information and change their password.
+ * @author Ruihang Zhang
+ */
 public class ParentUserCenterFrame extends ParentPageFrame {
     private JPasswordField oldPasswordField;
     private JPasswordField newPasswordField1;
     private JPasswordField newPasswordField2;
+    /**
+     * Constructs a `ParentUserCenterFrame` instance with the specified `AccountManager` and `ParentAccount`.
+     *
+     * @param accountManager The `AccountManager` instance responsible for managing accounts
+     * @param parentAccount The `ParentAccount` instance representing the parent account
+     */
 
     public ParentUserCenterFrame(AccountManager accountManager, ParentAccount parentAccount) {
         super("User Center", accountManager, parentAccount);
@@ -123,7 +133,14 @@ public class ParentUserCenterFrame extends ParentPageFrame {
 
         setVisible(true);
     }
-
+    /**
+     * Adds labeled components (label and value) to the specified panel using the provided `GridBagConstraints`.
+     *
+     * @param panel The `JPanel` to which the labeled components will be added
+     * @param gbc The `GridBagConstraints` used for positioning the components
+     * @param labelText The text for the label
+     * @param valueText The text for the value
+     */
     private void addLabeledComponents(JPanel panel, GridBagConstraints gbc, String labelText, String valueText) {
         gbc.gridx = 0; // 标签位于第一列
         JLabel label = new JLabel(labelText);
@@ -137,7 +154,12 @@ public class ParentUserCenterFrame extends ParentPageFrame {
 
         gbc.gridy++; // 移动到下一行
     }
-
+    /**
+     * Validates the entered passwords and changes the parent account's password if the validation is successful.
+     *
+     * @param accountManager The `AccountManager` instance responsible for managing accounts
+     * @param parentAccount The `ParentAccount` instance representing the parent account
+     */
     private void validateAndChangePassword(AccountManager accountManager, ParentAccount parentAccount) {
         String oldPassword = new String(oldPasswordField.getPassword());
         String newPassword1 = new String(newPasswordField1.getPassword());
