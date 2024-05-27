@@ -11,10 +11,19 @@ import java.lang.reflect.Type;
 import java.util.HashMap;
 import java.util.Map;
 
+/**
+ * Manages the data persistence and retrieval for accounts using JSON files.
+ * This class uses Gson for JSON serialization and deserialization.
+ *
+ * @author Siyuan Lu
+ */
 public class DataManager {
     private static final String DATA_FILE = "data/accounts.json";
     private Gson gson;
 
+    /**
+     * Constructs a DataManager and initializes the Gson instance with a custom deserializer.
+     */
     public DataManager() {
         gson = new GsonBuilder()
                 .registerTypeAdapter(Account.class, new AccountDeserializer())
@@ -22,32 +31,49 @@ public class DataManager {
                 .create();
     }
 
-    // 保存账户
+    /**
+     * Saves the account to the JSON file.
+     *
+     * @param account the account to save
+     */
     public void saveAccount(Account account) {
         Map<String, Account> accounts = loadData();
         accounts.put(account.getAccountId(), account);
         saveData(accounts);
     }
 
-    // 获取账户
+    /**
+     * Retrieves an account by its ID from the JSON file.
+     *
+     * @param accountId the ID of the account to retrieve
+     * @return the account with the specified ID, or null if not found
+     */
     public Account getAccount(String accountId) {
         Map<String, Account> accounts = loadData();
         return accounts.get(accountId);
     }
 
-    // 获取所有账户
+    /**
+     * Retrieves all accounts from the JSON file.
+     *
+     * @return a map of all accounts
+     */
     public Map<String, Account> getAccounts() {
         return loadData();
     }
 
-    // 从JSON文件加载数据
+    /**
+     * Loads account data from the JSON file.
+     *
+     * @return a map of accounts
+     */
     private Map<String, Account> loadData() {
         File file = new File(DATA_FILE);
         if (!file.exists()) {
-            // 如果文件不存在,则创建新文件
+            // If the file does not exist, create a new file
             try {
-                file.getParentFile().mkdirs(); // 创建父目录
-                file.createNewFile(); // 创建新文件
+                file.getParentFile().mkdirs(); // Create parent directories
+                file.createNewFile(); // Create new file
                 return new HashMap<>();
             } catch (IOException e) {
                 e.printStackTrace();
@@ -65,7 +91,11 @@ public class DataManager {
         }
     }
 
-    // 将数据保存到JSON文件
+    /**
+     * Saves account data to the JSON file.
+     *
+     * @param accounts the map of accounts to save
+     */
     private void saveData(Map<String, Account> accounts) {
         try (FileWriter writer = new FileWriter(DATA_FILE)) {
             gson.toJson(accounts, writer);
@@ -74,6 +104,9 @@ public class DataManager {
         }
     }
 
+    /**
+     * Custom deserializer for Account objects.
+     */
     private static class AccountDeserializer implements JsonDeserializer<Account> {
         @Override
         public Account deserialize(JsonElement json, Type typeOfT, JsonDeserializationContext context) throws JsonParseException {

@@ -1,4 +1,5 @@
 package ui.parent;
+
 import core.AccountManager;
 import core.ParentAccount;
 import ui.template.BigButton;
@@ -8,14 +9,28 @@ import javax.swing.*;
 import javax.swing.table.DefaultTableModel;
 import java.awt.*;
 
+/**
+ * AwardFrame is a graphical user interface frame designed for parents to give awards to their child's account.
+ * It allows parents to specify the amount of the award and add an optional description.
+ *
+ * This class extends the ParentPageFrame class and is part of the parent UI package. It utilizes components from the core package for account management.
+ *
+ * @author Yilin Jin
+ */
+
 public class AwardFrame extends ParentPageFrame {
-    private  AccountManager accountManager;
-    private  ParentAccount parentAccount;
+    private AccountManager accountManager;
+    private ParentAccount parentAccount;
     private DefaultTableModel goalsModel;
-    private JTextField AwardnameField;
-    private JTextField AmountField;
+    private JTextField awardNameField;
+    private JTextField amountField;
 
-
+    /**
+     * Constructs an AwardFrame for giving an award.
+     *
+     * @param accountManager The account manager
+     * @param parentAccount The parent account
+     */
     public AwardFrame(AccountManager accountManager, ParentAccount parentAccount) {
         super("Give an Award", accountManager, parentAccount);
         setLocationRelativeTo(null);
@@ -25,11 +40,7 @@ public class AwardFrame extends ParentPageFrame {
         GridBagConstraints gbc = new GridBagConstraints();
         gbc.insets = new Insets(10, 10, 10, 10);
 
-//        JLabel infoLabel = new JLabel("Information");
-//        lowerPanel.add(infoLabel, BorderLayout.NORTH);
-
-        // *** Information Section ***
-        // Set up heading for Information section
+        // Information section heading
         JLabel infoHeading = new JLabel("Information");
         infoHeading.setFont(new Font("Calibri", Font.BOLD, 18));
         infoHeading.setForeground(new Color(0xF868B0)); // Red color as shown in the sketch
@@ -38,63 +49,58 @@ public class AwardFrame extends ParentPageFrame {
         gbc.anchor = GridBagConstraints.NORTHWEST;
         lowerPanel.add(infoHeading, gbc);
 
-        //set up panel for User name, ID, and account type labels
+        // Panel for user name, ID, and account type labels
         JPanel labelPanel = new JPanel(new GridBagLayout());
         labelPanel.setBackground(Color.WHITE);
-        labelPanel.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10)); // 设置边距
+        labelPanel.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
 
         GridBagConstraints g = new GridBagConstraints();
-        g.anchor = GridBagConstraints.NORTHWEST; // 设置组件在单元格中的位置
-        g.insets = new Insets(5, 5, 5, 5); // 设置组件之间的间距
-        g.gridx = 0; // 初始x坐标
-        g.gridy = 0; // 初始y坐标
+        g.anchor = GridBagConstraints.NORTHWEST;
+        g.insets = new Insets(5, 5, 5, 5);
+        g.gridx = 0;
+        g.gridy = 0;
 
-        // 将labelPanel添加到lowerPanel的中部
+        // Add label panel to lower panel
         gbc.gridy = 1;
         lowerPanel.add(labelPanel, gbc);
 
-
-        // Set up panel for Password labels and fields
+        // Panel for award name and amount fields
         JPanel fieldsPanel = new JPanel(new GridBagLayout());
         fieldsPanel.setBackground(Color.WHITE);
 
         GridBagConstraints gb = new GridBagConstraints();
-        gb.anchor = GridBagConstraints.NORTHWEST; // 设置组件在单元格中的位置
+        gb.anchor = GridBagConstraints.NORTHWEST;
         gb.insets = new Insets(5, 5, 5, 5);
 
-        // Add old password field
+        // Add award name field
         gb.gridx = 0;
         gb.gridy = 0;
-        JLabel AwardName = new JLabel("Award Name");
-
-        //oldPassword.setHorizontalAlignment(SwingConstants.LEFT);
-        fieldsPanel.add(AwardName, gb);
+        JLabel awardNameLabel = new JLabel("Award Name");
+        fieldsPanel.add(awardNameLabel, gb);
         gb.gridx = 1;
-        AwardnameField = new JTextField(20);
-        fieldsPanel.add(AwardnameField, gb);
+        awardNameField = new JTextField(20);
+        fieldsPanel.add(awardNameField, gb);
 
-        // Add new password field 1
+        // Add award amount field
         gb.gridx = 0;
         gb.gridy = 1;
         fieldsPanel.add(new JLabel("Award   $"), gb);
         gb.gridx = 1;
-        AmountField = new JTextField(20);
-        fieldsPanel.add(AmountField, gb);
+        amountField = new JTextField(20);
+        fieldsPanel.add(amountField, gb);
         lowerPanel.add(fieldsPanel, gbc);
 
-        // Buttons
+        // Buttons panel
         JPanel buttonPanel = new JPanel();
         buttonPanel.setBackground(Color.WHITE);
         BigButton submitButton = new BigButton("Submit");
         BigButton returnButton = new BigButton("Return");
 
         submitButton.addActionListener(e -> {
-            // Validate input fields (pseudo-code)
             if (anyTextFieldIsEmpty()) {
                 showInvalidInfoDialog();
-
             } else {
-                //update code
+                // Update code (implementation not shown)
                 this.dispose();
             }
         });
@@ -110,45 +116,44 @@ public class AwardFrame extends ParentPageFrame {
         gbc.gridwidth = 2; // Span across two columns
 
         lowerPanel.add(buttonPanel, gbc);
-
-        setVisible(true);
-
-
-
-
-        lowerPanel.add(buttonPanel, gbc);
-
-
         setVisible(true);
     }
 
-
-
-
-    // Method to update information
-
-
-
+    /**
+     * Adds labeled components to the specified panel.
+     *
+     * @param panel The panel to which components are added
+     * @param gbc The GridBagConstraints for layout
+     * @param labelText The text for the label
+     * @param valueText The text for the value
+     */
     private void addLabeledComponents(JPanel panel, GridBagConstraints gbc, String labelText, String valueText) {
-        gbc.gridx = 0; // 标签位于第一列
+        gbc.gridx = 0; // Label in the first column
         JLabel label = new JLabel(labelText);
-        label.setHorizontalAlignment(SwingConstants.RIGHT); // 标签右对齐
+        label.setHorizontalAlignment(SwingConstants.RIGHT); // Right-align label
         panel.add(label, gbc);
 
-        gbc.gridx = 1; // 值位于第二列
+        gbc.gridx = 1; // Value in the second column
         JLabel value = new JLabel(valueText);
-        value.setHorizontalAlignment(SwingConstants.LEFT); // 值左对齐
+        value.setHorizontalAlignment(SwingConstants.LEFT); // Left-align value
         panel.add(value, gbc);
 
-        gbc.gridy++; // 移动到下一行
+        gbc.gridy++; // Move to the next row
     }
 
+    /**
+     * Checks if any text field is empty.
+     *
+     * @return true if any text field is empty, false otherwise
+     */
     private boolean anyTextFieldIsEmpty() {
-        return AwardnameField.getText().isEmpty() ||
-                AmountField.getText().isEmpty();
-
+        return awardNameField.getText().isEmpty() ||
+                amountField.getText().isEmpty();
     }
 
+    /**
+     * Shows a dialog indicating invalid information.
+     */
     private void showInvalidInfoDialog() {
         JDialog dialog = new JDialog(this, "Invalid Information", true);
         dialog.setLayout(new FlowLayout());
@@ -162,10 +167,10 @@ public class AwardFrame extends ParentPageFrame {
         dialog.setVisible(true);
     }
 
+    /**
+     * Returns to the manage goals frame.
+     */
     private void returnToManageGoalsFrame() {
-        // 关闭当前的 GoalFrame
-
         dispose();
     }
-
 }

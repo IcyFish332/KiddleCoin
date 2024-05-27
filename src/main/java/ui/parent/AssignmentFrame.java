@@ -5,13 +5,20 @@ import ui.parent.ManageTasksFrame;
 import ui.template.BigButton;
 import ui.template.ParentPageFrame;
 import java.util.Date;
-import core.Task;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 
 import javax.swing.*;
 import java.awt.*;
 
+/**
+ * AssignmentFrame is a graphical user interface frame designed for parents to set or edit tasks for their child's account.
+ * It provides functionality to input task details such as name, due date, reward, and description. Additionally, it allows parents to either create a new task or edit an existing one.
+ *
+ * This class extends the ParentPageFrame class and is part of the parent UI package. It utilizes components from the core package for account management.
+ *
+ * @author Yilin Jin
+ */
 public class AssignmentFrame extends ParentPageFrame {
     private ChildAccount childAccount;
     private JTextField taskNameField;
@@ -23,17 +30,31 @@ public class AssignmentFrame extends ParentPageFrame {
     private ParentAccount parentAccount;
     private ManageTasksFrame manageTasksFrame;
 
+    /**
+     * Constructs an AssignmentFrame for setting a new task.
+     *
+     * @param accountManager The account manager
+     * @param parentAccount The parent account
+     * @param childAccount The child account
+     */
     public AssignmentFrame(AccountManager accountManager, ParentAccount parentAccount, ChildAccount childAccount) {
         this(accountManager, parentAccount, childAccount, null);
     }
 
+    /**
+     * Constructs an AssignmentFrame for setting or editing a task.
+     *
+     * @param accountManager The account manager
+     * @param parentAccount The parent account
+     * @param childAccount The child account
+     * @param task The task to be edited, or null if creating a new task
+     */
     public AssignmentFrame(AccountManager accountManager, ParentAccount parentAccount, ChildAccount childAccount, Task task) {
         super(task == null ? "Set a Task" : "Edit Task", accountManager, parentAccount);
         this.childAccount = childAccount;
         this.accountManager = accountManager;
         this.parentAccount = parentAccount;
         setLocationRelativeTo(null);
-
 
         lowerPanel.setLayout(new GridBagLayout());
         GridBagConstraints gbc = new GridBagConstraints();
@@ -135,14 +156,20 @@ public class AssignmentFrame extends ParentPageFrame {
         setVisible(true);
     }
 
+    /**
+     * Updates task information and saves it to the child account.
+     *
+     * @param accountManager The account manager
+     * @param parentAccount The parent account
+     * @param task The task to be updated, or null if creating a new task
+     */
     private void updateInformation(AccountManager accountManager, ParentAccount parentAccount, Task task) {
         String taskName = taskNameField.getText();
         String description = descriptionArea.getText();
         double award;
         Date dueDate;
 
-        // 解析日期字符串并创建 Date 对象
-        SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
+        // Parse reward field
         try {
             award = Double.parseDouble(rewardField.getText());
         } catch (NumberFormatException e) {
@@ -150,7 +177,8 @@ public class AssignmentFrame extends ParentPageFrame {
             return;
         }
 
-        // Parse the deadline
+        // Parse due date field
+        SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
         try {
             dueDate = dateFormat.parse(dueDateField.getText());
         } catch (ParseException e) {
@@ -172,11 +200,20 @@ public class AssignmentFrame extends ParentPageFrame {
         dispose();
     }
 
+    /**
+     * Checks if any text field is empty.
+     *
+     * @return true if any text field is empty, false otherwise
+     */
     private boolean anyTextFieldIsEmpty() {
         return taskNameField.getText().isEmpty() ||
                 rewardField.getText().isEmpty() ||
                 descriptionArea.getText().isEmpty();
     }
+
+    /**
+     * Shows a dialog indicating an invalid date format.
+     */
     private void showInvalidDateFormatDialog() {
         JDialog dialog = new JDialog(this, "Invalid Date Format", true);
         dialog.setLayout(new FlowLayout());
@@ -190,6 +227,9 @@ public class AssignmentFrame extends ParentPageFrame {
         dialog.setVisible(true);
     }
 
+    /**
+     * Shows a dialog indicating invalid information.
+     */
     private void showInvalidInfoDialog() {
         JDialog dialog = new JDialog(this, "Invalid Information", true);
         dialog.setLayout(new FlowLayout());
@@ -203,11 +243,15 @@ public class AssignmentFrame extends ParentPageFrame {
         dialog.setVisible(true);
     }
 
+    /**
+     * Returns to the ManageTasksFrame.
+     *
+     * @param accountManager The account manager
+     * @param parentAccount The parent account
+     */
     private void returnToManageTasksFrame(AccountManager accountManager, ParentAccount parentAccount) {
         ManageTasksFrame manageTasksFrame = new ManageTasksFrame(accountManager, parentAccount);
         manageTasksFrame.setVisible(true);
         this.dispose();
     }
-
-
 }

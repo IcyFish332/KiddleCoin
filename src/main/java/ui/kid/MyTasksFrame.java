@@ -12,8 +12,17 @@ import javax.swing.table.TableCellRenderer;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
 import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.List;
+
+/**
+ * MyTasksFrame is a JFrame that displays and manages tasks for a child account.
+ * It includes features for viewing and paginating through tasks.
+ * @author Longyue Liu
+ */
 
 public class MyTasksFrame extends KidPageFrame {
 
@@ -23,6 +32,14 @@ public class MyTasksFrame extends KidPageFrame {
     private JLabel balanceLabel;
     private AccountManager accountManager;
     private ChildAccount childAccount;
+    private int currentPageIndex = 0;
+    private int pageSize = 10;
+    /**
+     * Constructs a MyTasksFrame with the specified AccountManager and ChildAccount.
+     *
+     * @param accountManager the account manager managing the account
+     * @param childAccount   the child account to display tasks for
+     */
 
     public MyTasksFrame(AccountManager accountManager, ChildAccount childAccount) {
         super("My Tasks", accountManager, childAccount);
@@ -58,7 +75,10 @@ public class MyTasksFrame extends KidPageFrame {
             @Override
             public void actionPerformed(ActionEvent e) {
                 // Implement logic for going to the previous page
-                // You'll likely need to manage page numbers or data fetching
+                if (currentPageIndex > 0) {
+                    currentPageIndex--;
+                    loadDataIntoTable();
+                }
             }
         });
         BigButton nextButton = new BigButton("Next");
@@ -66,7 +86,11 @@ public class MyTasksFrame extends KidPageFrame {
             @Override
             public void actionPerformed(ActionEvent e) {
                 // Implement logic for going to the next page
-                // You'll likely need to manage page numbers or data fetching
+                int maxPageIndex = (int) Math.ceil((double) childAccount.getTasks().size() / pageSize) - 1;
+                if (currentPageIndex < maxPageIndex) {
+                    currentPageIndex++;
+                    loadDataIntoTable();
+                }
             }
         });
         paginationPanel.add(previousButton);
@@ -81,7 +105,9 @@ public class MyTasksFrame extends KidPageFrame {
         setVisible(true);
     }
 
-    // Load data from the backend into the table
+    /**
+     * Loads data from the backend into the table.
+     */
     private void loadDataIntoTable() {
         List<Task> tasks = childAccount.getTasks();
         SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd");

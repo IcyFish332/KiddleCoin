@@ -9,17 +9,23 @@ import javax.swing.*;
 import java.awt.*;
 import java.util.Set;
 
+
+
 /**
- * This class represents the user center frame for parents.
- *
- * It provides a UI for displaying user information and changing the password.
- *
- * @Author: Ruihang Zhang
+ * The `ParentUserCenterFrame` class is a graphical user interface component that extends the `ParentPageFrame` class.
+ * It provides a frame for parent users to view their account information and change their password.
+ * @author Ruihang Zhang
  */
 public class ParentUserCenterFrame extends ParentPageFrame {
     private JPasswordField oldPasswordField;
     private JPasswordField newPasswordField1;
     private JPasswordField newPasswordField2;
+    /**
+     * Constructs a `ParentUserCenterFrame` instance with the specified `AccountManager` and `ParentAccount`.
+     *
+     * @param accountManager The `AccountManager` instance responsible for managing accounts
+     * @param parentAccount The `ParentAccount` instance representing the parent account
+     */
 
     /**
      * Constructs a ParentUserCenterFrame.
@@ -133,19 +139,12 @@ public class ParentUserCenterFrame extends ParentPageFrame {
     }
 
     /**
-     * Adds labeled components to a specified panel.
+     * Adds labeled components (label and value) to the specified panel using the provided `GridBagConstraints`.
      *
-     * @param panel
-     *        the panel to add the components to
-     *
-     * @param gbc
-     *        the GridBagConstraints for layout
-     *
-     * @param labelText
-     *        the text for the label
-     *
-     * @param valueText
-     *        the text for the value label
+     * @param panel The `JPanel` to which the labeled components will be added
+     * @param gbc The `GridBagConstraints` used for positioning the components
+     * @param labelText The text for the label
+     * @param valueText The text for the value
      */
     private void addLabeledComponents(JPanel panel, GridBagConstraints gbc, String labelText, String valueText) {
         gbc.gridx = 0; // Label in the first column
@@ -162,13 +161,10 @@ public class ParentUserCenterFrame extends ParentPageFrame {
     }
 
     /**
-     * Validates and changes the password for the parent account.
+     * Validates the entered passwords and changes the parent account's password if the validation is successful.
      *
-     * @param accountManager
-     *        the account manager to manage parent accounts
-     *
-     * @param parentAccount
-     *        the parent account whose password will be changed
+     * @param accountManager The `AccountManager` instance responsible for managing accounts
+     * @param parentAccount The `ParentAccount` instance representing the parent account
      */
     private void validateAndChangePassword(AccountManager accountManager, ParentAccount parentAccount) {
         String oldPassword = new String(oldPasswordField.getPassword());
