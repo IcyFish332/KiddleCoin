@@ -96,21 +96,38 @@ public class ManageTasksFrame extends ParentPageFrame {
     }
 
     private void addTasksListPanel() {
-        JPanel tasksListPanel = new JPanel();
-        tasksListPanel.setLayout(new BorderLayout());
+        JPanel tasksListPanel = new JPanel(new GridBagLayout());
+        tasksListPanel.setBorder(BorderFactory.createEmptyBorder(10, 0, 0, 0));
         tasksListPanel.setBackground(Color.WHITE);
-        tasksListPanel.setBorder(BorderFactory.createEmptyBorder(10, 0, 10, 0));
 
         JLabel tasksListLabel = new JLabel("Tasks List");
-        tasksListLabel.setBackground(Color.WHITE);
         tasksListLabel.setFont(new Font("Arial", Font.BOLD, 18));
         tasksListLabel.setForeground(new Color(255, 105, 180));
 
         BigButton setTaskButton = new BigButton("+ Set a Task");
-        setTaskButton.setFont(new Font("Arial", Font.PLAIN, 14));
+        //setTaskButton.setFont(new Font("Arial", Font.PLAIN, 14));
+        setTaskButton.setPreferredSize(new Dimension(150, 30)); // Set fixed size for the button
         setTaskButton.addActionListener(e -> openSetTaskFrame());
-        tasksListPanel.add(tasksListLabel, BorderLayout.WEST);
-        tasksListPanel.add(setTaskButton, BorderLayout.EAST);
+
+        GridBagConstraints gbc = new GridBagConstraints();
+
+        // Add the goals list label to the left side
+        gbc.gridx = 0;
+        gbc.gridy = 0;
+        gbc.anchor = GridBagConstraints.WEST;
+        gbc.weightx = 1.0; // Ensure the label is pushed to the left
+        tasksListPanel.add(tasksListLabel, gbc);
+
+        // Add an empty component to take up the remaining space
+        gbc.gridx = 1;
+        gbc.weightx = 1.0; // This makes the empty space take up the rest of the horizontal space
+        tasksListPanel.add(Box.createHorizontalGlue(), gbc);
+
+        // Add the set goal button to the right side
+        gbc.gridx = 2;
+        gbc.weightx = 0.0; // Ensure the button stays on the right
+        gbc.anchor = GridBagConstraints.EAST;
+        tasksListPanel.add(setTaskButton, gbc);
 
         lowerPanel.add(tasksListPanel);
     }
@@ -202,6 +219,7 @@ public class ManageTasksFrame extends ParentPageFrame {
 
             panel.add(editButton);
             panel.add(deleteButton);
+            panel.setBackground(Color.WHITE);
             return panel;
         }
     }
