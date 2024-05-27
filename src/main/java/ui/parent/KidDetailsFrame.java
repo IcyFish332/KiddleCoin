@@ -12,6 +12,10 @@ import java.awt.*;
 import java.text.SimpleDateFormat;
 import java.util.Locale;
 
+/**
+ * A frame that displays detailed information about a child's account,
+ * including their saving goals and tasks.
+ */
 public class KidDetailsFrame extends ParentPageFrame {
     private static AccountManager accountManager;
     private static ParentAccount parentAccount;
@@ -21,6 +25,13 @@ public class KidDetailsFrame extends ParentPageFrame {
     private JTable goalsTable;
     private JTable tasksTable;
 
+    /**
+     * Constructs a KidDetailsFrame.
+     *
+     * @param accountManager The account manager.
+     * @param parentAccount The parent account.
+     * @param childAccount The child account.
+     */
     public KidDetailsFrame(AccountManager accountManager, ParentAccount parentAccount, ChildAccount childAccount) {
         super("Details of Kid's Account", accountManager, parentAccount);
         this.accountManager = accountManager;
@@ -29,6 +40,9 @@ public class KidDetailsFrame extends ParentPageFrame {
         initComponents();
     }
 
+    /**
+     * Initializes the components of the frame.
+     */
     private void initComponents() {
         setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
 
@@ -52,6 +66,9 @@ public class KidDetailsFrame extends ParentPageFrame {
         lowerPanel.add(backButton, BorderLayout.SOUTH);
     }
 
+    /**
+     * Adds the title and information panel to the frame.
+     */
     private void addTitleAndInfoPanel() {
         JPanel infoPanel = new JPanel();
         infoPanel.setLayout(new BoxLayout(infoPanel, BoxLayout.X_AXIS));
@@ -72,6 +89,9 @@ public class KidDetailsFrame extends ParentPageFrame {
         lowerPanel.add(infoPanel, BorderLayout.NORTH);
     }
 
+    /**
+     * Sets up the goals section of the frame.
+     */
     private void setupGoalsSection() {
         JPanel goalsPanel = new JPanel(new BorderLayout());
         goalsPanel.setBackground(Color.WHITE);
@@ -102,6 +122,9 @@ public class KidDetailsFrame extends ParentPageFrame {
         lowerPanel.add(goalsPanel, BorderLayout.WEST);
     }
 
+    /**
+     * Sets up the tasks section of the frame.
+     */
     private void setupTasksSection() {
         JPanel tasksPanel = new JPanel(new BorderLayout());
         tasksPanel.setBackground(Color.WHITE);

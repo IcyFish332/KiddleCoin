@@ -13,12 +13,21 @@ import core.ParentAccount;
 import ui.template.ParentPageFrame;
 import ui.template.BigButton;
 
+/**
+ * A frame for managing a parent's list of child accounts.
+ */
 public class KidsListManagementFrame extends ParentPageFrame {
     private AccountManager accountManager;
     private ParentAccount parentAccount;
     private DefaultTableModel model;
     private JTable table;
 
+    /**
+     * Constructs a KidsListManagementFrame.
+     *
+     * @param accountManager The account manager.
+     * @param parentAccount The parent account.
+     */
     public KidsListManagementFrame(AccountManager accountManager, ParentAccount parentAccount) {
         super("Kids' List Management", accountManager, parentAccount);
         this.accountManager = accountManager;
@@ -26,19 +35,21 @@ public class KidsListManagementFrame extends ParentPageFrame {
         initComponents();
     }
 
+    /**
+     * Initializes the components of the frame.
+     */
     private void initComponents() {
         lowerPanel.setLayout(new BorderLayout());
         lowerPanel.setBackground(Color.WHITE);
 
-        // 标题行
+        // Title panel
         JPanel titlePanel = new JPanel(new BorderLayout());
         titlePanel.setBackground(Color.WHITE);
-        JLabel titleLabel = new JLabel();
-        titleLabel.setBackground(Color.WHITE);
+        JLabel titleLabel = new JLabel("Kids' List");
         titleLabel.setFont(new Font("Arial", Font.BOLD, 18));
         titlePanel.add(titleLabel, BorderLayout.WEST);
 
-        // 添加按钮
+        // Add button
         BigButton addButton = new BigButton("Add");
         addButton.setBackground(Color.WHITE);
         addButton.addActionListener(this::addAccountAction);
@@ -46,13 +57,13 @@ public class KidsListManagementFrame extends ParentPageFrame {
 
         lowerPanel.add(titlePanel, BorderLayout.NORTH);
 
-        // 表格模型
+        // Table model
         String[] columnNames = {"Name", "AccountID", "Savings", "Operations"};
         model = new DefaultTableModel(null, columnNames);
         table = new JTable(model);
         table.setRowHeight(30);
         table.setBackground(Color.WHITE);
-        table.setGridColor(Color.WHITE);  // Set grid color to white to blend with background
+        table.setGridColor(Color.WHITE);
         table.setShowGrid(true);
 
         for (String childAccountId : parentAccount.getChildAccountIds()) {
@@ -62,14 +73,14 @@ public class KidsListManagementFrame extends ParentPageFrame {
             }
         }
 
-        // 设置表格列的单元格编辑器
+        // Set table cell editor for savings
         table.getColumnModel().getColumn(2).setCellEditor(new SavingsEditor(new JTextField()));
 
-        // Operations列
+        // Set cell renderer and editor for operations column
         table.getColumnModel().getColumn(3).setCellRenderer(new OperationsRenderer());
         table.getColumnModel().getColumn(3).setCellEditor(new OperationsEditor(new JCheckBox()));
 
-        // 调整列宽
+        // Adjust column widths
         table.getColumnModel().getColumn(0).setPreferredWidth(150);
         table.getColumnModel().getColumn(1).setPreferredWidth(150);
         table.getColumnModel().getColumn(2).setPreferredWidth(150);
@@ -83,6 +94,11 @@ public class KidsListManagementFrame extends ParentPageFrame {
         this.contentPanel.add(lowerPanel, BorderLayout.CENTER);
     }
 
+    /**
+     * Action performed when the add account button is clicked.
+     *
+     * @param e The action event.
+     */
     private void addAccountAction(ActionEvent e) {
         JTextField accountIdField = new JTextField();
         accountIdField.setBackground(Color.WHITE);
@@ -119,9 +135,17 @@ public class KidsListManagementFrame extends ParentPageFrame {
         } while (option != JOptionPane.CANCEL_OPTION);
     }
 
+    /**
+     * Custom cell editor for the savings column.
+     */
     class SavingsEditor extends DefaultCellEditor {
         private JTextField textField;
 
+        /**
+         * Constructs a SavingsEditor.
+         *
+         * @param textField The text field to be used for editing.
+         */
         public SavingsEditor(JTextField textField) {
             super(textField);
             this.textField = textField;
@@ -159,9 +183,15 @@ public class KidsListManagementFrame extends ParentPageFrame {
         }
     }
 
+    /**
+     * Custom cell renderer for the operations column.
+     */
     class OperationsRenderer extends JPanel implements TableCellRenderer {
-        BigButton detailsButton, deleteButton;
+        private BigButton detailsButton, deleteButton;
 
+        /**
+         * Constructs an OperationsRenderer.
+         */
         public OperationsRenderer() {
             setLayout(new BoxLayout(this, BoxLayout.X_AXIS));
             setBackground(Color.WHITE);
@@ -173,27 +203,27 @@ public class KidsListManagementFrame extends ParentPageFrame {
 
             add(detailsButton);
             add(deleteButton);
-
-            adjustButtonVisibility(true);
-        }
-
-        private void adjustButtonVisibility(boolean isVisible) {
-            detailsButton.setVisible(isVisible);
-            deleteButton.setVisible(isVisible);
         }
 
         @Override
         public Component getTableCellRendererComponent(JTable table, Object value,
                                                        boolean isSelected, boolean hasFocus, int row, int column) {
-            adjustButtonVisibility(true);
             return this;
         }
     }
 
+    /**
+     * Custom cell editor for the operations column.
+     */
     class OperationsEditor extends DefaultCellEditor {
         protected JPanel panel;
         protected BigButton detailsButton, deleteButton;
 
+        /**
+         * Constructs an OperationsEditor.
+         *
+         * @param checkBox The checkbox used for editing.
+         */
         public OperationsEditor(JCheckBox checkBox) {
             super(checkBox);
             panel = new JPanel();
@@ -208,38 +238,39 @@ public class KidsListManagementFrame extends ParentPageFrame {
             panel.add(detailsButton);
             panel.add(deleteButton);
 
-            adjustButtonVisibility(true);
-
-            detailsButton.addActionListener(e -> {
-                int row = table.getSelectedRow();
-                if (row >= 0) {
-                    String accountId = model.getValueAt(row, 1).toString();
-                    Account account = accountManager.getAccount(accountId);
-                    if (account instanceof ChildAccount) {
-                        ChildAccount childAccount = (ChildAccount) account;
-                        KidDetailsFrame detailsFrame = new KidDetailsFrame(accountManager, parentAccount, childAccount);
-                        detailsFrame.setVisible(true);
-                        dispose();
-                    } else {
-                        JOptionPane.showMessageDialog(null, "Invalid Account ID. Please select a valid Child Account.", "Input Error", JOptionPane.ERROR_MESSAGE);
-                    }
-                }
-            });
+            detailsButton.addActionListener(e -> showKidDetails());
             deleteButton.addActionListener(e -> deleteKid());
         }
 
-        private void adjustButtonVisibility(boolean isVisible) {
-            detailsButton.setVisible(isVisible);
-            deleteButton.setVisible(isVisible);
-        }
-
+        @Override
         public Component getTableCellEditorComponent(JTable table, Object value,
                                                      boolean isSelected, int row, int column) {
-            adjustButtonVisibility(true);
             return panel;
+        }
+
+        /**
+         * Shows the details of the selected kid account.
+         */
+        private void showKidDetails() {
+            int row = table.getSelectedRow();
+            if (row >= 0) {
+                String accountId = model.getValueAt(row, 1).toString();
+                Account account = accountManager.getAccount(accountId);
+                if (account instanceof ChildAccount) {
+                    ChildAccount childAccount = (ChildAccount) account;
+                    KidDetailsFrame detailsFrame = new KidDetailsFrame(accountManager, parentAccount, childAccount);
+                    detailsFrame.setVisible(true);
+                    dispose();
+                } else {
+                    JOptionPane.showMessageDialog(null, "Invalid Account ID. Please select a valid Child Account.", "Input Error", JOptionPane.ERROR_MESSAGE);
+                }
+            }
         }
     }
 
+    /**
+     * Deletes the selected kid account.
+     */
     private void deleteKid() {
         int selectedRow = table.getSelectedRow();
         if (selectedRow >= 0) {
