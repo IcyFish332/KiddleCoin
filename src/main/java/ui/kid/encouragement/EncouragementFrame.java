@@ -1,4 +1,5 @@
 package ui.kid.encouragement;
+
 import core.AccountManager;
 import core.ChildAccount;
 
@@ -10,12 +11,25 @@ import java.awt.event.ActionListener;
 import ui.template.BigButton;
 import ui.template.KidPageFrame;
 
+/**
+ * This class represents a frame for daily encouragement for kids.
+ * It extends the KidPageFrame and provides a UI for showing today's book,
+ * today's courses, and a "My Shop" button.
+ *
+ * @author Ruihang Zhang
+ */
 public class EncouragementFrame extends KidPageFrame {
 
+    /**
+     * Constructs an EncouragementFrame.
+     *
+     * @param accountManager the account manager to manage child accounts
+     * @param childAccount   the child account associated with this frame
+     */
     public EncouragementFrame(AccountManager accountManager, ChildAccount childAccount) {
         super("Daily Encouragement", accountManager, childAccount);
 
-        // 创建一个新的面板来包含图中间的内容
+        // Create a new panel to contain the main content
         JPanel mainContentPanel = new JPanel();
         mainContentPanel.setBackground(Color.WHITE);
         mainContentPanel.setLayout(new GridBagLayout());
@@ -24,69 +38,67 @@ public class EncouragementFrame extends KidPageFrame {
         gbc.fill = GridBagConstraints.HORIZONTAL;
         gbc.insets = new Insets(10, 10, 10, 10);
 
-        // 创建“Today's Book”部分
+        // Create "Today's Book" section
         JLabel bookLabel = new JLabel("Today's Book");
         bookLabel.setFont(new Font("Calibri", Font.PLAIN, 18));
 
         gbc.gridx = 0;
         gbc.gridy = 0;
         gbc.anchor = GridBagConstraints.WEST;
-        gbc.insets = new Insets(10, 30, 10, 10); // 设置左边距为30
+        gbc.insets = new Insets(10, 30, 10, 10); // Set left margin to 30
 
         mainContentPanel.add(bookLabel, gbc);
 
         JTextField bookNameField = new JTextField("《Rich Dad, Poor Dad》");
         bookNameField.setFont(new Font("Calibri", Font.PLAIN, 14));
-        bookNameField.setHorizontalAlignment(JTextField.CENTER); // 文本居中
-        bookNameField.setPreferredSize(new Dimension(200, 60)); // 设置首选尺寸，宽度300，高度40
+        bookNameField.setHorizontalAlignment(JTextField.CENTER); // Center text
+        bookNameField.setPreferredSize(new Dimension(200, 60)); // Set preferred size
 
         gbc.gridx = 1;
         gbc.gridy = 0;
         gbc.anchor = GridBagConstraints.CENTER;
         gbc.weightx = 1.0;
-        gbc.insets = new Insets(10, 10, 10, 10); // 恢复默认边距
+        gbc.insets = new Insets(10, 10, 10, 10); // Restore default margins
 
         mainContentPanel.add(bookNameField, gbc);
 
-        // 创建“Today's Courses”部分
+        // Create "Today's Courses" section
         JLabel coursesLabel = new JLabel("Today's Courses");
         coursesLabel.setFont(new Font("Calibri", Font.PLAIN, 18));
 
         gbc.gridx = 0;
         gbc.gridy = 1;
         gbc.anchor = GridBagConstraints.WEST;
-        gbc.insets = new Insets(10, 30, 10, 10); // 设置左边距为30
+        gbc.insets = new Insets(10, 30, 10, 10); // Set left margin to 30
 
         mainContentPanel.add(coursesLabel, gbc);
 
         JTextField coursesNameField = new JTextField("\"Fun with Finance\"");
         coursesNameField.setFont(new Font("Calibri", Font.PLAIN, 14));
-        coursesNameField.setHorizontalAlignment(JTextField.CENTER); // 文本居中
-        coursesNameField.setPreferredSize(new Dimension(200, 60)); // 设置首选尺寸，宽度300，高度40
+        coursesNameField.setHorizontalAlignment(JTextField.CENTER); // Center text
+        coursesNameField.setPreferredSize(new Dimension(200, 60)); // Set preferred size
 
         gbc.gridx = 1;
         gbc.gridy = 1;
         gbc.anchor = GridBagConstraints.CENTER;
         gbc.weightx = 1.0;
-        gbc.insets = new Insets(10, 10, 10, 10); // 恢复默认边距
+        gbc.insets = new Insets(10, 10, 10, 10); // Restore default margins
 
         mainContentPanel.add(coursesNameField, gbc);
 
-        // 创建“My Shop”按钮
-
-        // Button
+        // Create "My Shop" button
         JPanel buttonPanel = new JPanel();
         buttonPanel.setBackground(Color.WHITE);
         BigButton shopButton = new BigButton("My Shop");
 
         buttonPanel.add(shopButton);
 
-        // 添加事件监听器到“My Shop”按钮
+        // Add event listener to "My Shop" button
         shopButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
                 new ShopFrame(accountManager, childAccount).setVisible(true);
-                dispose(); // 关闭当前窗口
+                dispose(); // Close the current window
             }
         });
 
@@ -97,35 +109,33 @@ public class EncouragementFrame extends KidPageFrame {
 
         mainContentPanel.add(shopButton, gbc);
 
-        // 创建“Give myself a thumbs-up”部分
+        // Create "Give myself a thumbs-up" section
         JPanel thumbsUpPanel = new JPanel();
         thumbsUpPanel.setBackground(Color.WHITE);
         thumbsUpPanel.setLayout(new BoxLayout(thumbsUpPanel, BoxLayout.X_AXIS));
 
         JLabel thumbsUpLabel = new JLabel("Give myself a thumbs-up !");
         thumbsUpLabel.setFont(new Font("Calibri", Font.PLAIN, 18));
+        thumbsUpLabel.setForeground(new Color(0xF868B0)); // Set font color to pink
 
-        thumbsUpLabel.setForeground(new Color(0xF868B0)); // 设置字体颜色为粉色
-        thumbsUpPanel.add(Box.createHorizontalGlue()); // 添加水平填充，使得Label居中
+        thumbsUpPanel.add(Box.createHorizontalGlue()); // Add horizontal glue to center the label
         thumbsUpPanel.add(thumbsUpLabel);
+        thumbsUpPanel.add(Box.createHorizontalStrut(20)); // Add horizontal spacing
 
-        thumbsUpPanel.add(Box.createHorizontalStrut(20)); // 添加水平间距
-
-        // 调整thumbs_up.png的大小
+        // Resize thumbs_up.png
         ImageIcon icon = new ImageIcon("src/main/java/ui/encouragement/thumb.jpg");
         Image image = icon.getImage();
-        Image newImage = image.getScaledInstance(150, 150, Image.SCALE_SMOOTH); // 调整图标大小
+        Image newImage = image.getScaledInstance(150, 150, Image.SCALE_SMOOTH); // Resize icon
         icon = new ImageIcon(newImage);
 
-        // 创建标签显示图标
+        // Create label to display the icon
         JLabel iconLabel = new JLabel(icon);
-        iconLabel.setBorder(BorderFactory.createEmptyBorder(15, 0, 15, 0)); // 设置上边距为20像素、
-
-        iconLabel.setOpaque(true); // 设置标签为不透明
-        iconLabel.setBackground(Color.WHITE); // 设置背景颜色为白色
+        iconLabel.setBorder(BorderFactory.createEmptyBorder(15, 0, 15, 0)); // Set top margin to 15 pixels
+        iconLabel.setOpaque(true); // Set label to opaque
+        iconLabel.setBackground(Color.WHITE); // Set background color to white
 
         thumbsUpPanel.add(iconLabel);
-        thumbsUpPanel.add(Box.createHorizontalGlue()); // 添加水平填充，使得Label居中
+        thumbsUpPanel.add(Box.createHorizontalGlue()); // Add horizontal glue to center the label
 
         gbc.gridx = 0;
         gbc.gridy = 4;
@@ -134,11 +144,12 @@ public class EncouragementFrame extends KidPageFrame {
 
         mainContentPanel.add(thumbsUpPanel, gbc);
 
-        // 将mainContentPanel添加到lowerPanel中
+        // Add mainContentPanel to lowerPanel
         lowerPanel.setLayout(new BorderLayout());
         lowerPanel.add(mainContentPanel, BorderLayout.CENTER);
 
         revalidate();
+
         repaint();
     }
 
