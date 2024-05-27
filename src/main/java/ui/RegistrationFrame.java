@@ -9,6 +9,12 @@ import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
+/**
+ * A registration frame for creating new user accounts.
+ * This frame allows users to enter their username, password, and account type (Kid Account or Parent Account).
+ *
+ * @author Siyuan Lu
+ */
 public class RegistrationFrame extends JFrame {
     private AccountManager accountManager;
     private JTextField usernameField;
@@ -16,11 +22,19 @@ public class RegistrationFrame extends JFrame {
     private JPasswordField confirmPasswordField;
     private JComboBox<String> accountTypeComboBox;
 
+    /**
+     * Constructs a new RegistrationFrame with the specified AccountManager.
+     *
+     * @param accountManager the account manager used to handle account creation and validation
+     */
     public RegistrationFrame(AccountManager accountManager) {
         this.accountManager = accountManager;
         initComponents();
     }
 
+    /**
+     * Initializes the components of the registration frame.
+     */
     private void initComponents() {
         setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
         setTitle("Registration");
@@ -97,6 +111,10 @@ public class RegistrationFrame extends JFrame {
         setLocationRelativeTo(null);
     }
 
+    /**
+     * Registers a new account based on the input provided by the user.
+     * Validates the input and displays appropriate messages for errors or success.
+     */
     private void registerAccount() {
         String username = usernameField.getText();
         String password = new String(passwordField.getPassword());

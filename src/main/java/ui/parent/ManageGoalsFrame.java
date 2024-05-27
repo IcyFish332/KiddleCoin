@@ -117,9 +117,8 @@ public class ManageGoalsFrame extends ParentPageFrame {
      * Adds the panel for displaying the list of saving goals and a button for adding new goals.
      */
     private void addGoalsListPanel() {
-        JPanel goalsListPanel = new JPanel();
-        goalsListPanel.setLayout(new BorderLayout());
-        goalsListPanel.setBorder(BorderFactory.createEmptyBorder(10, 0, 10, 0));
+        JPanel goalsListPanel = new JPanel(new GridBagLayout());
+        goalsListPanel.setBorder(BorderFactory.createEmptyBorder(10, 0, 0, 0));
         goalsListPanel.setBackground(Color.WHITE);
 
         JLabel goalsListLabel = new JLabel("Goals List");
@@ -127,10 +126,29 @@ public class ManageGoalsFrame extends ParentPageFrame {
         goalsListLabel.setForeground(new Color(255, 105, 180));
 
         BigButton setGoalButton = new BigButton("+ Set a Goal");
-        setGoalButton.setFont(new Font("Arial", Font.PLAIN, 14));
+        //setGoalButton.setFont(new Font("Arial", Font.PLAIN, 14));
+        setGoalButton.setPreferredSize(new Dimension(150, 30)); // Set fixed size for the button
         setGoalButton.addActionListener(e -> openSetGoalFrame());
-        goalsListPanel.add(goalsListLabel, BorderLayout.WEST);
-        goalsListPanel.add(setGoalButton, BorderLayout.EAST);
+
+        GridBagConstraints gbc = new GridBagConstraints();
+
+        // Add the goals list label to the left side
+        gbc.gridx = 0;
+        gbc.gridy = 0;
+        gbc.anchor = GridBagConstraints.WEST;
+        gbc.weightx = 1.0; // Ensure the label is pushed to the left
+        goalsListPanel.add(goalsListLabel, gbc);
+
+        // Add an empty component to take up the remaining space
+        gbc.gridx = 1;
+        gbc.weightx = 1.0; // This makes the empty space take up the rest of the horizontal space
+        goalsListPanel.add(Box.createHorizontalGlue(), gbc);
+
+        // Add the set goal button to the right side
+        gbc.gridx = 2;
+        gbc.weightx = 0.0; // Ensure the button stays on the right
+        gbc.anchor = GridBagConstraints.EAST;
+        goalsListPanel.add(setGoalButton, gbc);
 
         lowerPanel.add(goalsListPanel);
     }
