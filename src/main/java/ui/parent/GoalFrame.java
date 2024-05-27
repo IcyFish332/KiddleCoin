@@ -12,8 +12,14 @@ import javax.swing.*;
 import java.awt.*;
 
 /**
- * A frame for setting or editing a savings goal for a child account.
+ * GoalFrame is a graphical user interface frame designed for setting or editing savings goals for a child's account.
+ * Parents can use this frame to specify the details of the savings goal, including the goal amount, target date, and description.
+ *
+ * This class extends the ParentPageFrame class and is part of the parent UI package. It utilizes components from the core package for account management.
+ *
+ * @author Yilin Jin
  */
+
 public class GoalFrame extends ParentPageFrame {
     private ChildAccount childAccount;
     private JTextField goalnameField;

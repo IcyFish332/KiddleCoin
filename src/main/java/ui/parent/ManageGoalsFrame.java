@@ -19,6 +19,8 @@ import java.util.Set;
  * The ManageGoalsFrame class is a user interface component that allows a parent user to manage
  * the saving goals of their child accounts. It extends the ParentPageFrame class and provides
  * functionality to view, create, edit, and delete saving goals for the selected child account.
+ *
+ * @author Yifan Cao
  */
 public class ManageGoalsFrame extends ParentPageFrame {
     private AccountManager accountManager;

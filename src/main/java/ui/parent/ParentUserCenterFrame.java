@@ -10,6 +10,7 @@ import java.util.Set;
 /**
  * The `ParentUserCenterFrame` class is a graphical user interface component that extends the `ParentPageFrame` class.
  * It provides a frame for parent users to view their account information and change their password.
+ * @author Ruihang Zhang
  */
 public class ParentUserCenterFrame extends ParentPageFrame {
     private JPasswordField oldPasswordField;

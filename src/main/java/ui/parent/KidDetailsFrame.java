@@ -15,6 +15,7 @@ import java.util.Locale;
 /**
  * A frame that displays detailed information about a child's account,
  * including their saving goals and tasks.
+ * @author Yifan Cao
  */
 public class KidDetailsFrame extends ParentPageFrame {
     private static AccountManager accountManager;

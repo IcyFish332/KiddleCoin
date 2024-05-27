@@ -12,7 +12,12 @@ import javax.swing.*;
 import java.awt.*;
 
 /**
- * A frame for setting or editing tasks for a child's account.
+ * AssignmentFrame is a graphical user interface frame designed for parents to set or edit tasks for their child's account.
+ * It provides functionality to input task details such as name, due date, reward, and description. Additionally, it allows parents to either create a new task or edit an existing one.
+ *
+ * This class extends the ParentPageFrame class and is part of the parent UI package. It utilizes components from the core package for account management.
+ *
+ * @author Yilin Jin
  */
 public class AssignmentFrame extends ParentPageFrame {
     private ChildAccount childAccount;

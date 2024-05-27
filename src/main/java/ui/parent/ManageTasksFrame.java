@@ -20,6 +20,7 @@ import java.text.SimpleDateFormat;
 /**
  * The ManageTasksFrame class represents the user interface for managing tasks for a child account.
  * It extends the ParentPageFrame class and provides functionality to view, add, edit, and delete tasks.
+ * @author Yifan Cao
  */
 public class ManageTasksFrame extends ParentPageFrame {
     private AccountManager accountManager;

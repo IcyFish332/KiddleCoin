@@ -14,8 +14,13 @@ import ui.template.ParentPageFrame;
 import ui.template.BigButton;
 
 /**
- * A frame for managing a parent's list of child accounts.
+ * The ChildAccountManagementFrame serves as a graphical user interface for parents to manage their list of child accounts.
+ *
+ * This frame provides functionality to view, add, edit, or remove child accounts associated with the parent's account.
+ *
+ * @author Yifan Cao
  */
+
 public class KidsListManagementFrame extends ParentPageFrame {
     private AccountManager accountManager;
     private ParentAccount parentAccount;

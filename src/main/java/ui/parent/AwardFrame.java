@@ -10,8 +10,14 @@ import javax.swing.table.DefaultTableModel;
 import java.awt.*;
 
 /**
- * A frame for giving an award to a child account.
+ * AwardFrame is a graphical user interface frame designed for parents to give awards to their child's account.
+ * It allows parents to specify the amount of the award and add an optional description.
+ *
+ * This class extends the ParentPageFrame class and is part of the parent UI package. It utilizes components from the core package for account management.
+ *
+ * @author Yilin Jin
  */
+
 public class AwardFrame extends ParentPageFrame {
     private AccountManager accountManager;
     private ParentAccount parentAccount;
