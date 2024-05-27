@@ -10,6 +10,12 @@ import ui.parent.ParentUserCenterFrame;
 import javax.swing.*;
 import java.awt.*;
 
+/**
+ * The main frame of the application where users can log in or create a new account.
+ * This frame provides the UI for entering login credentials and selecting account type.
+ *
+ * @author Siyuan Lu
+ */
 public class MainFrame extends JFrame {
     private AccountManager accountManager;
     private JTextField usernameField;
@@ -17,48 +23,56 @@ public class MainFrame extends JFrame {
     private JRadioButton kidRadioButton;
     private JRadioButton parentRadioButton;
 
+    /**
+     * Constructs a new MainFrame with the specified AccountManager.
+     *
+     * @param accountManager the account manager used to handle account operations
+     */
     public MainFrame(AccountManager accountManager) {
         this.accountManager = accountManager;
 
-        // 设置窗口标题
+        // Set window title
         setTitle("KiddleCoin");
 
-        // 设置关闭操作：当用户关闭窗口时退出应用程序
+        // Set close operation: exit application when window is closed
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 
-        // 设置窗口大小
+        // Set window size
         setSize(400, 500);
 
-        // 设置窗口初始位置为屏幕中心
+        // Set window initial location to center of the screen
         setLocationRelativeTo(null);
 
-        // 初始化界面组件
+        // Initialize UI components
         initComponents();
     }
 
+    /**
+     * Initializes the components of the main frame.
+     */
     private void initComponents() {
-        // 创建主面板
+        // Create main panel
         JPanel mainPanel = new JPanel(new BorderLayout());
         mainPanel.setBackground(Color.WHITE);
         add(mainPanel);
 
-        // 创建登录表单面板
+        // Create login form panel
         JPanel loginPanel = new JPanel(new GridBagLayout());
         loginPanel.setBackground(Color.WHITE);
         GridBagConstraints gbc = new GridBagConstraints();
         gbc.insets = new Insets(10, 10, 10, 10);
 
-        // 创建标题标签
+        // Create title label
         JLabel titleLabel = new JLabel("KiddleCoin");
         titleLabel.setFont(new Font("Arial", Font.BOLD, 24));
-        titleLabel.setForeground(new Color(255, 105, 180)); // 设置标题颜色为粉色
+        titleLabel.setForeground(new Color(255, 105, 180)); // Set title color to pink
         gbc.gridx = 0;
         gbc.gridy = 0;
         gbc.gridwidth = 2;
         gbc.anchor = GridBagConstraints.CENTER;
         loginPanel.add(titleLabel, gbc);
 
-        // 创建角色选择标签和单选按钮
+        // Create role selection label and radio buttons
         JLabel roleLabel = new JLabel("Account Type:");
         roleLabel.setFont(new Font("Arial", Font.PLAIN, 14));
         gbc.gridx = 0;
@@ -82,7 +96,7 @@ public class MainFrame extends JFrame {
         gbc.gridy = 1;
         loginPanel.add(radioButtonPanel, gbc);
 
-        // 创建用户名标签和文本框
+        // Create username label and text field
         JLabel usernameLabel = new JLabel("User Name");
         usernameLabel.setFont(new Font("Arial", Font.PLAIN, 14));
         gbc.gridx = 0;
@@ -94,7 +108,7 @@ public class MainFrame extends JFrame {
         gbc.gridy = 2;
         loginPanel.add(usernameField, gbc);
 
-        // 创建密码标签和密码框
+        // Create password label and password field
         JLabel passwordLabel = new JLabel("Password");
         passwordLabel.setFont(new Font("Arial", Font.PLAIN, 14));
         gbc.gridx = 0;
@@ -106,10 +120,10 @@ public class MainFrame extends JFrame {
         gbc.gridy = 3;
         loginPanel.add(passwordField, gbc);
 
-        // 创建登录按钮
+        // Create login button
         JButton loginButton = new JButton("Log In");
         loginButton.setFont(new Font("Arial", Font.PLAIN, 16));
-        loginButton.setBackground(new Color(255, 192, 203)); // 设置按钮背景颜色为粉色
+        loginButton.setBackground(new Color(255, 192, 203)); // Set button background color to pink
         loginButton.addActionListener(e -> login());
         gbc.gridx = 0;
         gbc.gridy = 4;
@@ -117,13 +131,13 @@ public class MainFrame extends JFrame {
         gbc.anchor = GridBagConstraints.CENTER;
         loginPanel.add(loginButton, gbc);
 
-        // 创建"创建账户"标签
+        // Create "Create an account" button
         JButton createAccountButton = new JButton("Create an account");
         createAccountButton.setFont(new Font("Arial", Font.PLAIN, 16));
-        createAccountButton.setForeground(new Color(255, 105, 180)); // 设置按钮前景色为粉色
-        createAccountButton.setContentAreaFilled(false); // 设置按钮背景为透明
-        createAccountButton.setBorderPainted(false); // 去除按钮边框
-        createAccountButton.setFocusPainted(false); // 去除按钮焦点框
+        createAccountButton.setForeground(new Color(255, 105, 180)); // Set button foreground color to pink
+        createAccountButton.setContentAreaFilled(false); // Set button background to transparent
+        createAccountButton.setBorderPainted(false); // Remove button border
+        createAccountButton.setFocusPainted(false); // Remove button focus border
         createAccountButton.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
         createAccountButton.addActionListener(e -> openRegistrationFrame());
         gbc.gridx = 0;
@@ -132,58 +146,65 @@ public class MainFrame extends JFrame {
         gbc.anchor = GridBagConstraints.CENTER;
         loginPanel.add(createAccountButton, gbc);
 
-        // 将登录表单面板添加到主面板中央
+        // Add login form panel to the center of the main panel
         mainPanel.add(loginPanel, BorderLayout.CENTER);
 
-        // 创建并添加背景图片标签
-        ImageIcon backgroundImage = new ImageIcon("path/to/image.jpg"); // 替换为实际图片路径
+        // Create and add background image label
+        ImageIcon backgroundImage = new ImageIcon("path/to/image.jpg"); // Replace with actual image path
         JLabel backgroundLabel = new JLabel(backgroundImage);
         mainPanel.add(backgroundLabel, BorderLayout.NORTH);
-
     }
 
-    // 登录按钮的响应方法（需要实现具体的登录逻辑）
+    /**
+     * Handles the login button action.
+     * Validates the user credentials and opens the appropriate user center frame upon successful login.
+     */
     private void login() {
         String username = usernameField.getText();
         char[] password = passwordField.getPassword();
         String accountType = kidRadioButton.isSelected() ? "Kid" : "Parent";
 
-        // 验证逻辑（伪代码，需要实现验证方法）
+        // Validate credentials (pseudo-code, needs actual implementation)
         boolean isValid = accountManager.validateCredentials(username, new String(password));
 
         if (isValid) {
-            // 登录成功,转到主视图
+            // Login successful, proceed to user center view
             JOptionPane.showMessageDialog(this, "Login successful.");
             openUserCenterFrame(accountManager, username);
             dispose();
-            // 转到其他视图的代码...
+            // Code to switch to other views...
         } else {
-            // 登录失败,显示错误消息
+            // Login failed, show error message
             JOptionPane.showMessageDialog(this, "Invalid username or password.", "Login Failed", JOptionPane.ERROR_MESSAGE);
         }
 
-        // 清除输入字段,以便下一次登录尝试
+        // Clear input fields for the next login attempt
         usernameField.setText("");
         passwordField.setText("");
-
     }
 
+    /**
+     * Opens the registration frame to create a new account.
+     */
     private void openRegistrationFrame() {
         RegistrationFrame registrationFrame = new RegistrationFrame(accountManager);
         registrationFrame.setVisible(true);
     }
 
+    /**
+     * Opens the appropriate user center frame based on the account type.
+     *
+     * @param accountManager the account manager used to handle account operations
+     * @param username the username of the logged-in account
+     */
     private void openUserCenterFrame(AccountManager accountManager, String username) {
         Account account = accountManager.getAccountByUsername(username);
-        if(account.getAccountType().equals("Kid")){
-            KidUserCenterFrame kidUserCenterFrame = new KidUserCenterFrame(accountManager, (ChildAccount)account);
+        if (account.getAccountType().equals("Kid")) {
+            KidUserCenterFrame kidUserCenterFrame = new KidUserCenterFrame(accountManager, (ChildAccount) account);
             kidUserCenterFrame.setVisible(true);
+        } else if (account.getAccountType().equals("Parent")) {
+            ParentUserCenterFrame parentUserCenterFrame = new ParentUserCenterFrame(accountManager, (ParentAccount) account);
+            parentUserCenterFrame.setVisible(true);
         }
-        else if(account.getAccountType().equals("Parent")){
-            ParentUserCenterFrame ParentUserCenterFrame = new ParentUserCenterFrame(accountManager, (ParentAccount)account);
-            ParentUserCenterFrame.setVisible(true);
-        }
-
     }
-
 }
