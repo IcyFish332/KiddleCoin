@@ -7,6 +7,12 @@ import core.AccountManager;
 import javax.swing.*;
 import java.awt.*;
 
+/**
+ * The {@code SaveGoalsFrame} class provides a user interface for saving money
+ * into a child's savings goals. It allows the user to input an amount and submit the savings.
+ *
+ * Author: YaoZelei
+ */
 public class SaveGoalsFrame extends JFrame {
 
     private ChildAccount childAccount;
@@ -14,6 +20,14 @@ public class SaveGoalsFrame extends JFrame {
     private BalanceManagementFrame balanceManagementFrame;
     private JTextField amountField;
 
+    /**
+     * Constructs a new {@code SaveGoalsFrame} with the specified child account, account manager,
+     * and balance management frame.
+     *
+     * @param childAccount The child account to save money into.
+     * @param accountManager The account manager responsible for handling account-related operations.
+     * @param balanceManagementFrame The parent frame that manages the balance and savings.
+     */
     public SaveGoalsFrame(ChildAccount childAccount, AccountManager accountManager, BalanceManagementFrame balanceManagementFrame) {
         this.childAccount = childAccount;
         this.accountManager = accountManager;
@@ -25,13 +39,16 @@ public class SaveGoalsFrame extends JFrame {
         initUI();
     }
 
+    /**
+     * Initializes the user interface components for the save goals frame.
+     */
     private void initUI() {
-        // 使用 BoxLayout 来创建一个垂直布局的主面板
+        // Use BoxLayout to create a vertically arranged main panel
         JPanel mainPanel = new JPanel();
         mainPanel.setLayout(new BoxLayout(mainPanel, BoxLayout.Y_AXIS));
         mainPanel.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
 
-        // 创建一个用于输入金额的面板
+        // Create a panel for inputting the amount
         JPanel amountPanel = new JPanel(new BorderLayout(10, 10));
         JLabel amountLabel = new JLabel("Amount:");
         amountField = new JTextField(15);
@@ -39,10 +56,10 @@ public class SaveGoalsFrame extends JFrame {
         amountPanel.add(amountField, BorderLayout.CENTER);
         mainPanel.add(amountPanel);
 
-        // 在金额面板和按钮面板之间添加垂直间距
+        // Add vertical spacing between the amount panel and the button panel
         mainPanel.add(Box.createVerticalStrut(20));
 
-        // 创建按钮面板
+        // Create the button panel
         JPanel buttonPanel = new JPanel(new FlowLayout(FlowLayout.CENTER, 10, 10));
         BigButton submitButton = new BigButton("Submit");
         BigButton returnButton = new BigButton("Return");
@@ -50,24 +67,28 @@ public class SaveGoalsFrame extends JFrame {
         buttonPanel.add(returnButton);
         mainPanel.add(buttonPanel);
 
-        // 添加事件监听器到submitButton
+        // Add action listeners to the buttons
         submitButton.addActionListener(e -> onSubmit());
         returnButton.addActionListener(e -> dispose());
 
-        // 将主面板添加到框架
+        // Add the main panel to the frame
         getContentPane().add(mainPanel);
     }
 
-    // 处理提交按钮点击事件的方法
+    /**
+     * Handles the action to be performed when the submit button is clicked.
+     * Reads the amount from the input field, saves it into the child's savings goals,
+     * updates the account data, and notifies the user of the successful saving.
+     */
     private void onSubmit() {
         try {
             double amount = Double.parseDouble(amountField.getText());
             childAccount.saveMoney(amount);
-            // 保存更新后的账户数据
+            // Save the updated account data
             accountManager.saveAccount(childAccount);
             JOptionPane.showMessageDialog(this, "Money saved to goal successfully!");
-            balanceManagementFrame.updateLabels();  // 更新标签显示
-            dispose();  // 关闭窗口
+            balanceManagementFrame.updateLabels();  // Update the labels display
+            dispose();  // Close the window
         } catch (NumberFormatException e) {
             JOptionPane.showMessageDialog(this, "Please enter a valid amount.");
         }
