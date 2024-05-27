@@ -8,12 +8,24 @@ import data.DataManager;
 import javax.swing.*;
 import java.awt.*;
 
+/**
+ * The {@code BalanceManagementFrame} class is responsible for managing the balance
+ * and savings of a child's account. It provides a user interface for viewing
+ * the current balance, total savings, and performing actions such as depositing
+ * and withdrawing money.
+ */
 public class BalanceManagementFrame extends KidPageFrame {
     private ChildAccount childAccount;
     private AccountManager accountManager;
     private JLabel totalSavingsLabel;
     private JLabel currentBalanceLabel;
 
+    /**
+     * Constructs a new {@code BalanceManagementFrame} with the specified child account and account manager.
+     *
+     * @param childAccount The child account to be managed.
+     * @param accountManager The account manager responsible for handling account-related operations.
+     */
     public BalanceManagementFrame(ChildAccount childAccount, AccountManager accountManager) {
         super("Manage My Balance", null, childAccount);
         this.childAccount = childAccount;
@@ -21,6 +33,9 @@ public class BalanceManagementFrame extends KidPageFrame {
         initComponents();
     }
 
+    /**
+     * Initializes the components and layout for the balance management frame.
+     */
     private void initComponents() {
         JPanel panel = new JPanel();
         panel.setLayout(new BoxLayout(panel, BoxLayout.Y_AXIS));
@@ -77,11 +92,20 @@ public class BalanceManagementFrame extends KidPageFrame {
         lowerPanel.add(panel, BorderLayout.CENTER);
     }
 
+    /**
+     * Updates the labels that display the total savings and current balance.
+     */
     public void updateLabels() {
         totalSavingsLabel.setText("My total savings: $" + childAccount.getSavings());
         currentBalanceLabel.setText("My current balance: $" + childAccount.getBalance());
     }
 
+    /**
+     * Creates a styled button with the specified text.
+     *
+     * @param text The text to be displayed on the button.
+     * @return A styled JButton object.
+     */
     private JButton createStyledButton(String text) {
         JButton button = new JButton(text) {
             @Override
@@ -146,6 +170,12 @@ public class BalanceManagementFrame extends KidPageFrame {
         return button;
     }
 
+    /**
+     * The main method to run the BalanceManagementFrame application.
+     * It initializes a sample child account, account manager, and displays the frame.
+     *
+     * @param args Command-line arguments (not used).
+     */
     public static void main(String[] args) {
         SwingUtilities.invokeLater(() -> {
             // 创建一个示例的ChildAccount对象

@@ -3,45 +3,70 @@ package ui.template;
 import java.awt.*;
 import javax.swing.*;
 
+/**
+ * This class represents a custom JButton with rounded corners and custom colors.
+ *
+ * @Author: Ruihang Zhang
+ */
 public class BigButton extends JButton {
     private Color backgroundColor;
     private Color foregroundColor;
     private int arcWidth = 20;
     private int arcHeight = 20;
 
+    /**
+     * Constructs a BigButton with the specified text.
+     *
+     * @param text
+     *        the text to display on the button
+     */
     public BigButton(String text) {
         super(text);
         setOpaque(false);
         setContentAreaFilled(false);
         setFocusPainted(false);
         setBorderPainted(false);
-//        setForeground(Color.WHITE);
-//        setBackground(new Color(0xFFB6C1));
         setFont(new Font("Ariel", Font.BOLD, 15));
 
-        if(text.equals("Submit")){
+        if (text.equals("Submit")) {
             setBackgroundColor(new Color(0xFFEDF0));
             setForegroundColor(new Color(0xF868B0));
-        }
-        else if(text.equals("Return")){
+        } else if (text.equals("Return")) {
             setBackgroundColor(new Color(0xDCDCDC));
             setForegroundColor(Color.BLACK);
-        }
-        else {
-            // 默认颜色设置（可以根据需要调整）
+        } else {
+            // Default color settings
             setBackgroundColor(new Color(0xFFEDF0));
             setForegroundColor(new Color(0xF868B0));
         }
     }
 
+    /**
+     * Sets the background color of the button.
+     *
+     * @param color
+     *        the background color to set
+     */
     public void setBackgroundColor(Color color) {
         backgroundColor = color;
     }
 
+    /**
+     * Sets the foreground color of the button.
+     *
+     * @param color
+     *        the foreground color to set
+     */
     public void setForegroundColor(Color color) {
         foregroundColor = color;
     }
 
+    /**
+     * Paints the button with custom rendering.
+     *
+     * @param g
+     *        the Graphics context in which to paint
+     */
     @Override
     protected void paintComponent(Graphics g) {
         Graphics2D g2d = (Graphics2D) g.create();
@@ -50,16 +75,11 @@ public class BigButton extends JButton {
         int width = getWidth();
         int height = getHeight();
 
-//        // 绘制阴影
-//        g2d.setColor(new Color(108, 106, 106, 50)); // 半透明黑色
-//        g2d.fillRoundRect(50, 50, width, height, arcWidth, arcHeight); // 右下角偏移5像素
-
-
-        // 绘制背景
+        // Paint background
         g2d.setColor(backgroundColor);
         g2d.fillRoundRect(0, 0, width, height, arcWidth, arcHeight);
 
-        // 绘制文本
+        // Paint text
         g2d.setColor(foregroundColor);
         FontMetrics metrics = g2d.getFontMetrics(getFont());
         int textX = (width - metrics.stringWidth(getText())) / 2;
@@ -68,6 +88,4 @@ public class BigButton extends JButton {
 
         g2d.dispose();
     }
-
-
 }

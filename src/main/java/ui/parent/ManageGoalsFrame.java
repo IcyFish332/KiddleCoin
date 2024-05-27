@@ -15,6 +15,13 @@ import java.awt.*;
 import java.util.EventObject;
 import java.util.Set;
 
+/**
+ * The ManageGoalsFrame class is a user interface component that allows a parent user to manage
+ * the saving goals of their child accounts. It extends the ParentPageFrame class and provides
+ * functionality to view, create, edit, and delete saving goals for the selected child account.
+ *
+ * @author Yifan Cao
+ */
 public class ManageGoalsFrame extends ParentPageFrame {
     private AccountManager accountManager;
     private ParentAccount parentAccount;
@@ -25,6 +32,12 @@ public class ManageGoalsFrame extends ParentPageFrame {
     private JComboBox<String> childAccountComboBox;
     private JLabel savingsLabel;
 
+    /**
+     * Constructs a ManageGoalsFrame object with the specified account manager and parent account.
+     *
+     * @param accountManager The account manager managing all accounts.
+     * @param parentAccount  The parent account for which saving goals are managed.
+     */
     public ManageGoalsFrame(AccountManager accountManager, ParentAccount parentAccount) {
         super("Manage Kid's Goals", accountManager, parentAccount);
         this.accountManager = accountManager;
@@ -32,6 +45,9 @@ public class ManageGoalsFrame extends ParentPageFrame {
         initComponents();
     }
 
+    /**
+     * Initializes the components of the ManageGoalsFrame.
+     */
     private void initComponents() {
         setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
         lowerPanel.setLayout(new BoxLayout(lowerPanel, BoxLayout.Y_AXIS));
@@ -45,6 +61,9 @@ public class ManageGoalsFrame extends ParentPageFrame {
         setVisible(true);
     }
 
+    /**
+     * Selects the first child account associated with the parent account.
+     */
     private void selectFirstChildAccount() {
         Set<String> childAccountIds = parentAccount.getChildAccountIds();
         if (!childAccountIds.isEmpty()) {
@@ -53,6 +72,9 @@ public class ManageGoalsFrame extends ParentPageFrame {
         }
     }
 
+    /**
+     * Adds the information panel displaying child account details and savings.
+     */
     private void addInfoPanel() {
         JPanel infoPanel = new JPanel();
         infoPanel.setBackground(Color.WHITE);
@@ -91,6 +113,9 @@ public class ManageGoalsFrame extends ParentPageFrame {
         lowerPanel.add(infoPanel);
     }
 
+    /**
+     * Adds the panel for displaying the list of saving goals and a button for adding new goals.
+     */
     private void addGoalsListPanel() {
         JPanel goalsListPanel = new JPanel(new GridBagLayout());
         goalsListPanel.setBorder(BorderFactory.createEmptyBorder(10, 0, 0, 0));
@@ -128,7 +153,9 @@ public class ManageGoalsFrame extends ParentPageFrame {
         lowerPanel.add(goalsListPanel);
     }
 
-
+    /**
+     * Adds the table for displaying saving goals.
+     */
     private void addGoalsTable() {
         JPanel tablePanel = new JPanel(new BorderLayout());
         String[] goalColumns = {"Goal's Name", "Description", "Target", "Award", "Progress", "Operation"};
@@ -150,6 +177,9 @@ public class ManageGoalsFrame extends ParentPageFrame {
         updateGoalsTable();
     }
 
+    /**
+     * Updates the saving goals table based on the selected child account.
+     */
     private void updateGoalsTable() {
         goalsModel.setRowCount(0);
         if (childAccount != null) {
@@ -167,19 +197,32 @@ public class ManageGoalsFrame extends ParentPageFrame {
         }
     }
 
+    /**
+     * Opens the frame for setting a new saving goal.
+     */
     private void openSetGoalFrame() {
         GoalFrame goalFrame = new GoalFrame(accountManager, parentAccount, childAccount);
         goalFrame.setVisible(true);
-        this.dispose(); // 关闭当前窗口
+        this.dispose();
     }
 
+    /**
+     * Opens the frame for editing an existing saving goal.
+     *
+     * @param row The index of the goal to be edited.
+     */
     private void editGoal(int row) {
         SavingGoal goal = childAccount.getSavingGoals().get(row);
         GoalFrame goalFrame = new GoalFrame(accountManager, parentAccount, childAccount, goal);
         goalFrame.setVisible(true);
-        this.dispose(); // 关闭当前窗口
+        this.dispose();
     }
 
+    /**
+     * Deletes the selected saving goal.
+     *
+     * @param row The index of the goal to be deleted.
+     */
     private void deleteGoal(int row) {
         if (row >= 0 && row < goalsModel.getRowCount()) {
             int confirm = JOptionPane.showConfirmDialog(null, "Are you sure you want to delete this item?", "Confirm Delete", JOptionPane.YES_NO_OPTION);
@@ -194,17 +237,19 @@ public class ManageGoalsFrame extends ParentPageFrame {
         }
     }
 
+    /**
+     * Custom cell renderer for rendering buttons in the table.
+     */
     private class ButtonRenderer extends JPanel implements TableCellRenderer {
         public ButtonRenderer() {
             setOpaque(true);
-            setBackground(Color.WHITE); // 设置背景颜色为白色
+            setBackground(Color.WHITE);
         }
 
         @Override
         public Component getTableCellRendererComponent(JTable table, Object value,
                                                        boolean isSelected, boolean hasFocus, int row, int column) {
             JPanel panel = new JPanel(new FlowLayout(FlowLayout.LEFT));
-            panel.setBackground(Color.WHITE); // 设置按钮面板的背景颜色为白色
             panel.setBackground(Color.WHITE);
             JButton editButton = new JButton("Edit");
             JButton deleteButton = new JButton("Delete");
@@ -217,14 +262,10 @@ public class ManageGoalsFrame extends ParentPageFrame {
             return panel;
         }
     }
-    public void setSelectedChildAccount(ChildAccount childAccount) {
-        this.childAccount = childAccount;
-        updateGoalsTable();
-                            // 更新目标列表以反映选定的孩子账户
-    }
 
-
-
+    /**
+     * Custom cell editor for editing cells containing buttons in the table.
+     */
     private class ButtonEditor extends AbstractCellEditor implements TableCellEditor {
         private JPanel panel;
         private JButton editButton;
@@ -233,7 +274,7 @@ public class ManageGoalsFrame extends ParentPageFrame {
 
         public ButtonEditor() {
             panel = new JPanel(new FlowLayout(FlowLayout.LEFT));
-            panel.setBackground(Color.WHITE); // 设置背景颜色为白色
+            panel.setBackground(Color.WHITE);
             editButton = new JButton("Edit");
             deleteButton = new JButton("Delete");
 
@@ -244,10 +285,9 @@ public class ManageGoalsFrame extends ParentPageFrame {
             panel.add(deleteButton);
         }
 
-
         @Override
         public Component getTableCellEditorComponent(JTable table, Object value, boolean isSelected, int row, int column) {
-            currentRow = row; // 保存当前行索引
+            currentRow = row;
             return panel;
         }
 
@@ -265,6 +305,16 @@ public class ManageGoalsFrame extends ParentPageFrame {
         public boolean shouldSelectCell(EventObject anEvent) {
             return true;
         }
+    }
+
+    /**
+     * Sets the selected child account and updates the goals table to reflect the selected child account.
+     *
+     * @param childAccount The child account to be set as selected.
+     */
+    public void setSelectedChildAccount(ChildAccount childAccount) {
+        this.childAccount = childAccount;
+        updateGoalsTable();
     }
 }
 

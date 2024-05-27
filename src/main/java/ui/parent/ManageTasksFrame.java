@@ -17,7 +17,11 @@ import java.util.Locale;
 import java.util.Set;
 import java.text.SimpleDateFormat;
 
-
+/**
+ * The ManageTasksFrame class represents the user interface for managing tasks for a child account.
+ * It extends the ParentPageFrame class and provides functionality to view, add, edit, and delete tasks.
+ * @author Yifan Cao
+ */
 public class ManageTasksFrame extends ParentPageFrame {
     private AccountManager accountManager;
     private ParentAccount parentAccount;
@@ -28,6 +32,12 @@ public class ManageTasksFrame extends ParentPageFrame {
     private JComboBox<String> childAccountComboBox;
     private JLabel savingsLabel;
 
+    /**
+     * Constructs a ManageTasksFrame object with the specified account manager and parent account.
+     *
+     * @param accountManager The account manager managing all accounts.
+     * @param parentAccount  The parent account for which tasks are managed.
+     */
     public ManageTasksFrame(AccountManager accountManager, ParentAccount parentAccount) {
         super("Manage Kid's Tasks", accountManager, parentAccount);
         this.accountManager = accountManager;
@@ -35,6 +45,9 @@ public class ManageTasksFrame extends ParentPageFrame {
         initComponents();
     }
 
+    /**
+     * Initializes the components of the ManageTasksFrame.
+     */
     private void initComponents() {
         setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
         lowerPanel.setLayout(new BoxLayout(lowerPanel, BoxLayout.Y_AXIS));
@@ -48,6 +61,9 @@ public class ManageTasksFrame extends ParentPageFrame {
         setVisible(true);
     }
 
+    /**
+     * Selects the first child account associated with the parent account.
+     */
     private void selectFirstChildAccount() {
         Set<String> childAccountIds = parentAccount.getChildAccountIds();
         if (!childAccountIds.isEmpty()) {
@@ -56,6 +72,9 @@ public class ManageTasksFrame extends ParentPageFrame {
         }
     }
 
+    /**
+     * Adds the information panel displaying child account details and savings.
+     */
     private void addInfoPanel() {
         JPanel infoPanel = new JPanel();
         infoPanel.setBackground(Color.WHITE);
@@ -95,6 +114,9 @@ public class ManageTasksFrame extends ParentPageFrame {
         lowerPanel.add(infoPanel);
     }
 
+    /**
+     * Adds the panel for displaying the list of tasks and a button for adding new tasks.
+     */
     private void addTasksListPanel() {
         JPanel tasksListPanel = new JPanel(new GridBagLayout());
         tasksListPanel.setBorder(BorderFactory.createEmptyBorder(10, 0, 0, 0));
@@ -132,6 +154,9 @@ public class ManageTasksFrame extends ParentPageFrame {
         lowerPanel.add(tasksListPanel);
     }
 
+    /**
+     * Adds the table for displaying tasks.
+     */
     private void addTasksTable() {
         JPanel tablePanel = new JPanel(new BorderLayout());
         tablePanel.setBackground(Color.WHITE);
@@ -154,7 +179,9 @@ public class ManageTasksFrame extends ParentPageFrame {
         updateTasksTable();
     }
 
-
+    /**
+     * Updates the tasks table based on the selected child account.
+     */
     private void updateTasksTable() {
         tasksModel.setRowCount(0);
         if (childAccount != null) {
@@ -174,20 +201,32 @@ public class ManageTasksFrame extends ParentPageFrame {
         }
     }
 
-
+    /**
+     * Opens the frame for setting a new task.
+     */
     private void openSetTaskFrame() {
         AssignmentFrame taskFrame = new AssignmentFrame(accountManager, parentAccount, childAccount);
         taskFrame.setVisible(true);
-        this.dispose(); // 关闭当前窗口
+        this.dispose();
     }
 
+    /**
+     * Opens the frame for editing an existing task.
+     *
+     * @param row The index of the task to be edited.
+     */
     private void editTask(int row) {
         Task task = childAccount.getTasks().get(row);
         AssignmentFrame assignmentFrame = new AssignmentFrame(accountManager, parentAccount, childAccount, task);
         assignmentFrame.setVisible(true);
-        this.dispose(); // 关闭当前窗口
+        this.dispose();
     }
 
+    /**
+     * Deletes the selected task.
+     *
+     * @param row The index of the task to be deleted.
+     */
     private void deleteTask(int row) {
         if (row >= 0 && row < tasksModel.getRowCount()) {
             int confirm = JOptionPane.showConfirmDialog(null, "Are you sure you want to delete this item?", "Confirm Delete", JOptionPane.YES_NO_OPTION);
@@ -202,6 +241,9 @@ public class ManageTasksFrame extends ParentPageFrame {
         }
     }
 
+    /**
+     * Custom cell renderer for rendering buttons in the tasks table.
+     */
     private class ButtonRenderer extends JPanel implements TableCellRenderer {
         public ButtonRenderer() {
             setOpaque(true);
@@ -224,6 +266,9 @@ public class ManageTasksFrame extends ParentPageFrame {
         }
     }
 
+    /**
+     * Custom cell editor for editing cells containing buttons in the tasks table.
+     */
     private class ButtonEditor extends AbstractCellEditor implements TableCellEditor {
         private JPanel panel;
         private JButton editButton;
@@ -244,7 +289,7 @@ public class ManageTasksFrame extends ParentPageFrame {
 
         @Override
         public Component getTableCellEditorComponent(JTable table, Object value, boolean isSelected, int row, int column) {
-            currentRow = row; // 保存当前行索引
+            currentRow = row; // Save the current row index
             return panel;
         }
 
@@ -264,3 +309,4 @@ public class ManageTasksFrame extends ParentPageFrame {
         }
     }
 }
+

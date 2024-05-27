@@ -15,6 +15,13 @@ import java.awt.event.MouseEvent;
 import java.util.List;
 import java.util.Vector;
 
+
+/**
+ * This class represents a frame for displaying a child's account details including total savings,
+ * current balance, savings goals, and tasks.
+ * @author Longyue Liu
+ */
+
 public class MyAccountFrame extends KidPageFrame {
     private JLabel totalSavingsLabel;
     private JLabel currentBalanceLabel;
@@ -22,6 +29,13 @@ public class MyAccountFrame extends KidPageFrame {
     private JTable tasksTable;
     private AccountManager accountManager;
     private ChildAccount childAccount;
+
+    /**
+     * Constructs a MyAccountFrame.
+     *
+     * @param accountManager the account manager managing the account
+     * @param childAccount   the child account to display information for
+     */
 
     public MyAccountFrame(AccountManager accountManager, ChildAccount childAccount) {
         super("My Account", accountManager, childAccount);
@@ -57,7 +71,7 @@ public class MyAccountFrame extends KidPageFrame {
         totalSavingsLabel = new JLabel("My Total Savings: ");
         totalSavingsLabel.setFont(new Font("Arial", Font.BOLD, 14));
         totalSavingsLabel.setForeground(Color.BLACK);
-        // 获取储蓄值
+        // Get total savings value
         double savings = childAccount.getSavings();
         totalSavingsLabel.setText(String.format("My Total Savings: %.2f", savings));
         balanceGbc.gridx = 1;
@@ -69,7 +83,7 @@ public class MyAccountFrame extends KidPageFrame {
         currentBalanceLabel = new JLabel("My Current Balance: ");
         currentBalanceLabel.setFont(new Font("Arial", Font.BOLD, 14));
         currentBalanceLabel.setForeground(Color.BLACK);
-        // 获取余额值
+        // Get current balance value
         double balance = childAccount.getBalance();
         currentBalanceLabel.setText(String.format("My Current Balance: %.2f", balance));
         balanceGbc.gridy = 1;
@@ -94,7 +108,7 @@ public class MyAccountFrame extends KidPageFrame {
         gbc.anchor = GridBagConstraints.WEST;
         lowerPanel.add(goalsTitleLabel, gbc);
 
-        // 获取储蓄目标数据并填充表格
+        // Get saving goals data and populate the table
         List<SavingGoal> savingGoals = childAccount.getSavingGoals();
         Vector<String> goalsColumnNames = new Vector<>();
         goalsColumnNames.add("Goal's Name");
@@ -102,7 +116,7 @@ public class MyAccountFrame extends KidPageFrame {
         goalsColumnNames.add("Money Amount");
         goalsColumnNames.add("Award");
 
-        // 使用 DefaultTableModel 直接从 savingGoals 获取数据
+        // Use DefaultTableModel to get data directly from savingGoals
         DefaultTableModel goalsTableModel = new DefaultTableModel(goalsColumnNames, 0);
         for (SavingGoal goal : savingGoals) {
             goalsTableModel.addRow(new Object[]{goal.getName(), goal.getDescription(), goal.getTargetAmount(), goal.getReward()});
@@ -148,14 +162,14 @@ public class MyAccountFrame extends KidPageFrame {
         gbc.anchor = GridBagConstraints.WEST;
         lowerPanel.add(tasksTitleLabel, gbc);
 
-        // 获取任务数据并填充表格
+        // Get tasks data and populate the table
         List<Task> tasks = childAccount.getTasks();
         Vector<String> tasksColumnNames = new Vector<>();
         tasksColumnNames.add("Task's Name");
         tasksColumnNames.add("Description");
         tasksColumnNames.add("Award");
 
-        // 使用 DefaultTableModel 直接从 tasks 获取数据
+        // Use DefaultTableModel to get data directly from tasks
         DefaultTableModel tasksTableModel = new DefaultTableModel(tasksColumnNames, 0);
         for (Task task : tasks) {
             tasksTableModel.addRow(new Object[]{task.getName(), task.getDescription(), task.getReward()});
@@ -191,7 +205,7 @@ public class MyAccountFrame extends KidPageFrame {
         lowerPanel.add(seeMoreTasksLabel, gbc);
 
         // Adjust frame
-        //pack();
+        pack();
         setLocationRelativeTo(null);
     }
 }

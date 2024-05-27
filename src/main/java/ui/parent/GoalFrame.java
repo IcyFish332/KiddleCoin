@@ -11,22 +11,43 @@ import ui.template.ParentPageFrame;
 import javax.swing.*;
 import java.awt.*;
 
+/**
+ * GoalFrame is a graphical user interface frame designed for setting or editing savings goals for a child's account.
+ * Parents can use this frame to specify the details of the savings goal, including the goal amount, target date, and description.
+ *
+ * This class extends the ParentPageFrame class and is part of the parent UI package. It utilizes components from the core package for account management.
+ *
+ * @author Yilin Jin
+ */
+
 public class GoalFrame extends ParentPageFrame {
     private ChildAccount childAccount;
-
     private JTextField goalnameField;
     private JTextField targetField;
     private JTextField awardField;
     private JTextArea descriptionArea;
-
     private AccountManager accountManager;
     private ParentAccount parentAccount;
 
+    /**
+     * Constructs a GoalFrame for setting a new goal.
+     *
+     * @param accountManager The account manager
+     * @param parentAccount The parent account
+     * @param childAccount The child account
+     */
     public GoalFrame(AccountManager accountManager, ParentAccount parentAccount, ChildAccount childAccount) {
         this(accountManager, parentAccount, childAccount, null);
     }
 
-
+    /**
+     * Constructs a GoalFrame for editing an existing goal.
+     *
+     * @param accountManager The account manager
+     * @param parentAccount The parent account
+     * @param childAccount The child account
+     * @param goal The existing saving goal
+     */
     public GoalFrame(AccountManager accountManager, ParentAccount parentAccount, ChildAccount childAccount, SavingGoal goal) {
         super(goal == null ? "Set a Goal" : "Edit Goal", accountManager, parentAccount);
         this.childAccount = childAccount;
@@ -133,6 +154,13 @@ public class GoalFrame extends ParentPageFrame {
         setVisible(true);
     }
 
+    /**
+     * Updates the information of the goal.
+     *
+     * @param accountManager The account manager
+     * @param parentAccount The parent account
+     * @param goal The saving goal to be updated
+     */
     private void updateInformation(AccountManager accountManager, ParentAccount parentAccount, SavingGoal goal) {
         String goalsName = goalnameField.getText();
         double target = Double.parseDouble(targetField.getText());
@@ -153,6 +181,11 @@ public class GoalFrame extends ParentPageFrame {
         accountManager.saveAccount(parentAccount);
     }
 
+    /**
+     * Checks if any text field is empty.
+     *
+     * @return true if any text field is empty, false otherwise
+     */
     private boolean anyTextFieldIsEmpty() {
         return goalnameField.getText().isEmpty() ||
                 targetField.getText().isEmpty() ||
@@ -160,6 +193,9 @@ public class GoalFrame extends ParentPageFrame {
                 descriptionArea.getText().isEmpty();
     }
 
+    /**
+     * Shows a dialog indicating invalid information.
+     */
     private void showInvalidInfoDialog() {
         JDialog dialog = new JDialog(this, "Invalid Information", true);
         dialog.setLayout(new FlowLayout());
@@ -173,11 +209,15 @@ public class GoalFrame extends ParentPageFrame {
         dialog.setVisible(true);
     }
 
+    /**
+     * Returns to the ManageGoalsFrame.
+     *
+     * @param accountManager The account manager
+     * @param parentAccount The parent account
+     */
     private void returnToManageGoalsFrame(AccountManager accountManager, ParentAccount parentAccount) {
         ManageGoalsFrame manageGoalsFrame = new ManageGoalsFrame(accountManager, parentAccount);
-        // 设置已选中的孩子账户
         manageGoalsFrame.setVisible(true);
         this.dispose();
     }
-
 }
