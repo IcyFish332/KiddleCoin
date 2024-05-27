@@ -1,4 +1,4 @@
-package ParentBoundaryTest;
+package parent;
 
 import core.AccountManager;
 import core.ChildAccount;
@@ -8,8 +8,6 @@ import data.DataManager;
 import ui.parent.GoalFrame;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-
-import javax.swing.*;
 
 import static org.junit.jupiter.api.Assertions.*;
 

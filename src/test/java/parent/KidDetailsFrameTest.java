@@ -1,4 +1,4 @@
-package ParentBoundaryTest;
+package parent;
 
 import core.AccountManager;
 import core.ChildAccount;
@@ -10,7 +10,6 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import ui.parent.KidDetailsFrame;
 
-import javax.swing.*;
 import javax.swing.table.DefaultTableModel;
 import java.util.Calendar;
 import java.util.Date;

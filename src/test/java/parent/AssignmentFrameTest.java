@@ -1,4 +1,4 @@
-package ui.parent;
+package parent;
 
 import core.AccountManager;
 import core.ChildAccount;
@@ -6,6 +6,7 @@ import core.ParentAccount;
 import data.DataManager;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import ui.parent.AssignmentFrame;
 
 import javax.swing.*;
 import java.awt.*;

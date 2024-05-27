@@ -1,4 +1,4 @@
-package ParentBoundaryTest;
+package parent;
 
 
 import core.AccountManager;
@@ -9,9 +9,6 @@ import data.DataManager;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import ui.parent.ManageGoalsFrame;
-
-import javax.swing.*;
-import javax.swing.table.DefaultTableModel;
 
 import static org.junit.jupiter.api.Assertions.*;
 

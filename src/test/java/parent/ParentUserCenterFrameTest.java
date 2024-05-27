@@ -1,4 +1,4 @@
-package ParentBoundaryTest;
+package parent;
 
 
 import core.AccountManager;

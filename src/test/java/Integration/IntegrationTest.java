@@ -1,5 +1,6 @@
-package core;
+package Integration;
 
+import core.*;
 import data.DataManager;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -7,7 +8,7 @@ import org.junit.jupiter.api.Test;
 import java.util.Date;
 import java.util.Set;
 import static org.junit.jupiter.api.Assertions.*;
-class integrationTest {
+public class IntegrationTest {
 
     private AccountManager accountManager;
     private DataManager dataManager;
@@ -23,7 +24,7 @@ class integrationTest {
     public void testChildAccountTransactions() {
         ChildAccount childAccount = accountManager.createChildAccount("Child3", "password5");
         childAccount.deposit(100.0);
-        childAccount.withdraw(50.0);
+        ((ChildAccount) childAccount).withdraw(50.0);
         childAccount.saveMoney(25.0);
 
         assertFalse(childAccount.getTransactionHistory().isEmpty());
